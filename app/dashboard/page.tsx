@@ -40,6 +40,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useSolanaAction } from "@/hooks/useSolanaAction";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useAuth, ProtectedRoute } from "@/contexts/AuthContext";
+import AppLayout from "@/components/AppLayout";
 import Link from "next/link";
 
 interface InvoiceData {
@@ -712,7 +713,9 @@ function DashboardContent() {
 export default function Dashboard() {
   return (
     <ProtectedRoute>
-      <DashboardContent />
+      <AppLayout>
+        <DashboardContent />
+      </AppLayout>
     </ProtectedRoute>
   );
 }

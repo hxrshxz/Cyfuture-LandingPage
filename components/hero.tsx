@@ -8,12 +8,26 @@ import { Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import AuthModal from "@/components/AuthModal"
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
 
 const PIXEL_SCRIPT_URL =
   "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pixel-RKkUKH2OXWk9adKbDnozmndkwseTQh.js"
 
 export default function Hero() {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      router.push('/dashboard')
+    } else {
+      setIsAuthModalOpen(true)
+    }
+  }
 
   useEffect(() => {
     // Use Intersection Observer to load the script only when the component is in view
@@ -162,11 +176,12 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.4 }}
         >
-          <Link prefetch={false} href="/docs/introduction">
-            <Button className="bg-gradient-to-b from-rose-500 to-rose-700 text-sm text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]">
-              Get started
-            </Button>
-          </Link>
+          <Button 
+            onClick={handleGetStarted}
+            className="bg-gradient-to-b from-orange-500 to-orange-700 text-sm text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] hover:from-orange-600 hover:to-orange-800"
+          >
+            {isAuthenticated ? "Go to Dashboard" : "Get Started"}
+          </Button>
           <Link prefetch={false} href="/about">
             <Button variant={"secondary"}>
               About <MoveRight className="ml-2 h-4 w-4" />
@@ -288,6 +303,13 @@ export default function Hero() {
           </main>
         </div>
       </div>
+      
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="login"
+      />
     </div>
   )
 }

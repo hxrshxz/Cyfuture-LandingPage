@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import AuthModal from "@/components/AuthModal";
 import {
   Home,
   Layout,
@@ -22,6 +23,8 @@ interface NavigationProps {
 
 export default function Navigation({ currentPage }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "signup">("login");
   const { user, logout, isAuthenticated } = useAuth();
 
   const navItems = [
@@ -92,21 +95,29 @@ export default function Navigation({ currentPage }: NavigationProps) {
               </>
             ) : (
               <>
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button 
-                    size="sm" 
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
-                  >
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Sign Up
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={() => {
+                    setAuthModalMode("login");
+                    setIsAuthModalOpen(true);
+                  }}
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-gray-300 hover:text-white"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setAuthModalMode("signup");
+                    setIsAuthModalOpen(true);
+                  }}
+                  size="sm" 
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Sign Up
+                </Button>
               </>
             )}
           </div>
@@ -180,21 +191,31 @@ export default function Navigation({ currentPage }: NavigationProps) {
                   </>
                 ) : (
                   <>
-                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button variant="ghost" size="sm" className="w-full justify-start text-gray-300 hover:text-white">
-                        <LogIn className="w-4 h-4 mr-2" />
-                        Login
-                      </Button>
-                    </Link>
-                    <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                      <Button 
-                        size="sm" 
-                        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
-                      >
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Sign Up
-                      </Button>
-                    </Link>
+                    <Button 
+                      onClick={() => {
+                        setAuthModalMode("login");
+                        setIsAuthModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-gray-300 hover:text-white"
+                    >
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Login
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setAuthModalMode("signup");
+                        setIsAuthModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      size="sm" 
+                      className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+                    >
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Sign Up
+                    </Button>
                   </>
                 )}
               </div>
@@ -202,6 +223,12 @@ export default function Navigation({ currentPage }: NavigationProps) {
           </div>
         )}
       </div>
+      
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authModalMode}
+      />
     </nav>
   );
 }
