@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import SolanaWalletProvider from "@/components/WalletProvider"
+import { AuthProvider } from "@/contexts/AuthContext"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -30,9 +31,11 @@ html {
       </head>
       <body className="dark">
         <ErrorBoundary>
-          <SolanaWalletProvider>
-            {children}
-          </SolanaWalletProvider>
+          <AuthProvider>
+            <SolanaWalletProvider>
+              {children}
+            </SolanaWalletProvider>
+          </AuthProvider>
         </ErrorBoundary>
       </body>
     </html>

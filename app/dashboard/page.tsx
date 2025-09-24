@@ -23,6 +23,9 @@ import {
   Eye,
   Download,
   Copy,
+  LogOut,
+  User,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +39,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useSolanaAction } from "@/hooks/useSolanaAction";
 import { useIpfs } from "@/hooks/useIpfs";
+import { useAuth, ProtectedRoute } from "@/contexts/AuthContext";
 import Link from "next/link";
 
 interface InvoiceData {
@@ -53,7 +57,7 @@ interface InvoiceData {
   solanaSignature?: string;
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const [currentView, setCurrentView] = useState<"dashboard" | "upload" | "processing" | "success">("dashboard");
   const [invoices, setInvoices] = useState<InvoiceData[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -62,6 +66,7 @@ export default function Dashboard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { connected, publicKey } = useWallet();
+  const { user, logout } = useAuth();
   const { sendTransaction, requestAirdrop, getBalance, isSending } = useSolanaAction();
   const { uploadFile, uploadJson, isUploading } = useIpfs();
 
@@ -458,13 +463,32 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent mb-2">
-                CyFuture AI Dashboard
+                Welcome back, {user?.name}!
               </h1>
               <p className="text-gray-400 text-lg">
                 Blockchain-powered financial document management with AI analysis
               </p>
             </div>
             <div className="flex items-center gap-4">
+              {/* User Profile Section */}
+              <div className="flex items-center gap-3 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-xl px-4 py-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-sm">
+                  <p className="text-white font-medium">{user?.name}</p>
+                  <p className="text-gray-400 capitalize">{user?.plan} Plan</p>
+                </div>
+                <Button
+                  onClick={logout}
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-400 hover:text-white hover:bg-zinc-800"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </div>
+              
               <Link href="/ai">
                 <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg">
                   <Bot className="w-4 h-4 mr-2" />
@@ -682,5 +706,13 @@ export default function Dashboard() {
         onChange={handleFileSelect}
       />
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   );
 }

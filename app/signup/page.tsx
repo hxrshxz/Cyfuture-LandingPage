@@ -2,12 +2,14 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -16,7 +18,15 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
   })
-  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const { signup, isLoading, isAuthenticated } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard')
+    }
+  }, [isAuthenticated, router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -27,15 +37,28 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError("")
+    
     if (formData.password !== formData.confirmPassword) {
-      console.log("[v0] Password mismatch")
+      setError("Passwords do not match")
       return
     }
-    setIsLoading(true)
-    // Simulate signup process
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    console.log("[v0] Signup attempt:", formData)
+    
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long")
+      return
+    }
+    
+    try {
+      const success = await signup(formData.name, formData.email, formData.password)
+      if (success) {
+        router.push('/dashboard')
+      } else {
+        setError("Email already exists. Please use a different email.")
+      }
+    } catch (err) {
+      setError("Signup failed. Please try again.")
+    }
   }
 
   return (
@@ -91,6 +114,12 @@ export default function SignupPage() {
           className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 rounded-2xl p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                {error}
+              </div>
+            )}
+            
             <div className="space-y-2">
               <Label htmlFor="name" className="text-white">
                 Full Name
