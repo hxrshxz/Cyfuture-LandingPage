@@ -1,77 +1,77 @@
-import { Marquee } from "@/components/magicui/marquee"
+import { Marquee } from "@/components/magicui/marquee";
+import Image from "next/image"; // Assuming you are using Next.js with Image component
 
-const testimonials = [
+// Define a reusable shape for our testimonial data
+interface Testimonial {
+  name: string;
+  username: string;
+  body: string;
+  img: string;
+}
+
+const testimonials: Testimonial[] = [
   {
     name: "Arjun Mehta",
     username: "@arjdev",
-    body: "v0 has completely changed the way I build UIs. Generate, copy-paste, done. No more design stress.",
+    body: "We were stuck reconciling GSTR-2B data with messy invoices. This tool did it in minutes. No more manual CSV hell.",
     img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Sara Lin",
     username: "@sara.codes",
-    body: "Honestly shocked at how smooth the v0 generated components are out of the box. Just works perfectly.",
+    body: "Honestly shocked at how it handled our cross-party data. Just pointed it to our ledgers and the reconciliation worked perfectly.",
     img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Devon Carter",
     username: "@devninja",
-    body: "Our team launched a client site in 2 days using v0 components. Saved so much development time.",
+    body: "truly amazing tool. The AI identified fraudulent transactions that we completely missed. Saved us from a huge compliance issue.",
     img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Priya Shah",
     username: "@priyacodes",
-    body: "Generated a few components in v0 and everything blended perfectly with our codebase. Massive W.",
+    body: "The blockchain hash API.",
     img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Leo Martin",
     username: "@leobuilds",
-    body: "Found a beautiful hero section in v0, tweaked the prompt, and shipped in 15 minutes. Game changer.",
+    body: "Spotted a massive discrepancy between our internal ledger and the blockchain. The tool found the exact mismatched hash in seconds. Game changer.",
     img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Chloe Winters",
     username: "@chloewinters",
-    body: "v0 helped us prototype multiple landing pages without writing CSS once. Pure magic.",
+    body: "This let us focus on our core product logic  instead of wasting a day manually matching transaction hashes. Pure magic.",
     img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Ayaan Malik",
     username: "@ayaan_dev",
-    body: "As a solo founder, v0 lets me move fast without sacrificing design quality. Essential tool.",
+    body: "this AI was my entire data-auditing team. Let me build a robust financial app by myself.",
     img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "Monica Reeves",
     username: "@monicareeves",
-    body: "Can't believe how polished the v0 generated components look. Clients are impressed every time.",
+    body: "The automated reconciliation reports were so clean and professional.",
     img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "James Roy",
     username: "@jamesrdev",
-    body: "v0 is a lifesaver when deadlines are tight. Generate a component, tweak, and deploy instantly.",
+    body: " deadline with messy data. This tool reconciled our entire transaction history instantly. A total lifesaver.",
     img: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face",
   },
-]
+];
 
-const firstColumn = testimonials.slice(0, 3)
-const secondColumn = testimonials.slice(3, 6)
-const thirdColumn = testimonials.slice(6, 9)
+const firstColumn = testimonials.slice(0, 3);
+const secondColumn = testimonials.slice(3, 6);
+const thirdColumn = testimonials.slice(6, 9);
 
-const TestimonialCard = ({
-  img,
-  name,
-  username,
-  body,
-}: {
-  img: string
-  name: string
-  username: string
-  body: string
-}) => {
+// Use the `Testimonial` interface for the component's props
+const TestimonialCard = ({ img, name, username, body }: Testimonial) => {
   return (
     <div className="relative w-full max-w-xs overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-10 shadow-[0px_2px_0px_0px_rgba(255,255,255,0.1)_inset]">
       <div className="absolute -top-5 -left-5 -z-10 h-40 w-40 rounded-full bg-gradient-to-b from-[#e78a53]/10 to-transparent blur-md"></div>
@@ -79,15 +79,23 @@ const TestimonialCard = ({
       <div className="text-white/90 leading-relaxed">{body}</div>
 
       <div className="mt-5 flex items-center gap-2">
-        <img src={img || "/placeholder.svg"} alt={name} height="40" width="40" className="h-10 w-10 rounded-full" />
+        {/* Use Image component for optimized images in Next.js */}
+        <Image 
+          src={img} 
+          alt={name} 
+          height={40} 
+          width={40} 
+          className="h-10 w-10 rounded-full" 
+          priority
+        />
         <div className="flex flex-col">
           <div className="leading-5 font-medium tracking-tight text-white">{name}</div>
           <div className="leading-5 tracking-tight text-white/60">{username}</div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export function TestimonialsSection() {
   return (
@@ -104,12 +112,12 @@ export function TestimonialsSection() {
               <span className="relative text-white">Testimonials</span>
             </button>
           </div>
-          <h2 className="from-foreground/60 via-foreground to-foreground/60 dark:from-muted-foreground/55 dark:via-foreground dark:to-muted-foreground/55 mt-5 bg-gradient-to-r bg-clip-text text-center text-4xl font-semibold tracking-tighter text-transparent md:text-[54px] md:leading-[60px] __className_bb4e88 relative z-10">
+          <h2 className="from-foreground/60 via-foreground to-foreground/60 dark:from-muted-foreground/55 dark:via-foreground dark:to-muted-foreground/55 mt-5 bg-gradient-to-r bg-clip-text text-center text-4xl font-semibold tracking-tighter text-transparent md:text-[54px] md:leading-[60px] relative z-10">
             What our users say
           </h2>
 
           <p className="mt-5 relative z-10 text-center text-lg text-zinc-500">
-            From intuitive design to powerful features, our app has become an essential tool for users around the world.
+            From cryptographic accuracy to instant fraud detection, VerifiChain is the future of financial compliance.
           </p>
         </div>
 
@@ -151,5 +159,5 @@ export function TestimonialsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
