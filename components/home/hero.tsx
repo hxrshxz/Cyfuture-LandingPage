@@ -44,7 +44,7 @@ export default function Hero() {
             >
               <Badge variant="secondary" className="inline-flex items-center gap-2 px-4 py-2 text-sm">
                 <Sparkles className="h-4 w-4" />
-                AI Financial Assistant
+                AI Accountant - GST Reconciliation
               </Badge>
             </motion.div>
 
@@ -56,8 +56,8 @@ export default function Hero() {
               className="mb-8"
             >
               <h1 id="main-title" className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-                Reach <strong>developers</strong> <span>&</span> <br />
-                <strong>creators</strong> <em className="italic">effortlessly</em>
+                Automate <strong>GST</strong> <span>&</span> <br />
+                <strong>Invoice</strong> <em className="italic">Processing</em>
               </h1>
             </motion.div>
 
@@ -68,8 +68,7 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground"
             >
-              Beautiful, accessible components built with Tailwind CSS and Framer Motion. Copy, paste, and customize to
-              build your next project faster.
+              AI-powered invoice processing and GST reconciliation platform. Upload invoices, extract data automatically, and streamline your accounting workflow with blockchain security.
             </motion.p>
 
             <motion.div
@@ -134,7 +133,7 @@ export default function Hero() {
             className="mt-auto pb-8"
           >
             <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-6">Trusted by developers at</p>
+              <p className="text-sm text-muted-foreground mb-6">Trusted by accounting firms and businesses</p>
               <div className="flex items-center justify-center gap-8 flex-wrap">
                 {/* Company logos */}
                 <div className="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300">
