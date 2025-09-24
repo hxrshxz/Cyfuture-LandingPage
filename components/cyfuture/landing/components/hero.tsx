@@ -1,49 +1,55 @@
-"use client"
+import { CloudLightning, MoveRight, Sparkles } from "lucide-react";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { CardHoverEffect } from "./ui/pulse-card";
+import HomeBadge from "./ui/home-badge";
+import { Beam } from "../../ui/gridbeam";
 
-import { geist } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import { CloudLightning, MoveRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import Link from "next/link"
+import { cn } from "../../../lib/utils";
+import { geist } from "../../../lib/fonts";
+import { PixelCard } from "./ui/pixelcards";
 
 const PIXEL_SCRIPT_URL =
-  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pixel-RKkUKH2OXWk9adKbDnozmndkwseTQh.js"
+  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pixel-RKkUKH2OXWk9adKbDnozmndkwseTQh.js";
 
-export default function Hero() {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false)
+interface HeroProps {
+  onGetStarted?: () => void;
+}
+
+export default function Hero({ onGetStarted }: HeroProps) {
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   useEffect(() => {
     // Use Intersection Observer to load the script only when the component is in view
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          import("@/lib/load-script").then(({ loadScript }) => {
+          import("../../../lib/load-script").then(({ loadScript }) => {
             loadScript(PIXEL_SCRIPT_URL)
               .then(() => {
-                setIsScriptLoaded(true)
+                setIsScriptLoaded(true);
               })
               .catch((error) => {
-                console.error("Error loading pixel script:", error)
-              })
-          })
-          observer.disconnect()
+                console.error("Error loading pixel script:", error);
+              });
+          });
+          observer.disconnect();
         }
       },
-      { threshold: 0.1 },
-    )
+      { threshold: 0.1 }
+    );
 
-    const heroElement = document.getElementById("hero-section")
+    const heroElement = document.getElementById("hero-section");
     if (heroElement) {
-      observer.observe(heroElement)
+      observer.observe(heroElement);
     }
 
     return () => {
-      observer.disconnect()
-    }
-  }, [])
+      observer.disconnect();
+    };
+  }, []);
 
   const cards = [
     {
@@ -60,7 +66,7 @@ export default function Hero() {
       variant: "rose",
       showGridLines: true,
     },
-  ] as const
+  ] as const;
 
   const cardConfigurations = [
     {
@@ -79,42 +85,18 @@ export default function Hero() {
       number: 15,
       desc: "Categories available",
     },
-  ]
+  ];
 
   return (
-    <div id="hero-section" className="bg-background relative min-h-screen w-full overflow-x-hidden py-32 md:px-6">
-      <img
-        src="/vector1.webp"
-        alt="Vector"
-        width={300}
-        draggable={false}
-        height={300}
-        className="absolute top-0 right-0 z-[2] object-cover object-center select-none"
-      />
-      <img
-        src="/vector2.png"
-        alt="Vector"
-        width={300}
-        height={300}
-        draggable={false}
-        className="absolute top-0 left-0 z-[2] object-cover object-center select-none"
-      />
-      <img
-        src="/vector5.webp"
-        alt="Vector"
-        width={300}
-        draggable={false}
-        height={300}
-        className="absolute bottom-0 -left-44 z-[2] -rotate-90 object-cover object-center select-none"
-      />
-      <img
-        src="/vector6.png"
-        alt="Vector"
-        width={300}
-        draggable={false}
-        height={300}
-        className="absolute -right-44 bottom-0 z-[2] rotate-90 object-cover object-center select-none"
-      />
+    <div
+      id="hero-section"
+      className="bg-background relative min-h-screen w-full overflow-x-hidden py-32 md:px-6"
+    >
+      {/* Decorative background shapes */}
+      <div className="absolute top-0 right-0 z-[2] w-[300px] h-[300px] bg-gradient-to-bl from-primary/20 to-transparent rounded-full blur-3xl" />
+      <div className="absolute top-0 left-0 z-[2] w-[300px] h-[300px] bg-gradient-to-br from-secondary/20 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 -left-44 z-[2] w-[300px] h-[300px] bg-gradient-to-tr from-accent/20 to-transparent rounded-full blur-3xl -rotate-90" />
+      <div className="absolute -right-44 bottom-0 z-[2] w-[300px] h-[300px] bg-gradient-to-tl from-primary/20 to-transparent rounded-full blur-3xl rotate-90" />
       <div className="container mx-auto px-4 2xl:max-w-[1400px]">
         <motion.div
           className="flex justify-center"
@@ -122,26 +104,23 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.1 }}
         >
-          <HomeBadge />
+          <HomeBadge>Badge</HomeBadge>
         </motion.div>
         <div className="mx-auto mt-5 max-w-3xl text-center">
           <Beam />
           <motion.h1
             className={cn(
               "from-foreground/60 via-foreground to-foreground/60 dark:from-muted-foreground/55 dark:via-foreground dark:to-muted-foreground/55 max-w-5xl bg-gradient-to-r bg-clip-text text-center text-4xl font-semibold tracking-tighter text-transparent sm:text-5xl xl:text-6xl/none",
-              geist.className,
+              geist.className
             )}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.2 }}
           >
             Prebuilt UI
-            <img
-              src="/rose.webp"
-              alt="Logo"
-              draggable={false}
-              className="mx-4 mb-2 inline-block h-12 w-12 md:h-16 md:w-16"
-            />
+            <span className="mx-4 mb-2 inline-block h-12 w-12 md:h-16 md:w-16 bg-gradient-to-br from-rose-400 to-rose-600 rounded-lg flex items-center justify-center text-xl font-bold text-white">
+              🚀
+            </span>
             blocks to ship beautiful MVPs fast.
           </motion.h1>
         </div>
@@ -152,8 +131,8 @@ export default function Hero() {
           transition={{ duration: 0.75, delay: 0.3 }}
         >
           <p className="text-muted-foreground text-xl">
-            Copy-paste beautiful, responsive components without worrying about styling or animations. Build faster,
-            launch sooner.
+            Copy-paste beautiful, responsive components without worrying about
+            styling or animations. Build faster, launch sooner.
           </p>
         </motion.div>
         <motion.div
@@ -162,16 +141,15 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.4 }}
         >
-          <Link prefetch={false} href="/docs/introduction">
-            <Button className="bg-gradient-to-b from-rose-500 to-rose-700 text-sm text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]">
-              Get started
-            </Button>
-          </Link>
-          <Link prefetch={false} href="/about">
-            <Button variant={"secondary"}>
-              About <MoveRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+          <Button
+            className="bg-gradient-to-b from-orange-500 to-orange-700 text-sm text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]"
+            onClick={onGetStarted}
+          >
+            Get started
+          </Button>
+          <Button variant={"secondary"}>
+            About <MoveRight className="ml-2 h-4 w-4" />
+          </Button>
         </motion.div>
         <motion.div
           className="mt-5 flex items-center justify-center gap-x-1"
@@ -179,18 +157,19 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.75, delay: 0.75 }}
         >
-          <motion.img
-            draggable={false}
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 1.25 }}
-            src="/vector4.webp"
-            alt="Next.js"
-            className="mt-4 mr-2 hidden w-96 brightness-[4] select-none xl:block"
-          />
-          <span className="text-sm text-gray-500">We use industry standards like </span>
+            className="mt-4 mr-2 hidden w-96 select-none xl:block"
+          >
+            <div className="h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          </motion.div>
+          <span className="text-sm text-gray-500">
+            We use industry standards like{" "}
+          </span>
           <img
-            src="/nextjs.webp"
+            src="/nextjs-logo.png"
             draggable={false}
             alt="Next.js"
             width={28}
@@ -198,7 +177,7 @@ export default function Hero() {
             className="h-7 w-7 select-none"
           />
           <img
-            src="/tailwind.webp"
+            src="/tailwind-css-logo.png"
             alt="Tailwind CSS"
             width={28}
             height={28}
@@ -206,7 +185,7 @@ export default function Hero() {
             draggable={false}
           />
           <img
-            src="/framer.webp"
+            src="/framer-motion-logo-inspired.png"
             alt="Framer Motion"
             width={24}
             height={24}
@@ -219,14 +198,7 @@ export default function Hero() {
             transition={{ duration: 1, delay: 1.25 }}
             className="mt-4 ml-2 hidden w-96 select-none xl:block"
           >
-            <img
-              src="/vector3.webp"
-              alt="Vector graphic"
-              width={384}
-              height={100}
-              draggable={false}
-              className="brightness-[4]"
-            />
+            <div className="h-1 bg-gradient-to-l from-transparent via-primary/50 to-transparent" />
           </motion.div>
         </motion.div>
         <div className="mx-auto mt-5 max-w-2xl text-center">
@@ -289,5 +261,5 @@ export default function Hero() {
         </div>
       </div>
     </div>
-  )
+  );
 }

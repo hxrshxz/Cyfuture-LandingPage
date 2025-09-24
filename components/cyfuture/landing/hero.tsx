@@ -1,49 +1,53 @@
-"use client"
+"use client";
 
-import { geist } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import { CloudLightning, MoveRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import Link from "next/link"
+import { PixelCard } from "./components/ui/pixelcards";
+import { geist } from "../../lib/fonts";
+import { cn } from "../../lib/utils";
+import { CloudLightning, MoveRight } from "lucide-react";
+import { Button } from "./components/ui/button";
+import { Beam } from "../ui/gridbeam";
+import { Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import HomeBadge from "./components/ui/home-badge";
+import { CardHoverEffect } from "./components/ui/pulse-card";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 const PIXEL_SCRIPT_URL =
-  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pixel-RKkUKH2OXWk9adKbDnozmndkwseTQh.js"
+  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pixel-RKkUKH2OXWk9adKbDnozmndkwseTQh.js";
 
 export default function Hero() {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false)
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   useEffect(() => {
     // Use Intersection Observer to load the script only when the component is in view
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          import("@/lib/load-script").then(({ loadScript }) => {
+          import("../../lib/load-script").then(({ loadScript }) => {
             loadScript(PIXEL_SCRIPT_URL)
               .then(() => {
-                setIsScriptLoaded(true)
+                setIsScriptLoaded(true);
               })
               .catch((error) => {
-                console.error("Error loading pixel script:", error)
-              })
-          })
-          observer.disconnect()
+                console.error("Error loading pixel script:", error);
+              });
+          });
+          observer.disconnect();
         }
       },
-      { threshold: 0.1 },
-    )
+      { threshold: 0.1 }
+    );
 
-    const heroElement = document.getElementById("hero-section")
+    const heroElement = document.getElementById("hero-section");
     if (heroElement) {
-      observer.observe(heroElement)
+      observer.observe(heroElement);
     }
 
     return () => {
-      observer.disconnect()
-    }
-  }, [])
+      observer.disconnect();
+    };
+  }, []);
 
   const cards = [
     {
@@ -60,7 +64,7 @@ export default function Hero() {
       variant: "rose",
       showGridLines: true,
     },
-  ] as const
+  ] as const;
 
   const cardConfigurations = [
     {
@@ -79,10 +83,13 @@ export default function Hero() {
       number: 15,
       desc: "Categories available",
     },
-  ]
+  ];
 
   return (
-    <div id="hero-section" className="bg-background relative min-h-screen w-full overflow-x-hidden py-32 md:px-6">
+    <div
+      id="hero-section"
+      className="bg-background relative min-h-screen w-full overflow-x-hidden py-32 md:px-6"
+    >
       <img
         src="/vector1.webp"
         alt="Vector"
@@ -122,14 +129,14 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.1 }}
         >
-          <HomeBadge />
+          <HomeBadge>Badge</HomeBadge>
         </motion.div>
         <div className="mx-auto mt-5 max-w-3xl text-center">
           <Beam />
           <motion.h1
             className={cn(
               "from-foreground/60 via-foreground to-foreground/60 dark:from-muted-foreground/55 dark:via-foreground dark:to-muted-foreground/55 max-w-5xl bg-gradient-to-r bg-clip-text text-center text-4xl font-semibold tracking-tighter text-transparent sm:text-5xl xl:text-6xl/none",
-              geist.className,
+              geist.className
             )}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -152,8 +159,8 @@ export default function Hero() {
           transition={{ duration: 0.75, delay: 0.3 }}
         >
           <p className="text-muted-foreground text-xl">
-            Copy-paste beautiful, responsive components without worrying about styling or animations. Build faster,
-            launch sooner.
+            Copy-paste beautiful, responsive components without worrying about
+            styling or animations. Build faster, launch sooner.
           </p>
         </motion.div>
         <motion.div
@@ -188,7 +195,9 @@ export default function Hero() {
             alt="Next.js"
             className="mt-4 mr-2 hidden w-96 brightness-[4] select-none xl:block"
           />
-          <span className="text-sm text-gray-500">We use industry standards like </span>
+          <span className="text-sm text-gray-500">
+            We use industry standards like{" "}
+          </span>
           <img
             src="/nextjs.webp"
             draggable={false}
@@ -289,5 +298,5 @@ export default function Hero() {
         </div>
       </div>
     </div>
-  )
+  );
 }
