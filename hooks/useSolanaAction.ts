@@ -18,12 +18,12 @@ interface SolanaAction {
 
 export const useSolanaAction = (): SolanaAction => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction: walletSendTransaction } = useWallet();
+  const { publicKey, sendTransaction: walletSendTransaction, connected } = useWallet();
   const [isSending, setIsSending] = useState(false);
 
   const sendActionTransaction = useCallback(
     async (memo: string): Promise<SolanaActionResult> => {
-      if (!publicKey) {
+      if (!connected || !publicKey || !walletSendTransaction) {
         const error = new Error(
           "Wallet Not Connected. Please connect your wallet to proceed."
         );
@@ -34,6 +34,13 @@ export const useSolanaAction = (): SolanaAction => {
       setIsSending(true);
 
       try {
+        // Test RPC connection health
+        try {
+          await connection.getSlot();
+        } catch (rpcError) {
+          console.error("RPC connection test failed:", rpcError);
+          throw new Error("Unable to connect to Solana network. Please try again later.");
+        }
         // Check balance first
         const balance = await connection.getBalance(publicKey);
         console.log("Current balance:", balance / LAMPORTS_PER_SOL, "SOL");
@@ -55,20 +62,49 @@ export const useSolanaAction = (): SolanaAction => {
         // Add a memo instruction using the SPL Memo program
         transaction.add(createMemoInstruction(memo));
 
-        // Get recent blockhash and last valid block height
-        const { blockhash, lastValidBlockHeight } =
-          await connection.getLatestBlockhash({
-            commitment: "finalized" as Commitment,
+        // Get recent blockhash with retry logic
+        let blockhash: string;
+        let lastValidBlockHeight: number;
+        
+        try {
+          const blockHashInfo = await connection.getLatestBlockhash({
+            commitment: "confirmed" as Commitment,
           });
+          blockhash = blockHashInfo.blockhash;
+          lastValidBlockHeight = blockHashInfo.lastValidBlockHeight;
+        } catch (rpcError) {
+          console.error("Failed to get blockhash:", rpcError);
+          throw new Error("Network connection issue. Please try again later.");
+        }
+
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = publicKey;
 
-        // Send the transaction
+        // Estimate transaction fee
+        try {
+          const feeResponse = await connection.getFeeForMessage(transaction.compileMessage());
+          const fee = feeResponse?.value || 5000;
+          console.log("Estimated transaction fee:", fee, "lamports");
+          
+          if (balance < fee) {
+            throw new Error("Insufficient SOL balance for transaction fees.");
+          }
+        } catch (feeError) {
+          console.warn("Could not estimate transaction fee:", feeError);
+        }
+
+        // Send the transaction with better error handling
         console.log("Sending memo transaction with text:", memo);
         const signature = await walletSendTransaction(transaction, connection, {
           preflightCommitment: "confirmed",
           skipPreflight: false,
+          maxRetries: 3,
         });
+        
+        if (!signature) {
+          throw new Error("Transaction failed - no signature returned");
+        }
+        
         console.log("Transaction sent with signature:", signature);
 
         // Wait for confirmation using blockhash + lastValidBlockHeight
@@ -94,10 +130,18 @@ export const useSolanaAction = (): SolanaAction => {
             "MetaMask Solana snap crashed. Please try using Phantom wallet instead, or refresh the page and reconnect.";
         } else if (errorStr.includes("User rejected")) {
           errorMessage = "Transaction was cancelled by user";
+        } else if (errorStr.includes("WalletNotConnectedError") || errorStr.includes("not connected")) {
+          errorMessage = "Wallet not connected. Please connect your wallet and try again.";
         } else if (errorStr.includes("Insufficient")) {
           errorMessage = "Insufficient SOL balance for transaction";
         } else if (errorStr.includes("Network")) {
           errorMessage = "Network connection issue. Please try again.";
+        } else if (errorStr.includes("JSON-RPC")) {
+          errorMessage = "RPC connection issue. Please try again or switch to a different wallet.";
+        } else if (errorStr.includes("timeout")) {
+          errorMessage = "Transaction timed out. Please try again.";
+        } else if (errorStr.includes("blockhash")) {
+          errorMessage = "Transaction expired. Please try again.";
         }
 
         const enhancedError = new Error(
@@ -108,7 +152,7 @@ export const useSolanaAction = (): SolanaAction => {
         setIsSending(false);
       }
     },
-    [connection, publicKey, walletSendTransaction]
+    [connection, publicKey, walletSendTransaction, connected]
   );
 
   const requestAirdrop = useCallback(async (): Promise<SolanaActionResult> => {

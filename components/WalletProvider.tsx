@@ -32,10 +32,21 @@ const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
       ? WalletAdapterNetwork.Testnet
       : WalletAdapterNetwork.Devnet;
 
-  // Endpoint can be overridden by NEXT_PUBLIC_SOLANA_RPC, else use clusterApiUrl
+  // Endpoint can be overridden by NEXT_PUBLIC_SOLANA_RPC, else use reliable RPC endpoints
   const endpoint = useMemo(() => {
     const custom = process.env.NEXT_PUBLIC_SOLANA_RPC?.trim();
-    return custom && custom.length > 0 ? custom : clusterApiUrl(network);
+    if (custom && custom.length > 0) return custom;
+    
+    // Use more reliable RPC endpoints
+    switch (network) {
+      case WalletAdapterNetwork.Mainnet:
+        return "https://api.mainnet-beta.solana.com";
+      case WalletAdapterNetwork.Testnet:
+        return "https://api.testnet.solana.com";
+      case WalletAdapterNetwork.Devnet:
+      default:
+        return "https://api.devnet.solana.com";
+    }
   }, [network]);
 
   // Memoize the wallets array to avoid re-instantiating wallet adapters on every render
@@ -50,7 +61,14 @@ const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider 
+      endpoint={endpoint}
+      config={{
+        commitment: 'confirmed',
+        confirmTransactionInitialTimeout: 60000,
+        wsEndpoint: endpoint.replace('https://', 'wss://').replace('http://', 'ws://'),
+      }}
+    >
       <WalletProvider wallets={wallets} autoConnect={true}>
         <WalletModalProvider>
           <div className="">{children}</div>

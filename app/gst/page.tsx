@@ -1,8 +1,7 @@
 "use client";
 
 import { ProtectedRoute } from "@/contexts/AuthContext";
-import AppLayout from "@/components/AppLayout";
-import AppSection from "@/components/AppSection";
+import AppNavigation from "@/components/AppNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -83,17 +82,18 @@ export default function GSTReconciliationPage() {
 
   return (
     <ProtectedRoute>
-      <AppLayout>
-        <AppSection
-          title="GST Reconciliation Center"
-          subtitle="Three-step process for monthly GST compliance"
-          actions={
+      <AppNavigation currentPage="/gst">
+        <div className="pt-24 px-4 md:px-8 max-w-screen-xl mx-auto">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">GST Reconciliation Center</h1>
+              <p className="text-muted-foreground">Three-step process for monthly GST compliance</p>
+            </div>
             <Button className="btn-metallic">
               <Download className="w-4 h-4 mr-2" />
               Export Report
             </Button>
-          }
-        >
+          </div>
           {/* Process Steps */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="bg-black/40 border-gray-800/60">
@@ -422,8 +422,8 @@ export default function GSTReconciliationPage() {
               </div>
             </CardContent>
           </Card>
-        </AppSection>
-      </AppLayout>
+        </div>
+      </AppNavigation>
     </ProtectedRoute>
   );
 }

@@ -663,7 +663,8 @@ body {
 }
 
 /* Landing page specific lighter ambient and section glows */
-.landing-ambient {
+.landing-ambient,
+.app-ambient {
   position: relative;
   overflow: clip; /* prevent pseudo glows from causing scrollbars */
   background: radial-gradient(
@@ -689,7 +690,8 @@ body {
     );
 }
 
-.landing-ambient::after {
+.landing-ambient::after,
+.app-ambient::after {
   /* subtle vignette for contrast without over-darkening */
   content: "";
   position: absolute;

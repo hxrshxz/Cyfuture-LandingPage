@@ -87,10 +87,17 @@ function DashboardContent() {
   const [storeOnChain, setStoreOnChain] = useState(false);
   const [isStoring, setIsStoring] = useState(false);
 
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, wallet } = useWallet();
   const { user, logout } = useAuth();
   const { sendTransaction, requestAirdrop, getBalance, isSending } =
     useSolanaAction();
+  
+  // Debug wallet connection state
+  console.log("Wallet connection state:", { 
+    connected, 
+    publicKey: publicKey?.toBase58(), 
+    walletName: wallet?.adapter?.name 
+  });
   const { uploadFile, uploadJson, isUploading } = useIpfs();
   const { lastCid, lastSignature, lastUpdated, setLastCid, setLastSignature } =
     useStorage();
@@ -309,6 +316,14 @@ function DashboardContent() {
   // Store selections after review
   const handleStoreSelected = async () => {
     if (!selectedFile || !pendingExtracted || !pendingInvoiceId) return;
+    
+    // Check wallet connection if user wants to store on chain
+    if (storeOnChain && (!connected || !publicKey)) {
+      console.error("Wallet not connected for on-chain storage");
+      alert("Please connect your wallet before storing data on-chain.");
+      return;
+    }
+    
     setIsStoring(true);
     let ipfsHash: string | undefined;
     let solanaSignature: string | undefined;
@@ -322,7 +337,12 @@ function DashboardContent() {
         }
       }
 
-      if (storeOnChain && connected) {
+      if (storeOnChain && connected && publicKey) {
+        // Double-check wallet connection before transaction
+        if (!connected || !publicKey) {
+          throw new Error("Wallet disconnected. Please reconnect your wallet and try again.");
+        }
+
         const payload = JSON.stringify({
           type: "INVOICE_PROCESSED",
           fileName: selectedFile.name,
@@ -330,9 +350,64 @@ function DashboardContent() {
           extractedData: pendingExtracted,
           timestamp: new Date().toISOString(),
         });
-        const { signature } = await sendTransaction(payload);
-        solanaSignature = signature || undefined;
-        if (signature) setLastSignature(signature);
+        
+        console.log("Starting Solana transaction with connected wallet:", publicKey.toBase58());
+        
+        // Retry logic for Solana transaction
+        let retries = 0;
+        const maxRetries = 3;
+        
+        while (retries < maxRetries) {
+          try {
+            // Re-check wallet connection before each attempt
+            if (!connected || !publicKey) {
+              throw new Error("Wallet disconnected during transaction. Please reconnect and try again.");
+            }
+            
+            const { signature, error } = await sendTransaction(payload);
+            
+            if (error) {
+              console.error(`Transaction attempt ${retries + 1} failed:`, error.message);
+              
+              // Don't retry wallet connection errors
+              if (error.message.includes("Wallet not connected") || error.message.includes("WalletNotConnectedError")) {
+                throw error;
+              }
+              
+              retries++;
+              
+              if (retries >= maxRetries) {
+                throw error;
+              }
+              
+              // Wait before retry (exponential backoff)
+              await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retries)));
+              continue;
+            }
+            
+            solanaSignature = signature || undefined;
+            if (signature) setLastSignature(signature);
+            break; // Success, exit retry loop
+            
+          } catch (txError) {
+            const errorMessage = (txError as Error).message;
+            console.error(`Transaction attempt ${retries + 1} failed:`, errorMessage);
+            
+            // Don't retry wallet connection errors
+            if (errorMessage.includes("Wallet not connected") || errorMessage.includes("WalletNotConnectedError")) {
+              throw txError;
+            }
+            
+            retries++;
+            
+            if (retries >= maxRetries) {
+              throw txError;
+            }
+            
+            // Wait before retry (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retries)));
+          }
+        }
       }
 
       setInvoices((prev) =>
@@ -645,8 +720,8 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen w-full relative app-ambient">
-      <AppNavigation currentPage="/dashboard" />
+    <AppNavigation currentPage="/dashboard">
+      <div className="pt-24">{/* Spacing for fixed navbar */}
       {/* Transaction animation overlay */}
       {isSending && (
         <div className="fixed inset-0 z-[9999] pointer-events-none bg-black/50 backdrop-blur-md">
@@ -1317,7 +1392,8 @@ function DashboardContent() {
           onClose={() => setShowTransactionResult(false)}
         />
       )}
-    </div>
+      </div>
+    </AppNavigation>
   );
 }
 

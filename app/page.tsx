@@ -99,12 +99,13 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link
+          {/* <Link
             href="/login"
-            className="font-medium transition-colors hover:text-foreground text-muted-foreground text-sm cursor-pointer"
+            className="font-medium transition-colors hover:text-foreground text-muted-foreground text-sm cursor-pointer px-3 py-2 rounded-md hover:bg-background/50"
+            onClick={() => console.log('Login button clicked - navigating to /login')}
           >
             Log In
-          </Link>
+          </Link> */}
 
           <Link
             href="/signup"
@@ -193,6 +194,7 @@ export default function Home() {
                 <Link
                   href="/login"
                   className="px-4 py-3 text-lg font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-background/50 cursor-pointer"
+                  onClick={() => console.log('Mobile login button clicked - navigating to /login')}
                 >
                   Log In
                 </Link>

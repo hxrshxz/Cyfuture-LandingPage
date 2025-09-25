@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { SectionWrapper } from "@/components/ui/section-wrapper";
 import { GradientText } from "@/components/ui/gradient-text";
 import { PillBadge } from "@/components/ui/pill-badge";
@@ -10,8 +11,8 @@ import { Check, Star } from "lucide-react";
 const plans = [
   {
     name: "Starter",
-    price: "29",
-    period: "month",
+    monthlyPrice: 2499,
+    annualPrice: 24990,
     description: "Perfect for small businesses and freelancers",
     features: [
       "Up to 100 invoices/month",
@@ -24,8 +25,8 @@ const plans = [
   },
   {
     name: "Professional",
-    price: "99",
-    period: "month",
+    monthlyPrice: 8499,
+    annualPrice: 84990,
     description: "Ideal for growing businesses with advanced needs",
     features: [
       "Up to 1,000 invoices/month",
@@ -40,8 +41,8 @@ const plans = [
   },
   {
     name: "Enterprise",
-    price: "299",
-    period: "month",
+    monthlyPrice: 24999,
+    annualPrice: 249990,
     description: "For large organizations with complex requirements",
     features: [
       "Unlimited invoices",
@@ -58,6 +59,16 @@ const plans = [
 ];
 
 export function PricingSection() {
+  const [isAnnual, setIsAnnual] = useState(false);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
   return (
     <SectionWrapper className="bg-gray-50/50 dark:bg-gray-900/20">
       <div className="text-center space-y-5 mb-12">
@@ -70,6 +81,31 @@ export function PricingSection() {
           Start free and scale as you grow. All plans include our core AI
           features and blockchain security.
         </p>
+        
+        {/* Billing Toggle */}
+        <div className="flex items-center justify-center space-x-4 mt-8">
+          <span className={`text-sm font-medium ${!isAnnual ? 'text-blue-600 dark:text-blue-300' : 'text-gray-500 dark:text-gray-400'}`}>
+            Monthly
+          </span>
+          <button
+            onClick={() => setIsAnnual(!isAnnual)}
+            className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                isAnnual ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+          <span className={`text-sm font-medium ${isAnnual ? 'text-blue-600 dark:text-blue-300' : 'text-gray-500 dark:text-gray-400'}`}>
+            Annual
+          </span>
+          {isAnnual && (
+            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              Save 17%
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -113,12 +149,19 @@ export function PricingSection() {
               </p>
               <div className="flex items-end justify-center space-x-1">
                 <span className="text-4xl font-geist font-bold">
-                  <GradientText variant="primary">${plan.price}</GradientText>
+                  <GradientText variant="primary">
+                    {formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice)}
+                  </GradientText>
                 </span>
                 <span className="text-gray-500 dark:text-gray-400 mb-1">
-                  /{plan.period}
+                  /{isAnnual ? 'year' : 'month'}
                 </span>
               </div>
+              {isAnnual && (
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {formatPrice(Math.round(plan.annualPrice / 12))}/month when paid annually
+                </div>
+              )}
             </div>
 
             {/* Features */}

@@ -1,8 +1,7 @@
 "use client";
 
 import { ProtectedRoute } from "@/contexts/AuthContext";
-import AppLayout from "@/components/AppLayout";
-import AppSection from "@/components/AppSection";
+import AppNavigation from "@/components/AppNavigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -78,11 +77,12 @@ export default function SettingsPage() {
 
   return (
     <ProtectedRoute>
-      <AppLayout>
-        <AppSection
-          title="Settings"
-          subtitle="Manage your account and application preferences"
-        >
+      <AppNavigation currentPage="/settings">
+        <div className="pt-24 px-4 md:px-8 max-w-screen-xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
+            <p className="text-muted-foreground">Manage your account and application preferences</p>
+          </div>
           {/* Settings Categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {settingsCategories.map((category) => (
@@ -506,8 +506,8 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-        </AppSection>
-      </AppLayout>
+        </div>
+      </AppNavigation>
     </ProtectedRoute>
   );
 }
