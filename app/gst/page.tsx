@@ -248,7 +248,7 @@ export default function GSTReconciliationPage() {
               </p>
             </CardHeader>
             <CardContent>
-              <div className="relative w-full overflow-hidden rounded-xl border border-gray-800/60 bg-black/30">
+              {/* <div className="relative w-full overflow-hidden rounded-xl border border-gray-800/60 bg-black/30">
                 <div className="aspect-video">
                   <iframe
                     src="https://my.spline.design/perisoft3dphonesoftwaredevelopment-zfPSkBHUsRUsnn33qBYfOW1W/"
@@ -262,7 +262,7 @@ export default function GSTReconciliationPage() {
                     loading="lazy"
                   />
                 </div>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
 

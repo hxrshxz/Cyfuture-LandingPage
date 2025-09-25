@@ -30,7 +30,7 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
       },
       description = "Experience the future of financial integrity. Our platform's advanced AI engine automates data extraction and risk analysis, while every source document is secured on the decentralized InterPlanetary File System (IPFS). This process culminates in a cryptographically verifiable, tamper-proof audit trail anchored immutably on the Solana blockchain.",
       ctaText = "Launch the App",
-      ctaHref = "/dashboard",
+      ctaHref = "/login",
       // --- END OF REFINED CONTENT ---
       ...props
     },

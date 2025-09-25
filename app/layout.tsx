@@ -6,6 +6,7 @@ import { appFontsClass } from "@/lib/fonts";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SolanaWalletProvider from "@/components/WalletProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { StorageProvider } from "@/contexts/StorageContext";
 import "./globals.css";
 import ClientRouteClass from "./route-class-client";
 import ServiceWorkerGuard from "@/components/ServiceWorkerGuard";
@@ -47,9 +48,11 @@ export default function RootLayout({
         <ClientRouteClass>
           <ServiceWorkerGuard />
           <ErrorBoundary>
-            <AuthProvider>
-              <SolanaWalletProvider>{children}</SolanaWalletProvider>
-            </AuthProvider>
+            <StorageProvider>
+              <AuthProvider>
+                <SolanaWalletProvider>{children}</SolanaWalletProvider>
+              </AuthProvider>
+            </StorageProvider>
           </ErrorBoundary>
         </ClientRouteClass>
       </body>

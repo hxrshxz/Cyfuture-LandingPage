@@ -24,6 +24,7 @@ export function Login({ onLogin }: LoginProps) {
   const [password, setPassword] = useState("demopassword");
 
   const handleDemoLogin = () => {
+    
     onLogin();
   };
 

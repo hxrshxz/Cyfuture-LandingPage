@@ -22,6 +22,7 @@ import {
   PieChart,
   Target,
   FileText,
+  ChevronDown,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -49,14 +50,12 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
   }, []);
 
   const appNavItems = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/ai", label: "AI Assistant", icon: Bot },
-    { href: "/transactions", label: "Transactions", icon: CreditCard },
-    { href: "/analytics", label: "Analytics", icon: BarChart3 },
-    { href: "/gst", label: "GST", icon: PieChart },
-    { href: "/reports", label: "Reports", icon: Target },
-    { href: "/portfolio", label: "Portfolio", icon: FileText },
-    { href: "/settings", label: "Settings", icon: Settings },
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/ai", label: "AI Assistant" },
+    { href: "/gst", label: "GST" },
+    { href: "/analytics", label: "Analytics" },
+    { href: "/transactions", label: "Transactions" },
+    { href: "/reports", label: "Reports" },
   ];
 
   const handleLogout = () => {
@@ -69,15 +68,15 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
-          ? "bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-b border-blue-500/20 shadow-lg shadow-blue-500/5"
-          : "bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-blue-500/10"
+          ? "bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-black/5 dark:border-white/5 shadow-lg"
+          : "bg-transparent"
       )}
     >
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/dashboard" className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/25">
+          <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center">
               <span className="text-white font-geist font-bold text-sm">
                 CF
               </span>
@@ -88,27 +87,20 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {appNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center space-x-2 font-geist text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg",
-                    "text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400",
-                    "hover:bg-blue-500/10",
-                    isActive &&
-                      "text-blue-600 dark:text-blue-400 bg-blue-500/10 shadow-sm shadow-blue-500/20"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+          <div className="hidden md:flex items-center space-x-8">
+            {appNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "font-geist text-sm font-medium transition-colors duration-200",
+                  "text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-300",
+                  pathname === item.href && "text-blue-600 dark:text-blue-300"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           {/* Desktop Actions */}
@@ -116,7 +108,7 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
             {/* Theme Toggle */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent dark:from-blue-500/10 dark:via-blue-400/10 border border-blue-500/20 hover:scale-105 transition-transform shadow-sm shadow-blue-500/10"
+              className="p-2 rounded-lg bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent dark:from-zinc-300/5 dark:via-gray-400/5 border-[1px] border-black/5 dark:border-white/5 hover:scale-105 transition-transform"
             >
               {theme === "dark" ? (
                 <Sun className="w-4 h-4 text-yellow-500" />
@@ -127,24 +119,26 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
 
             {/* Wallet Button */}
             <div className="wallet-adapter-button-wrapper">
-              <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-blue-500 !rounded-full !font-geist !text-sm !px-4 !py-2 !h-auto !shadow-lg !shadow-blue-500/25 hover:!shadow-blue-500/40 !transition-all" />
+              <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-blue-500 !rounded-lg !font-geist !text-sm !px-4 !py-2 !h-auto !transition-all" />
             </div>
 
-            {/* User Menu */}
-            {isAuthenticated && (
+            {/* Authentication */}
+            {isAuthenticated ? (
+              /* User Menu */
               <div className="relative group">
-                <button className="flex items-center space-x-2 p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent border border-blue-500/20 hover:scale-105 transition-transform shadow-sm shadow-blue-500/10">
-                  <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <button className="flex items-center space-x-2 p-2 rounded-lg bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent dark:from-zinc-300/5 dark:via-gray-400/5 border-[1px] border-black/5 dark:border-white/5 hover:scale-105 transition-transform">
+                  <User className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                   <span className="font-geist text-sm text-gray-600 dark:text-gray-300">
                     {user?.email?.split("@")[0] || user?.name || "User"}
                   </span>
+                  <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                 </button>
 
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-950 rounded-lg border border-blue-500/20 shadow-lg shadow-blue-500/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md rounded-lg border-[1px] border-black/5 dark:border-white/5 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-2">
                     <Link
                       href="/settings"
-                      className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-colors"
                     >
                       <Settings className="w-4 h-4" />
                       <span>Settings</span>
@@ -159,51 +153,52 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
                   </div>
                 </div>
               </div>
+            ) : (
+              /* Login/Signup Buttons */
+              <div className="flex items-center space-x-2">
+                <Link
+                  href="/login"
+                  className="font-geist text-sm font-medium text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-300 transition-colors px-4 py-2"
+                >
+                  Sign In
+                </Link>
+                <AnimatedButton href="/signup">Get Started</AnimatedButton>
+              </div>
             )}
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent border border-blue-500/20 shadow-sm shadow-blue-500/10"
+            className="md:hidden p-2 rounded-lg bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent dark:from-zinc-300/5 dark:via-gray-400/5 border-[1px] border-black/5 dark:border-white/5"
           >
             {isMobileMenuOpen ? (
-              <X className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <X className="w-5 h-5" />
             ) : (
-              <Menu className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <Menu className="w-5 h-5" />
             )}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-2 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md rounded-b-2xl border border-blue-500/20 mt-2 shadow-lg shadow-blue-500/5">
-            {appNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={cn(
-                    "flex items-center space-x-3 font-geist text-sm font-medium transition-colors px-4 py-3 hover:bg-blue-500/10 rounded-lg mx-2",
-                    "text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400",
-                    isActive &&
-                      "text-blue-600 dark:text-blue-400 bg-blue-500/10"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+          <div className="md:hidden py-4 space-y-4 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md rounded-b-2xl border-[1px] border-black/5 dark:border-white/5 mt-2">
+            {appNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block font-geist text-sm font-medium text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-300 transition-colors px-4 py-2"
+              >
+                {item.label}
+              </Link>
+            ))}
 
-            <div className="px-4 pt-4 border-t border-blue-500/20">
-              <div className="flex items-center justify-between mb-4">
+            <div className="px-4 pt-4 border-t border-black/5 dark:border-white/5">
+              <div className="flex items-center space-x-4">
                 <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent border border-blue-500/20 shadow-sm shadow-blue-500/10"
+                  className="p-2 rounded-lg bg-gradient-to-tr from-zinc-300/20 via-gray-400/20 to-transparent dark:from-zinc-300/5 dark:via-gray-400/5 border-[1px] border-black/5 dark:border-white/5"
                 >
                   {theme === "dark" ? (
                     <Sun className="w-4 h-4 text-yellow-500" />
@@ -212,7 +207,7 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
                   )}
                 </button>
 
-                {isAuthenticated && (
+                {isAuthenticated ? (
                   <button
                     onClick={handleLogout}
                     className="flex items-center space-x-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
@@ -220,11 +215,23 @@ export default function AppNavigation({ currentPage }: AppNavProps) {
                     <LogOut className="w-4 h-4" />
                     <span>Sign Out</span>
                   </button>
+                ) : (
+                  <div className="flex space-x-2 flex-1">
+                    <Link
+                      href="/login"
+                      className="flex-1 text-center font-geist text-sm font-medium text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-300 transition-colors px-4 py-2 rounded-lg border border-black/5 dark:border-white/5"
+                    >
+                      Sign In
+                    </Link>
+                    <AnimatedButton href="/signup" className="flex-1">
+                      Get Started
+                    </AnimatedButton>
+                  </div>
                 )}
               </div>
 
-              <div className="wallet-adapter-button-wrapper">
-                <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-blue-500 !rounded-full !font-geist !text-sm !px-4 !py-2 !h-auto !w-full !shadow-lg !shadow-blue-500/25" />
+              <div className="wallet-adapter-button-wrapper mt-4">
+                <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-blue-500 !rounded-lg !font-geist !text-sm !px-4 !py-2 !h-auto !w-full" />
               </div>
             </div>
           </div>

@@ -1,5 +1,7 @@
-import { Badge } from "../landing/components/ui/badge";
-import { Card, CardContent, CardHeader } from "../landing/components/ui/card";
+import { Badge } from "../ui/badge";
+import { Card  } from "../ui/card";
+import { CardContent } from "../ui/card";
+import { CardHeader } from "../ui/card";
 import { AlertTriangle, Lightbulb } from "lucide-react";
 
 const ProactiveInsightCard = () => {
