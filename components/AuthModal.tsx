@@ -147,7 +147,7 @@ export default function AuthModal({
               type="button"
               onClick={fillDemoData}
               variant="outline"
-              className="w-full bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20"
+              className="w-full bg-[color:var(--brand-blue)]/10 border-[color:var(--brand-blue)]/20 text-[color:var(--brand-blue)] hover:bg-[color:var(--brand-blue)]/20"
             >
               🚀 Fill Demo Data (Quick Test)
             </Button>
@@ -174,7 +174,7 @@ export default function AuthModal({
                   onChange={(e) =>
                     setSignupData((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
+                  className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                   required
                 />
               </div>
@@ -202,7 +202,7 @@ export default function AuthModal({
                     }));
                   }
                 }}
-                className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
+                className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                 required
               />
             </div>
@@ -232,7 +232,7 @@ export default function AuthModal({
                       }));
                     }
                   }}
-                  className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20 pr-10"
+                  className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 pr-10"
                   required
                 />
                 <button
@@ -265,7 +265,7 @@ export default function AuthModal({
                       confirmPassword: e.target.value,
                     }))
                   }
-                  className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
+                  className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                   required
                 />
               </div>
@@ -274,7 +274,7 @@ export default function AuthModal({
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium py-3 rounded-xl transition-colors"
+              className="w-full bg-gradient-to-r from-[color:var(--brand-blue)] to-[color:var(--brand-blue)]/80 hover:brightness-110 text-white font-medium py-3 rounded-xl transition-colors"
             >
               {isLoading
                 ? "Please wait..."
@@ -295,7 +295,7 @@ export default function AuthModal({
                   setMode(mode === "login" ? "signup" : "login");
                   setError("");
                 }}
-                className="text-orange-400 hover:text-orange-300 font-medium"
+                className="text-[color:var(--brand-blue)] hover:brightness-110 font-medium"
               >
                 {mode === "login" ? "Sign up" : "Sign in"}
               </button>
