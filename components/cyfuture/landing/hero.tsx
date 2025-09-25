@@ -1,8 +1,8 @@
 "use client";
 
 import { PixelCard } from "./components/ui/pixelcards";
-import { geist } from "../../lib/fonts";
-import { cn } from "../../lib/utils";
+import { geist } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
 import { CloudLightning, MoveRight } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Beam } from "../ui/gridbeam";
@@ -51,7 +51,7 @@ export default function Hero() {
 
   const cards = [
     {
-      title: "V0 Compatible",
+      title: "Compatible",
       description: "Edit and customize visually, instantly.",
       icon: <CloudLightning className="h-full w-full" />,
       variant: "rose",

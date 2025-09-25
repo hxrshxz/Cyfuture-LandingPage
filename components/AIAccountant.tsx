@@ -455,6 +455,17 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
           onFileSelect={handleFakeMapAnalysis}
         />
       </div>
+      
+      {/* Quick Start Chat Button */}
+      <div className="mt-8 text-center">
+        <Button
+          onClick={() => setView("chat")}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-medium"
+        >
+          Start Chat Session
+        </Button>
+      </div>
+      
       <motion.div
         initial="hidden"
         animate="visible"
