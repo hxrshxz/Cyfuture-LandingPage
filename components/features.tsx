@@ -427,7 +427,7 @@ export default function Features() {
                   <div className="w-full max-w-lg">
                     <div className="relative rounded-2xl overflow-hidden">
                       <img
-                        src="/ai-assistant.png"
+                        src="/ai-assitant.png"
                         alt="Smart AI Assistant Interface"
                         className="w-full h-full object-cover rounded-2xl"
                       />
