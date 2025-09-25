@@ -46,13 +46,13 @@ const testimonials = [
   {
     name: "Monica Reeves",
     username: "@monicareeves",
-    body: "Can't believe how polished the v0 generated components look. Clients are impressed every time.",
+    body: "",
     img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
   },
   {
     name: "James Roy",
     username: "@jamesrdev",
-    body: "v0 is a lifesaver when deadlines are tight. Generate a component, tweak, and deploy instantly.",
+    body: "it is a lifesaver when deadlines are tight. Generate a component, tweak, and deploy instantly.",
     img: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face",
   },
 ]

@@ -85,7 +85,7 @@ export default function Features() {
                 style={{ transition: "all 0s ease-in-out" }}
               >
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-2xl leading-none font-semibold tracking-tight">BLOCKCHAIN-SECURED INVOICE TRAILS FOR FRAUD-FREE ITC CLAIMS.</h3>
+                  <h3 className="text-2xl leading-none font-semibold tracking-tight">BLOCKCHAIN-SECURED INVOICE TRAILS</h3>
                   <div className="text-md text-muted-foreground flex flex-col gap-2 text-sm">
                     <p className="max-w-[460px]">
                     We secure invoice hash on blockchain, ensuring tamper-proof records and preventing ITC fraud, enabling transparent and trustworthy GST compliance.
@@ -329,10 +329,10 @@ export default function Features() {
                 style={{ transition: "all 0s ease-in-out" }}
               >
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-2xl leading-none font-semibold tracking-tight">SMART AI ASSISTANT</h3>
+                  <h3 className="text-2xl leading-none font-semibold tracking-tight">AI ACCOUNTANT</h3>
                   <div className="text-md text-muted-foreground flex flex-col gap-2 text-sm">
                     <p className="max-w-[460px]">
-                      Intelligent components that adapt to your needs with built-in animations and interactions.
+                    Instant financial clarity, just by asking.
                     </p>
                   </div>
                 </div>
