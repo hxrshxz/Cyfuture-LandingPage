@@ -34,30 +34,11 @@ export default function TransactionResult({
 }: TransactionResultProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  // Allow a custom public gateway (must NOT end with /ipfs or we normalize below)
-  const gatewayEnv = process.env.NEXT_PUBLIC_IPFS_GATEWAY;
-  const buildGatewayBase = (input?: string) => {
-    const fallback = "https://cloudflare-ipfs.com/ipfs";
-    if (!input) return fallback;
-    let base = input.trim().replace(/\/$/, "");
-    if (!/\/ipfs$/.test(base)) base = `${base}/ipfs`;
-    return base;
-  };
-  const ipfsBase = buildGatewayBase(gatewayEnv);
-  const ipfsUrl = `${ipfsBase}/${ipfsHash}`;
+  // Only ipfs.io gateway per request
+  const ipfsUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
+  const gatewayUrls = [{ name: "IPFS.io", url: ipfsUrl }];
 
-  // Provide three gateway links similar to Solscan: Cloudflare, IPFS.io, dweb.link
-  const ipfsGateways = [
-    { name: "Cloudflare", base: "https://cloudflare-ipfs.com/ipfs" },
-    { name: "IPFS.io", base: "https://ipfs.io/ipfs" },
-    { name: "dweb.link", base: "https://dweb.link/ipfs" },
-  ];
-  const gatewayUrls = ipfsGateways.map((g) => ({
-    name: g.name,
-    url: `${g.base}/${ipfsHash}`,
-  }));
-
-  const cluster = process.env.NEXT_PUBLIC_SOLANA_CLUSTER || "devnet"; // mainnet, devnet, testnet
+  const cluster = process.env.NEXT_PUBLIC_SOLANA_CLUSTER || "devnet";
   const solscanBase = "https://solscan.io/tx";
   const solscanUrl =
     cluster === "mainnet" || cluster === "mainnet-beta"
@@ -76,12 +57,12 @@ export default function TransactionResult({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl bg-slate-900 border-slate-700 shadow-2xl">
+      <Card className="w-full max-w-2xl card-glow border-blue-500/20 shadow-2xl shadow-blue-500/10">
         <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle2 className="w-8 h-8 text-green-400" />
+          <div className="mx-auto w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+            <CheckCircle2 className="w-8 h-8 text-blue-400" />
           </div>
-          <CardTitle className="text-2xl text-white">
+          <CardTitle className="text-2xl blue-glow-text">
             Invoice Successfully Processed!
           </CardTitle>
           <p className="text-slate-400">
@@ -91,9 +72,9 @@ export default function TransactionResult({
 
         <CardContent className="space-y-6">
           {/* Invoice Details */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
-            <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4" />
+          <div className="bg-blue-900/20 border border-blue-500/20 rounded-lg p-4">
+            <h4 className="font-semibold blue-glow-text mb-3 flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-400" />
               Invoice Details
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
@@ -123,9 +104,9 @@ export default function TransactionResult({
           </div>
 
           {/* IPFS Storage Details */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
-            <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
-              <Database className="w-4 h-4" />
+          <div className="bg-blue-900/20 border border-blue-500/20 rounded-lg p-4">
+            <h4 className="font-semibold blue-glow-text mb-3 flex items-center gap-2">
+              <Database className="w-4 h-4 text-blue-400" />
               IPFS Storage
             </h4>
             <div className="space-y-3">
@@ -151,7 +132,9 @@ export default function TransactionResult({
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400 text-sm">Public IPFS URLs:</span>
+                  <span className="text-slate-400 text-sm">
+                    Public IPFS URLs:
+                  </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {gatewayUrls.map(({ name, url }) => (
@@ -218,7 +201,7 @@ export default function TransactionResult({
               <div className="flex items-center gap-2">
                 <Button
                   onClick={() => window.open(solscanUrl, "_blank")}
-                  className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex-1"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   View on Solscan
@@ -252,10 +235,7 @@ export default function TransactionResult({
               <Database className="w-3 h-3 mr-1" />
               IPFS Stored
             </Badge>
-            <Badge
-              variant="secondary"
-              className="bg-purple-500/20 text-purple-300"
-            >
+            <Badge variant="secondary" className="bg-blue-500/20 text-blue-300">
               <FileText className="w-3 h-3 mr-1" />
               Data Extracted
             </Badge>

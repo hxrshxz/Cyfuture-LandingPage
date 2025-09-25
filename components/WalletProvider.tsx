@@ -51,8 +51,10 @@ const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
+      <WalletProvider wallets={wallets} autoConnect={true}>
+        <WalletModalProvider>
+          <div className="wallet-adapter-modal-wrapper">{children}</div>
+        </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
