@@ -1,364 +1,235 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { AnimatedButton } from "@/components/ui/animated-button";
+import { GradientText } from "@/components/ui/gradient-text";
+import { cn } from "@/lib/utils";
 import {
-  Home,
-  BarChart3,
-  Bot,
-  TrendingUp,
-  Wallet,
-  Settings,
-  FileText,
-  PieChart,
-  CreditCard,
-  Target,
-  Bell,
-  Search,
   Menu,
   X,
-  LogOut,
+  Sun,
+  Moon,
+  LayoutDashboard,
+  Bot,
+  CreditCard,
+  BarChart3,
+  Settings,
   User,
+  LogOut,
+  PieChart,
+  Target,
+  FileText,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "next-themes";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
-interface NavItem {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  href: string;
-  description: string;
-  badge?: string;
+interface AppNavProps {
+  currentPage?: string;
 }
 
-const navigationItems: NavItem[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: Home,
-    href: "/dashboard",
-    description: "Invoice processing overview",
-  },
-  {
-    id: "ai-assistant",
-    label: "AI Assistant",
-    icon: Bot,
-    href: "/ai",
-    description: "Smart invoice processing",
-    badge: "AI",
-  },
-  {
-    id: "processing",
-    label: "Processing Queue",
-    icon: BarChart3,
-    href: "/processing",
-    description: "Invoice processing status",
-  },
-  {
-    id: "gst-reconciliation",
-    label: "GST Reconciliation",
-    icon: PieChart,
-    href: "/gst",
-    description: "GST compliance and matching",
-  },
-  {
-    id: "blockchain-records",
-    label: "Blockchain Records",
-    icon: CreditCard,
-    href: "/records",
-    description: "Secured invoice records",
-  },
-  {
-    id: "reports",
-    label: "Reports",
-    icon: Target,
-    href: "/reports",
-    description: "GST and compliance reports",
-  },
-  {
-    id: "ai-command",
-    label: "AI Command Center",
-    icon: FileText,
-    href: "/ai-command",
-    description: "Chat with your invoice data",
-  },
-];
-
-export default function AppNavigation() {
+export default function AppNavigation({ currentPage }: AppNavProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const { connected, publicKey } = useWallet();
   const pathname = usePathname();
-  const { user, logout } = useAuth();
 
-  const handleNavigation = (href: string) => {
-    router.push(href);
-    setIsMobileMenuOpen(false);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const appNavItems = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/ai", label: "AI Assistant", icon: Bot },
+    { href: "/transactions", label: "Transactions", icon: CreditCard },
+    { href: "/analytics", label: "Analytics", icon: BarChart3 },
+    { href: "/gst", label: "GST", icon: PieChart },
+    { href: "/reports", label: "Reports", icon: Target },
+    { href: "/portfolio", label: "Portfolio", icon: FileText },
+    { href: "/settings", label: "Settings", icon: Settings },
+  ];
 
   const handleLogout = () => {
     logout();
-    router.push("/");
+    // Redirect will be handled by AuthContext
   };
 
-  const filteredItems = navigationItems.filter(
-    (item) =>
-      item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside
-        className="hidden lg:flex lg:w-80 lg:flex-col lg:fixed lg:inset-y-0 border-r gradient-border backdrop-blur-md"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
-          borderColor: "rgba(255,255,255,0.08)",
-        }}
-      >
-        <div className="flex flex-col flex-1 min-h-0">
-          {/* Header */}
-          <div
-            className="flex items-center justify-between h-16 px-6 border-b"
-            style={{ borderColor: "rgba(255,255,255,0.08)" }}
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center btn-metallic shine">
-                <svg
-                  className="w-4 h-4 text-black"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
-              </div>
-              <h1 className="text-lg font-semibold text-foreground">
-                CyFuture AI
-              </h1>
+    <nav
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        isScrolled
+          ? "bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-b border-blue-500/20 shadow-lg shadow-blue-500/5"
+          : "bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-blue-500/10"
+      )}
+    >
+      <div className="max-w-screen-xl mx-auto px-4 md:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/dashboard" className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/25">
+              <span className="text-white font-geist font-bold text-sm">
+                CF
+              </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Bell className="w-4 h-4" />
-            </Button>
-          </div>
+            <span className="font-geist font-bold text-xl">
+              <GradientText variant="primary">CyFuture</GradientText>
+            </span>
+          </Link>
 
-          {/* Search */}
-          <div className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search sections..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg text-foreground placeholder-muted-foreground outline-none focus:ring-2"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Navigation Items */}
-          <nav className="flex-1 px-4 pb-4 space-y-2">
-            {filteredItems.map((item) => {
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            {appNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
-
               return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavigation(item.href)}
-                  className={`nav-item w-full flex items-center justify-between px-4 py-3 text-left rounded-lg transition-all duration-200 group ${
-                    isActive
-                      ? "bg-white/5 text-foreground border border-white/15"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <Icon
-                      className={`w-5 h-5 ${
-                        isActive
-                          ? "text-foreground"
-                          : "text-muted-foreground group-hover:text-foreground"
-                      }`}
-                    />
-                    <div>
-                      <div className="font-medium">{item.label}</div>
-                      <div className="text-xs text-muted-foreground group-hover:text-foreground/80">
-                        {item.description}
-                      </div>
-                    </div>
-                  </div>
-                  {item.badge && (
-                    <Badge variant="secondary" className="bg-white/10 text-foreground border-white/15">
-                      {item.badge}
-                    </Badge>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center space-x-2 font-geist text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg",
+                    "text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400",
+                    "hover:bg-blue-500/10",
+                    isActive &&
+                      "text-blue-600 dark:text-blue-400 bg-blue-500/10 shadow-sm shadow-blue-500/20"
                   )}
-                </button>
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </Link>
               );
             })}
-          </nav>
-
-          {/* User Profile */}
-          <div className="p-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center btn-metallic">
-                  <User className="w-4 h-4 text-black" />
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-foreground">
-                    {user?.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {user?.email}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleNavigation("/settings")}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Settings className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
           </div>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent dark:from-blue-500/10 dark:via-blue-400/10 border border-blue-500/20 hover:scale-105 transition-transform shadow-sm shadow-blue-500/10"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-yellow-500" />
+              ) : (
+                <Moon className="w-4 h-4 text-blue-600" />
+              )}
+            </button>
+
+            {/* Wallet Button */}
+            <div className="wallet-adapter-button-wrapper">
+              <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-blue-500 !rounded-full !font-geist !text-sm !px-4 !py-2 !h-auto !shadow-lg !shadow-blue-500/25 hover:!shadow-blue-500/40 !transition-all" />
+            </div>
+
+            {/* User Menu */}
+            {isAuthenticated && (
+              <div className="relative group">
+                <button className="flex items-center space-x-2 p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent border border-blue-500/20 hover:scale-105 transition-transform shadow-sm shadow-blue-500/10">
+                  <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span className="font-geist text-sm text-gray-600 dark:text-gray-300">
+                    {user?.email?.split("@")[0] || user?.name || "User"}
+                  </span>
+                </button>
+
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-950 rounded-lg border border-blue-500/20 shadow-lg shadow-blue-500/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="p-2">
+                    <Link
+                      href="/settings"
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                    >
+                      <Settings className="w-4 h-4" />
+                      <span>Settings</span>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent border border-blue-500/20 shadow-sm shadow-blue-500/10"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            ) : (
+              <Menu className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            )}
+          </button>
         </div>
-      </aside>
-
-      {/* Mobile Navigation */}
-      <div className="lg:hidden">
-        {/* Mobile Header */}
-        <header
-          className="backdrop-blur-md border-b px-4 py-3 gradient-border"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
-            borderColor: "rgba(255,255,255,0.08)",
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center btn-metallic">
-                <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
-              </div>
-              <h1 className="text-lg font-semibold text-foreground">
-                CyFuture AI
-              </h1>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Bell className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </Button>
-            </div>
-          </div>
-        </header>
 
         {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden backdrop-blur-md border-b gradient-border"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
-            >
-              <div className="px-4 py-4 space-y-2 max-h-[70vh] overflow-y-auto">
-                {filteredItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = pathname === item.href;
+        {isMobileMenuOpen && (
+          <div className="md:hidden py-4 space-y-2 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md rounded-b-2xl border border-blue-500/20 mt-2 shadow-lg shadow-blue-500/5">
+            {appNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center space-x-3 font-geist text-sm font-medium transition-colors px-4 py-3 hover:bg-blue-500/10 rounded-lg mx-2",
+                    "text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400",
+                    isActive &&
+                      "text-blue-600 dark:text-blue-400 bg-blue-500/10"
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
 
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavigation(item.href)}
-                      className={`nav-item w-full flex items-center justify-between px-4 py-3 text-left rounded-lg transition-all duration-200 ${
-                        isActive
-                          ? "bg-white/5 text-foreground border border-white/15"
-                          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <Icon className={`w-5 h-5 ${isActive ? "text-foreground" : "text-muted-foreground"}`} />
-                        <div>
-                          <div className="font-medium">{item.label}</div>
-                          <div className="text-xs text-muted-foreground">{item.description}</div>
-                        </div>
-                      </div>
-                      {item.badge && (
-                        <Badge variant="secondary" className="bg-white/10 text-foreground border-white/15">
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </button>
-                  );
-                })}
+            <div className="px-4 pt-4 border-t border-blue-500/20">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="p-2 rounded-lg bg-gradient-to-tr from-blue-500/20 via-blue-400/20 to-transparent border border-blue-500/20 shadow-sm shadow-blue-500/10"
+                >
+                  {theme === "dark" ? (
+                    <Sun className="w-4 h-4 text-yellow-500" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-blue-600" />
+                  )}
+                </button>
 
-                {/* Mobile User Section */}
-                <div className="pt-4 mt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-                  <div className="flex items-center justify-between px-4 py-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center btn-metallic">
-                        <User className="w-4 h-4 text-black" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-foreground">{user?.name}</div>
-                        <div className="text-xs text-muted-foreground">{user?.email}</div>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
-                      <LogOut className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
+                {isAuthenticated && (
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+              <div className="wallet-adapter-button-wrapper">
+                <WalletMultiButton className="!bg-gradient-to-r !from-blue-600 !to-blue-500 !rounded-full !font-geist !text-sm !px-4 !py-2 !h-auto !w-full !shadow-lg !shadow-blue-500/25" />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </nav>
   );
 }

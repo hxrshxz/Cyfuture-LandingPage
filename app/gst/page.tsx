@@ -2,6 +2,7 @@
 
 import { ProtectedRoute } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
+import AppSection from "@/components/AppSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -83,25 +84,19 @@ export default function GSTReconciliationPage() {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">
-                GST Reconciliation Center
-              </h1>
-              <p className="text-slate-400 mt-2">
-                Three-step process for monthly GST compliance
-              </p>
-            </div>
-            <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+        <AppSection
+          title="GST Reconciliation Center"
+          subtitle="Three-step process for monthly GST compliance"
+          actions={
+            <Button className="btn-metallic">
               <Download className="w-4 h-4 mr-2" />
               Export Report
             </Button>
-          </div>
-
+          }
+        >
           {/* Process Steps */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <Badge
@@ -117,7 +112,7 @@ export default function GSTReconciliationPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-400 text-sm mb-4">
+                <p className="text-gray-400 text-sm mb-4">
                   Automatically compiled from blockchain-secured invoices
                 </p>
                 <div className="font-semibold text-green-400">
@@ -127,7 +122,7 @@ export default function GSTReconciliationPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <Badge
@@ -141,12 +136,12 @@ export default function GSTReconciliationPage() {
                 <CardTitle className="text-white">Upload GSTR-2B</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-400 text-sm mb-4">
+                <p className="text-gray-400 text-sm mb-4">
                   Upload JSON file from GST portal for comparison
                 </p>
                 <Button
                   variant="outline"
-                  className="w-full border-dashed border-slate-600 text-orange-400 hover:bg-slate-700"
+                  className="w-full btn-outline-metallic border-dashed"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Upload GSTR-2B JSON
@@ -154,7 +149,7 @@ export default function GSTReconciliationPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <Badge
@@ -168,7 +163,7 @@ export default function GSTReconciliationPage() {
                 <CardTitle className="text-white">AI Reconciliation</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-400 text-sm mb-4">
+                <p className="text-gray-400 text-sm mb-4">
                   Automated comparison and mismatch detection
                 </p>
                 <div className="font-semibold text-blue-400">
@@ -180,7 +175,7 @@ export default function GSTReconciliationPage() {
           </div>
 
           {/* GST Summary */}
-          <Card className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30">
+          <Card className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/30 mt-6">
             <CardHeader>
               <CardTitle className="text-white">
                 GST Position Summary - August 2024
@@ -189,8 +184,8 @@ export default function GSTReconciliationPage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <div className="bg-slate-800/50 p-4 rounded-lg">
-                    <p className="text-sm text-slate-400">
+                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800/60">
+                    <p className="text-sm text-gray-400">
                       Total Purchase Amount
                     </p>
                     <p className="text-2xl font-bold text-white">
@@ -198,39 +193,39 @@ export default function GSTReconciliationPage() {
                       {gstSummary.total_purchase_amount.toLocaleString("en-IN")}
                     </p>
                   </div>
-                  <div className="bg-slate-800/50 p-4 rounded-lg">
-                    <p className="text-sm text-slate-400">
+                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800/60">
+                    <p className="text-sm text-gray-400">
                       Total GST (Your Records)
                     </p>
                     <p className="text-2xl font-bold text-cyan-400">
                       ₹{gstSummary.total_gst_amount.toLocaleString("en-IN")}
                     </p>
                   </div>
-                  <div className="bg-slate-800/50 p-4 rounded-lg">
-                    <p className="text-sm text-slate-400">GST Portal Amount</p>
+                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800/60">
+                    <p className="text-sm text-gray-400">GST Portal Amount</p>
                     <p className="text-2xl font-bold text-orange-400">
                       ₹{gstSummary.gst_portal_amount.toLocaleString("en-IN")}
                     </p>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="bg-slate-800/50 p-4 rounded-lg border-l-4 border-red-500">
+                  <div className="bg-black/40 p-4 rounded-lg border-l-4 border-red-500 border border-gray-800/60">
                     <p className="text-sm text-red-400">
                       Difference (Your Records - Portal)
                     </p>
                     <p className="text-3xl font-bold text-red-400">
                       ₹{Math.abs(gstSummary.difference).toLocaleString("en-IN")}
                     </p>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-gray-400 mt-1">
                       Portal amount is higher
                     </p>
                   </div>
-                  <div className="bg-slate-800/50 p-4 rounded-lg border-l-4 border-green-500">
+                  <div className="bg-black/40 p-4 rounded-lg border-l-4 border-green-500 border border-gray-800/60">
                     <p className="text-sm text-green-400">Available ITC</p>
                     <p className="text-3xl font-bold text-green-400">
                       ₹{gstSummary.itc_available.toLocaleString("en-IN")}
                     </p>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-gray-400 mt-1">
                       After reconciliation
                     </p>
                   </div>
@@ -239,8 +234,40 @@ export default function GSTReconciliationPage() {
             </CardContent>
           </Card>
 
+          {/* ITC Fraud Visualization (Spline) */}
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
+            <CardHeader>
+              <CardTitle className="text-white">
+                How blockchain flags ITC fraud
+              </CardTitle>
+              <p className="text-gray-400 text-sm">
+                If a vendor files wrong data or vanishes after issuing an
+                invoice, our on-chain hash makes the discrepancy obvious. The
+                system highlights risky invoices so you can dispute or block in
+                time.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="relative w-full overflow-hidden rounded-xl border border-gray-800/60 bg-black/30">
+                <div className="aspect-video">
+                  <iframe
+                    src="https://my.spline.design/perisoft3dphonesoftwaredevelopment-zfPSkBHUsRUsnn33qBYfOW1W/"
+                    frameBorder="0"
+                    width="100%"
+                    height="100%"
+                    className="h-full w-full"
+                    title="ITC Fraud Visualization"
+                    allow="xr-spatial-tracking; accelerometer; magnetometer; gyroscope;"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Invoice Reconciliation Table */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white">
                 Invoice Reconciliation Details
@@ -249,44 +276,44 @@ export default function GSTReconciliationPage() {
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-900/50">
+                  <thead className="bg-black/40">
                     <tr>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         Invoice #
                       </th>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         Vendor
                       </th>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         Amount
                       </th>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         GST
                       </th>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         Status
                       </th>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         Blockchain
                       </th>
-                      <th className="px-4 py-3 text-left font-semibold text-slate-400">
+                      <th className="px-4 py-3 text-left font-semibold text-gray-400">
                         Action
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-700">
+                  <tbody className="divide-y divide-gray-800/60">
                     {purchaseInvoices.map((invoice) => (
-                      <tr key={invoice.id} className="hover:bg-slate-700/50">
+                      <tr key={invoice.id} className="hover:bg-gray-800/40">
                         <td className="px-4 py-3 font-medium text-white">
                           {invoice.id}
                         </td>
-                        <td className="px-4 py-3 text-slate-300">
+                        <td className="px-4 py-3 text-gray-300">
                           {invoice.vendor}
                         </td>
-                        <td className="px-4 py-3 text-slate-300">
+                        <td className="px-4 py-3 text-gray-300">
                           ₹{invoice.amount.toLocaleString("en-IN")}
                         </td>
-                        <td className="px-4 py-3 text-slate-300">
+                        <td className="px-4 py-3 text-gray-300">
                           ₹{invoice.gst.toLocaleString("en-IN")}
                           {invoice.gst_portal_amount && (
                             <div className="text-xs text-orange-400">
@@ -315,7 +342,7 @@ export default function GSTReconciliationPage() {
                                 invoice.blockchain_hash
                               )
                             }
-                            className="font-mono text-xs text-slate-400 hover:text-white bg-slate-900 px-2 py-1 rounded"
+                            className="font-mono text-xs text-gray-400 hover:text-white bg-black/60 px-2 py-1 rounded"
                             title="Click to copy blockchain hash"
                           >
                             {invoice.blockchain_hash.slice(0, 8)}...
@@ -355,7 +382,7 @@ export default function GSTReconciliationPage() {
           </Card>
 
           {/* Action Items */}
-          <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/30">
+          <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/30 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5" />
@@ -363,11 +390,11 @@ export default function GSTReconciliationPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-slate-800/50 rounded-lg border-l-4 border-orange-500">
+              <div className="p-4 bg-black/40 rounded-lg border-l-4 border-orange-500 border border-gray-800/60">
                 <h4 className="font-semibold text-orange-300 mb-2">
                   Value Mismatch - Invoice SW-789
                 </h4>
-                <p className="text-slate-300 text-sm">
+                <p className="text-gray-300 text-sm">
                   GST amount differs by ₹200. Your records show ₹4,500 but
                   portal shows ₹4,700.
                 </p>
@@ -378,11 +405,11 @@ export default function GSTReconciliationPage() {
                   Review & Resolve
                 </Button>
               </div>
-              <div className="p-4 bg-slate-800/50 rounded-lg border-l-4 border-blue-500">
+              <div className="p-4 bg-black/40 rounded-lg border-l-4 border-blue-500 border border-gray-800/60">
                 <h4 className="font-semibold text-blue-300 mb-2">
                   Missing in GSTR-2B - Invoice OD-45A
                 </h4>
-                <p className="text-slate-300 text-sm">
+                <p className="text-gray-300 text-sm">
                   Invoice from Office Depot is in your records but not found in
                   portal data.
                 </p>
@@ -395,7 +422,7 @@ export default function GSTReconciliationPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </AppSection>
       </AppLayout>
     </ProtectedRoute>
   );

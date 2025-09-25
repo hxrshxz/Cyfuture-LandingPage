@@ -2,6 +2,7 @@
 
 import { ProtectedRoute } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
+import AppSection from "@/components/AppSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -106,94 +107,87 @@ export default function ReportsPage() {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Reports</h1>
-              <p className="text-slate-400 mt-2">
-                Generate and download detailed financial reports
-              </p>
-            </div>
+        <AppSection
+          title="Reports"
+          subtitle="Generate and download detailed financial reports"
+          actions={
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
-              >
+              <Button variant="outline" className="btn-outline-metallic">
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
               </Button>
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+              <Button className="btn-metallic">
                 <FileText className="w-4 h-4 mr-2" />
                 Generate Custom Report
               </Button>
             </div>
-          </div>
-
+          }
+        >
           {/* Report Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-300">
+                <CardTitle className="text-sm font-medium text-gray-300">
                   Total Reports
                 </CardTitle>
-                <FileText className="h-4 w-4 text-cyan-400" />
+                <FileText className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">24</div>
-                <p className="text-slate-400 text-sm">Generated this year</p>
+                <p className="text-gray-400 text-sm">Generated this year</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-300">
+                <CardTitle className="text-sm font-medium text-gray-300">
                   Downloads
                 </CardTitle>
-                <Download className="h-4 w-4 text-green-400" />
+                <Download className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">156</div>
-                <p className="text-green-400 text-sm">+23% this month</p>
+                <p className="text-gray-400 text-sm">+23% this month</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-300">
+                <CardTitle className="text-sm font-medium text-gray-300">
                   Storage Used
                 </CardTitle>
                 <Badge
                   variant="secondary"
-                  className="bg-purple-500/20 text-purple-300"
+                  className="bg-gray-700/50 text-gray-300"
                 >
                   68%
                 </Badge>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">34.2 MB</div>
-                <p className="text-slate-400 text-sm">of 50 MB limit</p>
+                <p className="text-gray-400 text-sm">of 50 MB limit</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="bg-black/40 border-gray-800/60">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-300">
+                <CardTitle className="text-sm font-medium text-gray-300">
                   Last Generated
                 </CardTitle>
-                <Calendar className="h-4 w-4 text-blue-400" />
+                <Calendar className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">Today</div>
-                <p className="text-slate-400 text-sm">Monthly summary</p>
+                <p className="text-gray-400 text-sm">Monthly summary</p>
               </CardContent>
             </Card>
           </div>
 
           {/* Quick Reports */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white">Quick Reports</CardTitle>
-              <p className="text-slate-400">
+              <p className="text-gray-400">
                 Generate instant reports for immediate insights
               </p>
             </CardHeader>
@@ -202,7 +196,7 @@ export default function ReportsPage() {
                 {quickReports.map((report, index) => (
                   <div
                     key={index}
-                    className="p-4 bg-slate-900/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer group"
+                    className="p-4 bg-black/40 rounded-lg border border-gray-800/60 hover:border-gray-700 transition-colors cursor-pointer group"
                   >
                     <div
                       className={`w-12 h-12 rounded-lg bg-gradient-to-r ${report.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}
@@ -212,13 +206,10 @@ export default function ReportsPage() {
                     <h4 className="font-semibold text-white mb-2">
                       {report.title}
                     </h4>
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-gray-400 text-sm">
                       {report.description}
                     </p>
-                    <Button
-                      size="sm"
-                      className="w-full mt-3 bg-slate-700 hover:bg-slate-600 text-white"
-                    >
+                    <Button size="sm" className="w-full mt-3 btn-metallic">
                       Generate Now
                     </Button>
                   </div>
@@ -228,7 +219,7 @@ export default function ReportsPage() {
           </Card>
 
           {/* Generated Reports */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white">Generated Reports</CardTitle>
             </CardHeader>
@@ -237,10 +228,10 @@ export default function ReportsPage() {
                 {reports.map((report) => (
                   <div
                     key={report.id}
-                    className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors"
+                    className="flex items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800/60 hover:border-gray-700 transition-colors"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-gray-600 to-gray-400 rounded-lg flex items-center justify-center">
                         <FileText className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -256,15 +247,15 @@ export default function ReportsPage() {
                           </Badge>
                           <Badge
                             variant="outline"
-                            className="border-slate-600 text-slate-300"
+                            className="border-gray-700 text-gray-300"
                           >
                             {report.type}
                           </Badge>
                         </div>
-                        <p className="text-slate-400 text-sm mb-1">
+                        <p className="text-gray-400 text-sm mb-1">
                           {report.description}
                         </p>
-                        <div className="flex items-center gap-4 text-xs text-slate-500">
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
                           <span>Period: {report.period}</span>
                           <span>
                             Generated:{" "}
@@ -281,7 +272,7 @@ export default function ReportsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                        className="btn-outline-metallic"
                         disabled={report.status !== "ready"}
                       >
                         <Share className="w-4 h-4 mr-2" />
@@ -289,7 +280,7 @@ export default function ReportsPage() {
                       </Button>
                       <Button
                         size="sm"
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                        className="btn-metallic"
                         disabled={report.status !== "ready"}
                       >
                         <Download className="w-4 h-4 mr-2" />
@@ -303,7 +294,7 @@ export default function ReportsPage() {
           </Card>
 
           {/* Custom Report Builder */}
-          <Card className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/30">
+          <Card className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/30 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Badge
@@ -316,44 +307,42 @@ export default function ReportsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-slate-300">
+              <p className="text-gray-300">
                 Create personalized reports with specific date ranges,
                 categories, and metrics tailored to your needs.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-slate-800/50 rounded-lg">
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-800/60">
                   <h4 className="font-semibold text-white mb-2">
                     Date Range Selection
                   </h4>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-gray-400 text-sm">
                     Choose custom periods from daily to yearly reports
                   </p>
                 </div>
-                <div className="p-4 bg-slate-800/50 rounded-lg">
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-800/60">
                   <h4 className="font-semibold text-white mb-2">
                     Category Filtering
                   </h4>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-gray-400 text-sm">
                     Include specific expense categories or investment types
                   </p>
                 </div>
-                <div className="p-4 bg-slate-800/50 rounded-lg">
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-800/60">
                   <h4 className="font-semibold text-white mb-2">
                     Export Formats
                   </h4>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-gray-400 text-sm">
                     PDF, Excel, CSV, and interactive web reports
                   </p>
                 </div>
               </div>
-              <Button className="bg-indigo-500 hover:bg-indigo-600 text-white">
-                Launch Report Builder
-              </Button>
+              <Button className="btn-metallic">Launch Report Builder</Button>
             </CardContent>
           </Card>
 
           {/* AI Report Insights */}
-          <Card className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 border-orange-500/30">
+          <Card className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 border-orange-500/30 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Badge
@@ -366,28 +355,28 @@ export default function ReportsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-slate-800/50 rounded-lg">
+              <div className="p-4 bg-black/40 rounded-lg border border-gray-800/60">
                 <h4 className="font-semibold text-white mb-2">
                   Trending Patterns
                 </h4>
-                <p className="text-slate-300">
+                <p className="text-gray-300">
                   Your monthly reports show consistent savings growth of 15%
                   over the last 6 months. Consider generating quarterly
                   investment reviews.
                 </p>
               </div>
-              <div className="p-4 bg-slate-800/50 rounded-lg">
+              <div className="p-4 bg-black/40 rounded-lg border border-gray-800/60">
                 <h4 className="font-semibold text-white mb-2">
                   Report Recommendations
                 </h4>
-                <p className="text-slate-300">
+                <p className="text-gray-300">
                   Based on your transaction patterns, we recommend generating
                   weekly cash flow reports during high-spending periods.
                 </p>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </AppSection>
       </AppLayout>
     </ProtectedRoute>
   );

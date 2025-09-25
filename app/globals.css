@@ -10,19 +10,19 @@
   --card-foreground: #121113; /* Updated card foreground to match */
   --popover: oklch(1 0 0);
   --popover-foreground: #121113; /* Updated popover foreground to match */
-  --primary: oklch(0.6716 0.1368 48.513);
+  --primary: oklch(0.6 0.2 240); /* Blue primary */
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.536 0.0398 196.028);
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.967 0.0029 264.5419);
-  --muted-foreground: oklch(0.551 0.0234 264.3637);
-  --accent: oklch(0.9491 0 0);
-  --accent-foreground: #121113; /* Updated accent foreground to match */
+  --secondary: oklch(0.7 0.15 220); /* Light blue secondary */
+  --secondary-foreground: oklch(0.1 0 0);
+  --muted: oklch(0.967 0.0029 240);
+  --muted-foreground: oklch(0.551 0.0234 240);
+  --accent: oklch(0.65 0.18 210); /* Blue accent */
+  --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.6368 0.2078 25.3313);
   --destructive-foreground: oklch(0.9851 0 0);
-  --border: oklch(0.9276 0.0058 264.5313);
-  --input: oklch(0.9276 0.0058 264.5313);
-  --ring: oklch(0.6716 0.1368 48.513);
+  --border: oklch(0.9276 0.0058 240);
+  --input: oklch(0.9276 0.0058 240);
+  --ring: oklch(0.6 0.2 240); /* Blue ring */
   --chart-1: oklch(0.594 0.0443 196.0233);
   --chart-2: oklch(0.7214 0.1337 49.9802);
   --chart-3: oklch(0.8721 0.0864 68.5474);
@@ -36,9 +36,12 @@
   --sidebar-accent-foreground: #121113; /* Updated sidebar accent foreground to match */
   --sidebar-border: oklch(0.9276 0.0058 264.5313);
   --sidebar-ring: oklch(0.6716 0.1368 48.513);
-  --font-sans: Geist Mono, ui-monospace, monospace;
-  --font-serif: serif;
-  --font-mono: JetBrains Mono, monospace;
+  /* Base fallbacks; overridden by theme classes */
+  --font-sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-ui: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --radius: 0.75rem;
   --shadow-2xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
@@ -59,27 +62,122 @@
   --gap: 1rem; /* Added gap for marquee animation */
 }
 
+/* Prevent accidental horizontal scroll from wide effects */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  max-width: 100vw;
+  overflow-x: hidden; /* broader support than clip */
+  overflow-x: clip; /* modern browsers */
+  /* Removed scrollbar-gutter to fix weird sidebars */
+}
+
+/* Ensure no weird scrollbars or sidebars appear */
+* {
+  box-sizing: border-box;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Blue glowing effects for app */
+.app-glow {
+  position: relative;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(59, 130, 246, 0.1) 0%,
+    transparent 50%
+  );
+}
+
+.card-glow {
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.blue-accent {
+  color: rgb(59, 130, 246);
+}
+
+.blue-gradient {
+  background: linear-gradient(135deg, rgb(59, 130, 246), rgb(147, 197, 253));
+}
+
+.blue-glow-text {
+  color: rgb(59, 130, 246);
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Ambient blue background for app pages */
+.app-ambient {
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(59, 130, 246, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(147, 197, 253, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 60%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 50%
+    );
+}
+
 .dark {
-  /* Existing dark theme (landing + legacy) */
-  --background: oklch(0.1797 0.0043 308.1928);
-  --foreground: oklch(0.8109 0 0);
-  --card: oklch(0.1822 0 0);
-  --card-foreground: oklch(0.8109 0 0);
-  --popover: oklch(0.1797 0.0043 308.1928);
-  --popover-foreground: oklch(0.8109 0 0);
-  --primary: oklch(0.7214 0.1337 49.9802);
-  --primary-foreground: oklch(0.1797 0.0043 308.1928);
-  --secondary: oklch(0.594 0.0443 196.0233);
-  --secondary-foreground: oklch(0.1797 0.0043 308.1928);
-  --muted: oklch(0.252 0 0);
-  --muted-foreground: oklch(0.6268 0 0);
-  --accent: oklch(0.3211 0 0);
-  --accent-foreground: oklch(0.8109 0 0);
-  --destructive: oklch(0.594 0.0443 196.0233);
-  --destructive-foreground: oklch(0.1797 0.0043 308.1928);
-  --border: oklch(0.252 0 0);
-  --input: oklch(0.252 0 0);
-  --ring: oklch(0.7214 0.1337 49.9802);
+  /* Blue-themed dark mode */
+  --background: oklch(0.08 0.02 240);
+  --foreground: oklch(0.9 0.01 240);
+  --card: oklch(0.12 0.02 240);
+  --card-foreground: oklch(0.9 0.01 240);
+  --popover: oklch(0.08 0.02 240);
+  --popover-foreground: oklch(0.9 0.01 240);
+  --primary: oklch(0.65 0.25 240); /* Bright blue */
+  --primary-foreground: oklch(0.08 0.02 240);
+  --secondary: oklch(0.5 0.15 220); /* Light blue */
+  --secondary-foreground: oklch(0.9 0.01 240);
+  --muted: oklch(0.2 0.02 240);
+  --muted-foreground: oklch(0.6 0.05 240);
+  --accent: oklch(0.4 0.1 210); /* Darker blue accent */
+  --accent-foreground: oklch(0.9 0.01 240);
+  --destructive: oklch(0.6 0.2 0); /* Keep red for destructive */
+  --destructive-foreground: oklch(0.9 0.01 240);
+  --border: oklch(0.25 0.02 240);
+  --input: oklch(0.25 0.02 240);
+  --ring: oklch(0.65 0.25 240); /* Bright blue ring */
   --chart-1: oklch(0.594 0.0443 196.0233);
   --chart-2: oklch(0.7214 0.1337 49.9802);
   --chart-3: oklch(0.8721 0.0864 68.5474);
@@ -93,9 +191,10 @@
   --sidebar-accent-foreground: oklch(0.8109 0 0);
   --sidebar-border: oklch(0.252 0 0);
   --sidebar-ring: oklch(0.7214 0.1337 49.9802);
-  --font-sans: Geist Mono, ui-monospace, monospace;
-  --font-serif: serif;
-  --font-mono: JetBrains Mono, monospace;
+  /* Landing keeps Geist stack defined in layout via inline <style> */
+  --font-sans: var(--font-geist-sans, system-ui);
+  --font-ui: var(--font-geist-sans, system-ui);
+  --font-mono: var(--font-geist-mono, ui-monospace);
   --radius: 0.75rem;
   --shadow-2xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
@@ -112,96 +211,155 @@
   --shadow-2xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.13);
 }
 
+.dark body {
+  font-family: var(--font-geist-sans, system-ui), system-ui, sans-serif;
+}
+
+.dark code,
+.dark pre,
+.dark kbd,
+.dark samp {
+  font-family: var(--font-geist-mono, ui-monospace), ui-monospace,
+    SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+}
+
 /* Monochrome application theme (black & white minimal) */
 .mono-dark {
-  /* Base monochrome palette */
-  --background: #0b0b0b; /* near black */
-  --foreground: #f5f5f5; /* near white */
-  --card: #0e0e10;
-  --card-foreground: #f5f5f5;
-  --popover: #0e0e10;
-  --popover-foreground: #f5f5f5;
-  --primary: #ffffff; /* accents are white with metallic sheen */
-  --primary-foreground: #0b0b0b;
-  --secondary: #111113;
-  --secondary-foreground: #eaeaea;
-  --muted: #141416;
-  --muted-foreground: #b8b8b8;
-  --accent: #101012;
-  --accent-foreground: #efefef;
-  --destructive: #242426;
-  --destructive-foreground: #ffffff;
-  --border: #2a2a2e;
-  --input: #2a2a2e;
-  --ring: #e6e6e6;
-  --sidebar: #0d0d0f;
-  --sidebar-foreground: #f5f5f5;
+  /* App uses new families */
+  /* map to CDN-provided family names */
+  --font-sans: "General Sans Variable", "General Sans", system-ui, sans-serif;
+  --font-ui: "Supreme Variable", Supreme, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono, ui-monospace);
+  --font-heading: "Satoshi Variable", Satoshi, "General Sans Variable",
+    system-ui, sans-serif;
+  /* Base: black/white + subtle blue accents (90/30/10) */
+  --background: #0a0b0e; /* deep black */
+  --foreground: #f3f6fb; /* soft white with blue tint */
+  --card: #0d0f14;
+  --card-foreground: #eef3fa;
+  --popover: #0d0f14;
+  --popover-foreground: #eef3fa;
+  /* Primary (90% usage): neutrals/white surfaces */
+  --primary: #ffffff;
+  --primary-foreground: #0a0b0e;
+  /* Secondary (30% usage): mid neutrals */
+  --secondary: #12141a;
+  --secondary-foreground: #e6eaf2;
+  /* Accent (10% usage): blue tint */
+  --muted: #131722;
+  --muted-foreground: #b7c3d9; /* bluish gray */
+  --accent: #0f172a; /* blue-black */
+  --accent-foreground: #e2ebff; /* pale blue */
+  --destructive: #1f2a44;
+  --destructive-foreground: #f8fbff;
+  --border: #222733;
+  --input: #222733;
+  --ring: #6ba7ff; /* blue ring */
+  --sidebar: #0b0e13;
+  --sidebar-foreground: #f3f6fb;
   --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #0b0b0b;
-  --sidebar-accent: #121214;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2a2a2e;
-  --sidebar-ring: #e6e6e6;
-  /* Charts in neutral grays */
-  --chart-1: #ededed;
-  --chart-2: #cfcfcf;
-  --chart-3: #a9a9a9;
-  --chart-4: #7d7d7d;
-  --chart-5: #595959;
+  --sidebar-primary-foreground: #0a0b0e;
+  --sidebar-accent: #0f172a;
+  --sidebar-accent-foreground: #e2ebff;
+  --sidebar-border: #1f2532;
+  --sidebar-ring: #6ba7ff;
+  /* Charts lean cool */
+  --chart-1: #cfe0ff;
+  --chart-2: #9ec0ff;
+  --chart-3: #6ba7ff;
+  --chart-4: #3d6bb3;
+  --chart-5: #274a80;
   /* Curvy + spacious feel */
-  --radius: 1.25rem;
+  --radius: 1.5rem;
 }
 
 /* Monochrome gradient backgrounds and metallic accents */
 .mono-dark body {
-  background: radial-gradient(1200px 800px at 20% -10%, #1a1a1a 0%, #0b0b0b 60%),
-    radial-gradient(1000px 600px at 120% 120%, #1a1a1a 0%, #0b0b0b 60%),
-    linear-gradient(180deg, #0b0b0b 0%, #0b0b0b 100%);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  background: radial-gradient(
+      1200px 800px at 20% -10%,
+      rgba(34, 41, 61, 0.28),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 600px at 120% 120%,
+      rgba(23, 28, 43, 0.22),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #0a0b0e 0%, #0a0b0e 100%);
   line-height: 1.6;
   letter-spacing: 0.005em;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+.mono-dark h1,
+.mono-dark h2,
+.mono-dark h3,
+.mono-dark h4,
+.mono-dark h5,
+.mono-dark h6,
+.mono-dark .heading {
+  font-family: var(--font-heading, var(--font-sans)), system-ui, sans-serif;
 }
 
-/* Subtle noise for premium texture */
+.mono-dark code,
+.mono-dark pre,
+.mono-dark kbd,
+.mono-dark samp,
+.mono-dark .font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* UI components (buttons, inputs) can opt-in to Supreme via data-slot or class */
+.mono-dark [data-slot="button"],
+.mono-dark [data-slot="input"],
+.mono-dark .ui-font {
+  font-family: var(--font-ui), system-ui, sans-serif;
+}
+
+/* Subtle noise/overlay for premium texture */
 .mono-dark body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0 0 0 0.03 0.06 0.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
-  mix-blend-mode: soft-light;
   z-index: 0;
+  background: radial-gradient(
+      900px 560px at 20% 0%,
+      rgba(139, 92, 246, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 500px at 85% 70%,
+      rgba(236, 72, 153, 0.1),
+      transparent 60%
+    );
 }
 
-/* Glass/metal card effect */
-.mono-dark [data-slot="card"],
-.mono-dark .glass-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-  border-color: rgba(255,255,255,0.08);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.04);
-  backdrop-filter: blur(8px);
-  border-radius: 24px;
+/* Optional helpers to replicate HeroSection gradient accents app-wide */
+.text-gradient-accent {
+  background-image: linear-gradient(90deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
-
-/* Metallic button styles */
-.mono-dark [data-slot="button"].bg-primary,
-.mono-dark .btn-metallic {
-  background-image: linear-gradient(180deg, #ffffff, #dcdcdc);
-  color: #0b0b0b;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
-    0 10px 20px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.25);
-  border-radius: 9999px;
-}
-
-.mono-dark [data-slot="button"].bg-primary:hover,
 .mono-dark .btn-metallic:hover {
-  background-image: linear-gradient(180deg, #ffffff, #cfcfcf);
+  background-image: linear-gradient(180deg, #ffffff, #cfe0ff);
 }
 
 /* Outline buttons subtle gradient */
 .mono-dark [data-slot="button"].border,
 .mono-dark .btn-outline-metallic {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-  border-color: rgba(255,255,255,0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(202, 220, 255, 0.05),
+    rgba(202, 220, 255, 0.02)
+  );
+  border-color: rgba(134, 170, 255, 0.25);
   border-radius: 9999px;
 }
 
@@ -210,15 +368,19 @@
 .mono-dark input,
 .mono-dark textarea,
 .mono-dark select {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  border-color: rgba(255,255,255,0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(202, 220, 255, 0.04),
+    rgba(202, 220, 255, 0.015)
+  );
+  border-color: rgba(134, 170, 255, 0.22);
   border-radius: 9999px;
   min-height: 42px;
   padding-inline: 1rem;
 }
 
 .mono-dark [data-slot="input"]:focus-visible {
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.08), 0 0 0 1px #e6e6e6 inset;
+  box-shadow: 0 0 0 3px rgba(107, 167, 255, 0.22), 0 0 0 1px #6ba7ff inset;
 }
 
 /* Gradient borders utility */
@@ -230,7 +392,11 @@
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(181, 205, 255, 0.45),
+    rgba(76, 120, 198, 0.1)
+  );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -248,7 +414,12 @@
   content: "";
   position: absolute;
   inset: -100%;
-  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.15) 20%, transparent 40%);
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    transparent 40%
+  );
   transform: translateX(-50%);
   transition: transform 600ms ease;
 }
@@ -258,47 +429,64 @@
 
 /* Subtle separators */
 .mono-dark .divider {
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(134, 170, 255, 0.18),
+    transparent
+  );
   height: 1px;
 }
 
 /* Spacious nav items */
 .mono-dark .nav-item {
-  border-radius: 16px;
-  padding-block: 14px;
+  border-radius: 20px;
+  padding-block: 16px;
 }
 
 /* Curvy, big type scale */
 .mono-dark h1 {
-  font-size: clamp(2rem, 3vw + 1rem, 3.25rem);
+  font-size: clamp(2.25rem, 3.5vw + 1rem, 3.75rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+.mono-dark h2 {
+  font-size: clamp(1.75rem, 2.6vw + 0.8rem, 2.6rem);
   font-weight: 800;
   letter-spacing: -0.02em;
 }
-.mono-dark h2 {
-  font-size: clamp(1.5rem, 2.2vw + 0.6rem, 2.4rem);
+.mono-dark h3 {
+  font-size: clamp(1.35rem, 1.8vw + 0.55rem, 1.8rem);
   font-weight: 700;
   letter-spacing: -0.015em;
 }
-.mono-dark h3 {
-  font-size: clamp(1.25rem, 1.4vw + 0.5rem, 1.6rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
 
 /* Display helpers for very large headlines */
-.display-1 { font-size: clamp(3rem, 6vw + 1rem, 4.5rem); font-weight: 900; letter-spacing: -0.03em; }
-.display-2 { font-size: clamp(2.5rem, 5vw + 1rem, 3.75rem); font-weight: 900; letter-spacing: -0.03em; }
-.display-3 { font-size: clamp(2rem, 4vw + 1rem, 3rem); font-weight: 800; letter-spacing: -0.02em; }
+.display-1 {
+  font-size: clamp(3rem, 6vw + 1rem, 4.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.display-2 {
+  font-size: clamp(2.5rem, 5vw + 1rem, 3.75rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.display-3 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
 
 /* Table and surface tweaks */
 .mono-dark table {
-  border-color: rgba(255,255,255,0.08);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 .mono-dark tr {
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .mono-dark thead th {
-  color: #d9d9d9;
+  color: #d7e4ff;
 }
 
 @theme inline {
@@ -367,13 +555,13 @@ body {
 
 /* Added custom text selection styling with orange background and dark text */
 ::selection {
-  background-color: #e78a53;
-  color: #121113;
+  background-color: #6ba7ff;
+  color: #0b1220;
 }
 
 ::-moz-selection {
-  background-color: #e78a53;
-  color: #121113;
+  background-color: #6ba7ff;
+  color: #0b1220;
 }
 
 @layer base {
@@ -427,4 +615,314 @@ body {
 
 .animate-shiny-text {
   animation: shiny-text 3s ease-in-out infinite;
+}
+
+/* ——— CyFuture Blue Glow: extremely dark, cool tint, warm 10% accent (60/30/10) ——— */
+/* Brand & depth tokens */
+:root {
+  --brand-blue: oklch(0.7 0.14 255);
+  --brand-blue-soft: oklch(0.58 0.1 255);
+  --brand-blue-dim: oklch(0.45 0.06 255);
+  --brand-orange: oklch(0.73 0.17 55);
+
+  --bg-deep: oklch(0.1 0.01 250);
+  --bg-deeper: oklch(0.08 0.01 250);
+}
+
+/* Dark theme overrides to lean cooler and deeper */
+.dark {
+  /* Surfaces: extremely dark blue-leaning */
+  --background: var(--bg-deeper);
+  --card: oklch(0.11 0.01 250);
+  --popover: oklch(0.11 0.01 250);
+
+  /* 60/30/10: 60 neutrals, 30 blue, 10 orange */
+  --primary: var(--brand-blue);
+  --primary-foreground: oklch(0.98 0 0);
+
+  --secondary: oklch(0.24 0.02 250);
+  --secondary-foreground: oklch(0.9 0 0);
+
+  --muted: oklch(0.16 0.01 250);
+  --muted-foreground: oklch(0.72 0.03 255);
+
+  --accent: oklch(0.18 0.015 250);
+  --accent-foreground: oklch(0.92 0 0);
+
+  --border: oklch(0.2 0.01 250);
+  --input: oklch(0.2 0.01 250);
+
+  --ring: var(--brand-blue);
+
+  /* Charts lean cool */
+  --chart-1: oklch(0.86 0.1 255);
+  --chart-2: oklch(0.7 0.12 255);
+  --chart-3: oklch(0.58 0.1 255);
+  --chart-4: oklch(0.46 0.07 255);
+  --chart-5: oklch(0.36 0.06 255);
+}
+
+/* Landing page specific lighter ambient and section glows */
+.landing-ambient {
+  position: relative;
+  overflow: clip; /* prevent pseudo glows from causing scrollbars */
+  background: radial-gradient(
+      1000px 600px at 20% -10%,
+      color-mix(in oklab, var(--brand-blue) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 520px at 80% -15%,
+      color-mix(in oklab, var(--brand-blue-soft) 16%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      1400px 900px at 50% 20%,
+      color-mix(in oklab, var(--brand-blue-dim) 14%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      oklch(0.16 0.01 250) 0%,
+      oklch(0.14 0.01 250) 40%,
+      oklch(0.12 0.01 250) 100%
+    );
+}
+
+.landing-ambient::after {
+  /* subtle vignette for contrast without over-darkening */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    1200px 800px at 50% -10%,
+    rgba(255, 255, 255, 0.1),
+    transparent 60%
+  );
+}
+
+.section-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: clip; /* pseudo-element bleed control */
+}
+.section-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1rem; /* reduce bleed to avoid vertical scroll */
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    600px 300px at 50% -20%,
+    color-mix(in oklab, var(--brand-blue) 22%, transparent),
+    transparent 70%
+  );
+  filter: blur(12px) saturate(110%);
+  opacity: 0.7;
+}
+
+/* Utility to tint buttons and accents on landing to blue */
+.landing-accent {
+  --primary: var(--brand-blue);
+  --ring: var(--brand-blue);
+}
+
+/* Ambient blue glows across the app */
+.dark body {
+  background: radial-gradient(
+      1200px 700px at -10% 0%,
+      color-mix(in oklab, var(--brand-blue) 25%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 520px at 120% 100%,
+      color-mix(in oklab, var(--brand-blue-soft) 22%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      600px 360px at 80% -20%,
+      color-mix(in oklab, var(--brand-orange) 10%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--bg-deeper), var(--bg-deep));
+}
+
+/* Glow overlay layers (very subtle, performance-friendly) */
+.dark body::before,
+.dark body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark body::before {
+  background: radial-gradient(
+      800px 480px at 15% 20%,
+      color-mix(in oklab, var(--brand-blue) 16%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 420px at 85% 60%,
+      color-mix(in oklab, var(--brand-blue-dim) 16%, transparent),
+      transparent 60%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+.dark body::after {
+  /* vignette for extra depth */
+  background: radial-gradient(
+      1200px 800px at 50% 120%,
+      rgba(0, 0, 0, 0.45),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 700px at -20% -20%,
+      rgba(0, 0, 0, 0.35),
+      transparent 60%
+    );
+  opacity: 0.9;
+}
+
+/* Keep selection as warm 10% accent */
+::selection {
+  background-color: color-mix(in oklab, var(--brand-orange) 92%, black);
+  color: #121113;
+}
+::-moz-selection {
+  background-color: color-mix(in oklab, var(--brand-orange) 92%, black);
+  color: #121113;
+}
+
+/* Utilities: add glow to surfaces and CTAs */
+.dark .glow-blue {
+  /* Use on cards, modals, hero containers */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.025),
+    rgba(255, 255, 255, 0.015)
+  );
+  border: 1px solid color-mix(in oklab, var(--brand-blue) 22%, transparent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 30px -10px color-mix(in oklab, var(--brand-blue) 30%, transparent),
+    0 2px 10px -6px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.dark .glow-orange {
+  /* Use sparingly (~10%): key CTAs or highlights */
+  border: 1px solid color-mix(in oklab, var(--brand-orange) 30%, transparent);
+  box-shadow: 0 0 0 1px
+      color-mix(in oklab, var(--brand-orange) 30%, transparent),
+    0 14px 36px -12px color-mix(in oklab, var(--brand-orange) 32%, transparent);
+}
+
+/* Subtle neon text glow for labels/badges */
+.dark .text-glow-blue {
+  text-shadow: 0 0 18px color-mix(in oklab, var(--brand-blue) 35%, transparent),
+    0 0 2px color-mix(in oklab, var(--brand-blue) 60%, transparent);
+}
+
+/* Focus rings with blue core and thin warm halo (10%) */
+.dark :is(button, [role="button"], a, input, select, textarea):focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand-blue) 70%, transparent),
+    0 0 0 6px color-mix(in oklab, var(--brand-orange) 18%, transparent);
+  outline: none;
+}
+
+/* Ambient glow helper for sections */
+.dark .ambient-glow {
+  position: relative;
+  isolation: isolate;
+}
+.dark .ambient-glow::before {
+  content: "";
+  position: absolute;
+  inset: -15%; /* slightly tighter to avoid accidental bleed */
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+      40% 40% at 20% 10%,
+      color-mix(in oklab, var(--brand-blue) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      35% 35% at 80% 50%,
+      color-mix(in oklab, var(--brand-blue-soft) 16%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      25% 25% at 70% 0%,
+      color-mix(in oklab, var(--brand-orange) 10%, transparent),
+      transparent 70%
+    );
+  filter: blur(12px);
+  opacity: 0.6;
+}
+
+/* Dividers and borders take a cool tint */
+.dark .divider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--brand-blue) 22%, transparent),
+    transparent
+  );
+}
+
+/* Hide native scrollbars while keeping scroll for the landing wrapper only (opt-in) */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Top-of-page blue sky glow for landing */
+.landing-skyglow {
+  pointer-events: none;
+  background: radial-gradient(
+      60% 50% at 50% 0%,
+      color-mix(in oklab, var(--brand-blue) 26%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      40% 35% at 20% 0%,
+      color-mix(in oklab, var(--brand-blue-soft) 22%, transparent),
+      transparent 60%
+    ),
+    conic-gradient(
+      from 220deg at 50% 15%,
+      color-mix(in oklab, var(--brand-blue) 12%, transparent),
+      transparent 20%,
+      color-mix(in oklab, var(--brand-blue-soft) 8%, transparent) 40%,
+      transparent 70%
+    );
+  filter: blur(28px) saturate(120%);
+  opacity: 0.75;
+}
+
+/* Optional button helpers if not using Tailwind-only buttons */
+.dark .btn-primary-blue {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, #fff 100%, transparent),
+    color-mix(in oklab, var(--brand-blue-soft) 35%, #fff)
+  );
+  color: #0b1220;
+  border: 1px solid color-mix(in oklab, var(--brand-blue) 35%, transparent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 10px 24px -10px color-mix(in oklab, var(--brand-blue) 35%, transparent);
+}
+.dark .btn-primary-blue:hover {
+  background-image: linear-gradient(
+    180deg,
+    #ffffff,
+    color-mix(in oklab, var(--brand-blue) 28%, #eaf1ff)
+  );
 }

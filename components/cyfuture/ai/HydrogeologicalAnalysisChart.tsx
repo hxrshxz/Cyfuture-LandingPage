@@ -56,7 +56,10 @@ const FinancialAnalysisChart = () => {
       waterQuality: 88,
       declineRate: 0.22,
     },
-  ].map((d) => ({ ...d, netBalance: d.recharge - d.extraction }));
+  ].map((d) => ({
+    ...d,
+    netBalance: (d.recharge ?? 0) - (d.extraction ?? 0),
+  }));
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -96,7 +99,7 @@ const FinancialAnalysisChart = () => {
     // --- CHANGE 1: Added `relative` and `overflow-hidden` to the main container ---
     <div className="relative overflow-hidden w-full bg-white/80 p-6 rounded-2xl border my-4 backdrop-blur-md shadow-xl font-sans">
       {/* --- CHANGE 2: Added the absolutely positioned top border --- */}
-      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-purple-500 to-purple-800"></div>
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-blue-800"></div>
 
       {/* Title and Subtitle Section (no changes here) */}
       <div>
@@ -154,8 +157,8 @@ const FinancialAnalysisChart = () => {
           onClick={() => setActiveSeries("waterQuality")}
           className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
             activeSeries === "waterQuality"
-              ? "bg-purple-500 text-white shadow"
-              : "text-purple-700 hover:bg-purple-100"
+              ? "bg-blue-500 text-white shadow"
+              : "text-blue-700 hover:bg-blue-100"
           }`}
         >
           Profit Margin
@@ -291,4 +294,4 @@ const FinancialAnalysisChart = () => {
   );
 };
 
-export default HydrogeologicalAnalysisChart;
+export default FinancialAnalysisChart;

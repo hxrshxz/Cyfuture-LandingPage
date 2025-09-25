@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { GoogleGeminiEffect } from "@/components/ui/google-gemini-effect";
+import { useMotionValue } from "motion/react";
+import { animate, type AnimationPlaybackControls } from "motion";
 import {
   FileText,
   Upload,
@@ -38,6 +41,10 @@ import { useAuth, ProtectedRoute } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
 import TransactionResult from "@/components/TransactionResult";
 import Link from "next/link";
+import { useStorage } from "@/contexts/StorageContext";
+import { IPFSLinks } from "@/components/IPFSLinks";
+import { FileUpload } from "@/components/ui/file-upload";
+import AppNavigation from "@/components/AppNavigation";
 
 interface InvoiceData {
   id: string;
@@ -67,7 +74,6 @@ function DashboardContent() {
   // Test transaction state
   const [testTxSignature, setTestTxSignature] = useState<string | null>(null);
   const [testTxError, setTestTxError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Review + storage selections
   const [pendingExtracted, setPendingExtracted] = useState<{
@@ -86,6 +92,45 @@ function DashboardContent() {
   const { sendTransaction, requestAirdrop, getBalance, isSending } =
     useSolanaAction();
   const { uploadFile, uploadJson, isUploading } = useIpfs();
+  const { lastCid, lastSignature, lastUpdated, setLastCid, setLastSignature } =
+    useStorage();
+
+  // Transaction visual overlay state (plays while a on-chain tx is sending)
+  const v1 = useMotionValue(0);
+  const v2 = useMotionValue(0);
+  const v3 = useMotionValue(0);
+  const v4 = useMotionValue(0);
+  const v5 = useMotionValue(0);
+  const animRefs = React.useRef<AnimationPlaybackControls[]>([]);
+
+  useEffect(() => {
+    const stopAll = () => {
+      animRefs.current.forEach((ctrl) => ctrl?.stop?.());
+      animRefs.current = [];
+    };
+    if (isSending) {
+      [v1, v2, v3, v4, v5].forEach((mv) => mv.set(0));
+      const values = [v1, v2, v3, v4, v5];
+      const ctrls = values.map((mv, i) =>
+        animate(mv, 1, {
+          duration: 1.2,
+          delay: i * 0.12,
+          ease: "linear",
+          repeat: Infinity,
+          repeatType: "reverse",
+          repeatDelay: 0.2,
+        })
+      );
+      animRefs.current = ctrls;
+    } else {
+      stopAll();
+      [v1, v2, v3, v4, v5].forEach((mv) => mv.set(0));
+    }
+    return () => {
+      animRefs.current.forEach((ctrl) => ctrl?.stop?.());
+      animRefs.current = [];
+    };
+  }, [isSending]);
 
   // Update balance when wallet connects
   const updateBalance = async () => {
@@ -108,20 +153,47 @@ function DashboardContent() {
       : `${base}/${sig}?cluster=${cluster}`;
   };
 
+  // Build additional explorer links
+  const buildExplorerUrls = (sig: string) => {
+    const cluster = process.env.NEXT_PUBLIC_SOLANA_CLUSTER || "devnet";
+    const isMainnet = cluster === "mainnet" || cluster === "mainnet-beta";
+    return [
+      {
+        name: "Solscan",
+        url: isMainnet
+          ? `https://solscan.io/tx/${sig}`
+          : `https://solscan.io/tx/${sig}?cluster=${cluster}`,
+      },
+      {
+        name: "Solana Explorer",
+        url: isMainnet
+          ? `https://explorer.solana.com/tx/${sig}`
+          : `https://explorer.solana.com/tx/${sig}?cluster=${cluster}`,
+      },
+    ];
+  };
+
+  // Build IPFS gateway URLs
+  const buildGatewayUrls = (hash: string) => [
+    { name: "Cloudflare", url: `https://cloudflare-ipfs.com/ipfs/${hash}` },
+    { name: "IPFS.io", url: `https://ipfs.io/ipfs/${hash}` },
+    { name: "dweb.link", url: `https://dweb.link/ipfs/${hash}` },
+  ];
+
   // Dashboard statistics
   const dashboardStats = [
     {
       title: "Total Invoices",
       value: invoices.length.toString(),
       icon: Receipt,
-  color: "text-gray-300",
+      color: "text-gray-300",
       change: "+12%",
     },
     {
       title: "This Month",
       value: "₹2,45,680",
       icon: TrendingUp,
-  color: "text-gray-300",
+      color: "text-gray-300",
       change: "+8.5%",
     },
     {
@@ -130,24 +202,23 @@ function DashboardContent() {
         .filter((inv) => inv.status === "processing")
         .length.toString(),
       icon: Clock,
-  color: "text-gray-300",
+      color: "text-gray-300",
       change: "0",
     },
     {
       title: "IPFS Stored",
       value: invoices.filter((inv) => inv.ipfsHash).length.toString(),
       icon: Database,
-  color: "text-gray-300",
+      color: "text-gray-300",
       change: "+100%",
     },
   ];
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      processInvoice(file);
-    }
+  const handleFilesFromUpload = (newFiles: File[]) => {
+    const file = newFiles?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    processInvoice(file);
   };
 
   // Sends a minimal memo-only transaction to verify wallet and network
@@ -166,6 +237,7 @@ function DashboardContent() {
       }
       if (signature) {
         setTestTxSignature(signature);
+        setLastSignature(signature);
         // Refresh balance after a tx to reflect fee changes
         updateBalance();
       }
@@ -245,6 +317,7 @@ function DashboardContent() {
         const hash = await uploadFile(selectedFile);
         ipfsHash = hash || undefined;
         if (hash) {
+          setLastCid(hash);
           await uploadJson(pendingExtracted);
         }
       }
@@ -259,6 +332,7 @@ function DashboardContent() {
         });
         const { signature } = await sendTransaction(payload);
         solanaSignature = signature || undefined;
+        if (signature) setLastSignature(signature);
       }
 
       setInvoices((prev) =>
@@ -345,7 +419,9 @@ function DashboardContent() {
               <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-gray-500 to-gray-300 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-white mb-2">Invoice Processed Successfully!</h2>
+              <h2 className="text-3xl font-bold text-white mb-2">
+                Invoice Processed Successfully!
+              </h2>
               <p className="text-slate-400 text-lg">
                 Your document has been analyzed, stored on IPFS, and recorded on
                 the Solana blockchain
@@ -423,33 +499,7 @@ function DashboardContent() {
                           </Button>
                         </div>
                       </div>
-                      {/* Three gateway buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        {[
-                          { name: "Cloudflare", base: "https://cloudflare-ipfs.com/ipfs" },
-                          { name: "IPFS.io", base: "https://ipfs.io/ipfs" },
-                          { name: "dweb.link", base: "https://dweb.link/ipfs" },
-                        ].map(({ name, base }) => (
-                          <div key={name} className="flex items-center gap-2">
-                            <Button
-            onClick={() => window.open(`${base}/${latestInvoice.ipfsHash}`, "_blank")}
-            className="flex-1 bg-white/10 hover:bg-white/20 text-white h-9"
-                            >
-                              <ExternalLink className="w-3 h-3 mr-2" />
-                              {name}
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-            className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
-                              onClick={() => navigator.clipboard.writeText(`${base}/${latestInvoice.ipfsHash}`)}
-                              title={`Copy ${name} URL`}
-                            >
-                              <Copy className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
+                      <IPFSLinks cid={latestInvoice.ipfsHash} />
                       <div className="flex items-center justify-between bg-slate-800/50 rounded-lg p-3">
                         <div>
                           <p className="text-slate-400 text-sm">
@@ -567,18 +617,24 @@ function DashboardContent() {
                 {/* Action Buttons */}
                 <div className="flex gap-4 pt-4">
                   <Button
-                    onClick={() => setCurrentView("dashboard")}
+                    onClick={() => {
+                      setCurrentView("dashboard");
+                      setTimeout(
+                        () =>
+                          document
+                            .getElementById("quick-actions")
+                            ?.scrollIntoView({
+                              behavior: "smooth",
+                              block: "start",
+                            }),
+                        0
+                      );
+                    }}
                     className="flex-1 btn-metallic shine"
                   >
                     Back to Dashboard
                   </Button>
-                  <Button
-                    onClick={() => fileInputRef.current?.click()}
-                    variant="outline"
-                    className="flex-1 border-slate-600 text-slate-300"
-                  >
-                    Process Another Invoice
-                  </Button>
+                  {/* The upload component is now on the dashboard Quick Actions */}
                 </div>
               </div>
             )}
@@ -589,7 +645,24 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen w-full relative bg-black">
+    <div className="min-h-screen w-full relative app-ambient">
+      <AppNavigation currentPage="/dashboard" />
+      {/* Transaction animation overlay */}
+      {isSending && (
+        <div className="fixed inset-0 z-[9999] pointer-events-none bg-black/50 backdrop-blur-md">
+          <div className="relative h-full w-full">
+            <GoogleGeminiEffect
+              className="top-24"
+              pathLengths={[v1, v2, v3, v4, v5]}
+              title="Submitting transaction…"
+              description="Securing your data on-chain"
+              palette={["#63d2ff", "#5ef1ff", "#9ab6ff", "#5aa8ff", "#2f6bff"]}
+              blurStdDev={12}
+              showBadge={false}
+            />
+          </div>
+        </div>
+      )}
       {/* Pearl Mist Background with Top Glow */}
       <div
         className="absolute inset-0 w-full h-full"
@@ -604,15 +677,15 @@ function DashboardContent() {
       />
 
       {/* Content */}
-      <div className="relative z-10 p-6">
+      <div className="relative z-10 p-6 pt-20">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="min-w-0">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent mb-2 whitespace-nowrap">
+              <h1 className="display-1 mt-0 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 blue-glow-text font-geist mb-2 whitespace-nowrap">
                 Welcome back, {user?.name}!
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-lg md:text-xl font-geist">
                 Blockchain-powered financial document management with AI
                 analysis
               </p>
@@ -647,11 +720,11 @@ function DashboardContent() {
           </div>
 
           {/* Wallet Section */}
-          <Card className="bg-black/40 border border-gray-800/50 backdrop-blur-xl mb-8 shadow-xl">
+          <Card className="card-glow mb-8 shadow-xl rounded-3xl">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 flex items-center justify-center">
                     <Wallet className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -664,7 +737,7 @@ function DashboardContent() {
                           {publicKey?.toBase58().slice(0, 8)}...
                           {publicKey?.toBase58().slice(-8)}
                         </p>
-        <p className="text-sm font-medium text-gray-200">
+                        <p className="text-sm font-medium text-gray-200">
                           Balance: {balance.toFixed(4)} SOL
                         </p>
                       </div>
@@ -675,13 +748,13 @@ function DashboardContent() {
                     )}
                   </div>
                 </div>
-        <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   {connected && balance < 0.1 && (
                     <Button
                       onClick={handleAirdrop}
                       disabled={isSending}
-            variant="outline"
-            className="h-10 border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
+                      variant="outline"
+                      className="h-10 border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
                     >
                       {isSending ? "Requesting..." : "Request Airdrop"}
                     </Button>
@@ -690,14 +763,14 @@ function DashboardContent() {
                     <Button
                       onClick={handleTestTransaction}
                       disabled={isSending}
-            variant="outline"
-            className="h-10 border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
+                      variant="outline"
+                      className="h-10 border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
                       title="Send a memo-only transaction to verify setup"
                     >
                       {isSending ? "Sending..." : "Test Transaction"}
                     </Button>
                   )}
-          <WalletMultiButton className="!btn-metallic !shine !border-0 !rounded-lg !shadow-lg !text-black !h-10" />
+                  <WalletMultiButton className="!btn-metallic !shine !border-0 !rounded-lg !shadow-lg !text-black !h-10" />
                 </div>
               </div>
             </CardContent>
@@ -708,7 +781,9 @@ function DashboardContent() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Test Transaction Sent</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Test Transaction Sent
+                    </h3>
                     <p className="text-sm text-gray-400 break-all">
                       Signature: {testTxSignature}
                     </p>
@@ -716,7 +791,9 @@ function DashboardContent() {
                   <Button
                     variant="outline"
                     className="border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20"
-                    onClick={() => window.open(buildSolscanUrl(testTxSignature), "_blank")}
+                    onClick={() =>
+                      window.open(buildSolscanUrl(testTxSignature), "_blank")
+                    }
                   >
                     View on Solscan
                   </Button>
@@ -728,11 +805,219 @@ function DashboardContent() {
           {testTxError && (
             <Card className="bg-black/40 border border-gray-800/50 backdrop-blur-xl mb-8 shadow-xl">
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-1">Test Transaction Failed</h3>
+                <h3 className="text-lg font-semibold text-white mb-1">
+                  Test Transaction Failed
+                </h3>
                 <p className="text-sm text-red-400">{testTxError}</p>
               </CardContent>
             </Card>
           )}
+
+          {/* Persistent Latest Storage highlight from store */}
+          {(lastCid || lastSignature) && (
+            <Card className="card-glow mb-8 shadow-xl rounded-3xl">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-white">
+                    Latest Storage (Persistent)
+                  </h3>
+                  {lastUpdated && (
+                    <div className="text-xs text-gray-400">
+                      {new Date(lastUpdated).toLocaleString()}
+                    </div>
+                  )}
+                </div>
+
+                {lastCid && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between bg-black/30 border border-gray-800/40 rounded-xl p-3">
+                      <div>
+                        <p className="text-slate-400 text-sm">IPFS Hash</p>
+                        <p className="text-white font-mono text-sm break-all">
+                          {lastCid}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
+                          onClick={() => navigator.clipboard.writeText(lastCid)}
+                          title="Copy IPFS hash"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <IPFSLinks cid={lastCid} />
+                  </div>
+                )}
+
+                {lastSignature && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between bg-black/30 border border-gray-800/40 rounded-xl p-3">
+                      <div>
+                        <p className="text-slate-400 text-sm">
+                          Transaction Signature
+                        </p>
+                        <p className="text-white font-mono text-sm break-all">
+                          {lastSignature}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
+                          onClick={() =>
+                            navigator.clipboard.writeText(lastSignature)
+                          }
+                          title="Copy signature"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {buildExplorerUrls(lastSignature).map((e) => (
+                        <div key={e.name} className="flex items-center gap-2">
+                          <Button
+                            onClick={() => window.open(e.url, "_blank")}
+                            className="flex-1 bg-white/10 hover:bg-white/20 text-white h-9"
+                          >
+                            <ExternalLink className="w-3 h-3 mr-2" />
+                            {e.name}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
+                            onClick={() => navigator.clipboard.writeText(e.url)}
+                            title={`Copy ${e.name} URL`}
+                          >
+                            <Copy className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Latest Storage (IPFS + Explorer links) */}
+          {(() => {
+            const latestStored = [...invoices]
+              .reverse()
+              .find((i) => i.ipfsHash || i.solanaSignature);
+            if (!latestStored) return null;
+            const gateways = latestStored.ipfsHash
+              ? buildGatewayUrls(latestStored.ipfsHash)
+              : [];
+            const explorers = latestStored.solanaSignature
+              ? buildExplorerUrls(latestStored.solanaSignature)
+              : [];
+            return (
+              <Card className="card-glow mb-8 shadow-xl rounded-3xl">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">
+                      Latest Storage
+                    </h3>
+                    <div className="text-xs text-gray-400">
+                      {new Date(latestStored.uploadTime).toLocaleString()}
+                    </div>
+                  </div>
+
+                  {latestStored.ipfsHash && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between bg-black/30 border border-gray-800/40 rounded-xl p-3">
+                        <div>
+                          <p className="text-slate-400 text-sm">IPFS Hash</p>
+                          <p className="text-white font-mono text-sm break-all">
+                            {latestStored.ipfsHash}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
+                            onClick={() =>
+                              navigator.clipboard.writeText(
+                                latestStored.ipfsHash!
+                              )
+                            }
+                            title="Copy IPFS hash"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <IPFSLinks cid={latestStored.ipfsHash} />
+                    </div>
+                  )}
+
+                  {latestStored.solanaSignature && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between bg-black/30 border border-gray-800/40 rounded-xl p-3">
+                        <div>
+                          <p className="text-slate-400 text-sm">
+                            Transaction Signature
+                          </p>
+                          <p className="text-white font-mono text-sm break-all">
+                            {latestStored.solanaSignature}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
+                            onClick={() =>
+                              navigator.clipboard.writeText(
+                                latestStored.solanaSignature!
+                              )
+                            }
+                            title="Copy signature"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {explorers.map((e) => (
+                          <div key={e.name} className="flex items-center gap-2">
+                            <Button
+                              onClick={() => window.open(e.url, "_blank")}
+                              className="flex-1 bg-white/10 hover:bg-white/20 text-white h-9"
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              {e.name}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-9 border-slate-600 text-slate-300 hover:bg-slate-700"
+                              onClick={() =>
+                                navigator.clipboard.writeText(e.url)
+                              }
+                              title={`Copy ${e.name} URL`}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })()}
 
           {/* Statistics Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -741,21 +1026,21 @@ function DashboardContent() {
               return (
                 <Card
                   key={index}
-                  className="bg-black/40 border border-gray-800/50 backdrop-blur-xl shadow-xl hover:bg-black/50 transition-all duration-300"
+                  className="card-glow hover:shadow-blue-500/20 transition-all duration-300 rounded-2xl"
                 >
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-gray-300">
                       {stat.title}
                     </CardTitle>
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-gray-800 to-gray-700 flex items-center justify-center">
-                      <IconComponent className={`h-4 w-4 ${stat.color}`} />
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-center">
+                      <IconComponent className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-white">
                       {stat.value}
                     </div>
-                    <p className="text-xs text-green-400">
+                    <p className="text-xs text-blue-400">
                       {stat.change} from last month
                     </p>
                   </CardContent>
@@ -767,7 +1052,10 @@ function DashboardContent() {
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Quick Actions */}
-            <Card className="bg-black/40 border border-gray-800/50 backdrop-blur-xl shadow-xl">
+            <Card
+              id="quick-actions"
+              className="bg-black/40 border border-gray-800/50 backdrop-blur-xl shadow-xl rounded-3xl"
+            >
               <CardHeader>
                 <CardTitle className="text-xl text-white flex items-center gap-2">
                   <Zap className="w-5 h-5 text-gray-300" />
@@ -775,25 +1063,16 @@ function DashboardContent() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading || isProcessing}
-                  className="w-full h-16 btn-metallic shine flex items-center gap-3 border-0 shadow-lg"
-                >
-                  {isUploading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Upload className="w-6 h-6" />
-                  )}
-                  <span className="text-lg font-semibold">Upload Invoice</span>
-                </Button>
+                <div className="rounded-2xl border border-gray-800/50 bg-black/30 p-2">
+                  <FileUpload onChange={handleFilesFromUpload} />
+                </div>
 
-        <Link href="/ai">
+                <Link href="/ai">
                   <Button
                     variant="outline"
-          className="w-full h-16 border-gray-700 text-gray-300 hover:bg-white/5 bg-black/20 backdrop-blur-sm flex items-center gap-3 rounded-2xl"
+                    className="w-full h-16 border-gray-700 text-gray-300 hover:bg-white/5 bg-black/20 backdrop-blur-sm flex items-center gap-3 rounded-2xl"
                   >
-          <Bot className="w-6 h-6 text-gray-300" />
+                    <Bot className="w-6 h-6 text-gray-300" />
                     <span className="text-lg">Ask AI Assistant</span>
                   </Button>
                 </Link>
@@ -809,7 +1088,7 @@ function DashboardContent() {
             </Card>
 
             {/* Recent Invoices */}
-            <Card className="lg:col-span-2 bg-black/40 border border-gray-800/50 backdrop-blur-xl shadow-xl">
+            <Card className="lg:col-span-2 bg-black/40 border border-gray-800/50 backdrop-blur-xl shadow-xl rounded-3xl">
               <CardHeader>
                 <CardTitle className="text-xl text-white flex items-center gap-2">
                   <Receipt className="w-5 h-5 text-gray-300" />
@@ -886,27 +1165,37 @@ function DashboardContent() {
                           )}
 
                           {invoice.ipfsHash && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
-                              onClick={() => {
-                                const gw = process.env.NEXT_PUBLIC_IPFS_GATEWAY;
-                                const fallback =
-                                  "https://cloudflare-ipfs.com/ipfs";
-                                let base = (gw?.trim() || fallback).replace(
-                                  /\/$/,
-                                  ""
-                                );
-                                if (!/\/ipfs$/.test(base))
-                                  base = `${base}/ipfs`;
-                                navigator.clipboard.writeText(
-                                  `${base}/${invoice.ipfsHash}`
-                                );
-                              }}
-                            >
-                              <Copy className="w-3 h-3" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
+                                onClick={() => {
+                                  const base = "https://ipfs.io/ipfs";
+                                  window.open(
+                                    `${base}/${invoice.ipfsHash}`,
+                                    "_blank"
+                                  );
+                                }}
+                                title="Open on IPFS"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
+                                onClick={() => {
+                                  const base = "https://ipfs.io/ipfs";
+                                  navigator.clipboard.writeText(
+                                    `${base}/${invoice.ipfsHash}`
+                                  );
+                                }}
+                                title="Copy IPFS URL"
+                              >
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -919,13 +1208,7 @@ function DashboardContent() {
         </div>
       </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.txt"
-        className="hidden"
-        onChange={handleFileSelect}
-      />
+      {/* Hidden file input removed; FileUpload component handles selection */}
 
       {currentView === "review" && pendingExtracted && selectedFile && (
         <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -1041,9 +1324,7 @@ function DashboardContent() {
 export default function Dashboard() {
   return (
     <ProtectedRoute>
-      <AppLayout>
-        <DashboardContent />
-      </AppLayout>
+      <DashboardContent />
     </ProtectedRoute>
   );
 }

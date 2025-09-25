@@ -12,15 +12,18 @@ export const useIpfs = () => {
       console.error("Pinata JWT is not set");
       return false;
     }
-    
+
     try {
-      const res = await fetch("https://api.pinata.cloud/data/testAuthentication", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${PINATA_JWT}`
+      const res = await fetch(
+        "https://api.pinata.cloud/data/testAuthentication",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${PINATA_JWT}`,
+          },
         }
-      });
-      
+      );
+
       if (res.ok) {
         const data = await res.json();
         console.log("Authentication test successful:", data);
@@ -45,14 +48,14 @@ export const useIpfs = () => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      
+
       // Add optional metadata
       const metadata = JSON.stringify({
         name: file.name,
         keyvalues: {
           uploadedAt: new Date().toISOString(),
           fileType: file.type,
-        }
+        },
       });
       formData.append("pinataMetadata", metadata);
 
@@ -66,8 +69,8 @@ export const useIpfs = () => {
         "https://api.pinata.cloud/pinning/pinFileToIPFS",
         {
           method: "POST",
-          headers: { 
-            "Authorization": `Bearer ${PINATA_JWT}`
+          headers: {
+            Authorization: `Bearer ${PINATA_JWT}`,
           },
           body: formData,
         }
@@ -109,14 +112,14 @@ export const useIpfs = () => {
 
       const formData = new FormData();
       formData.append("file", jsonFile);
-      
+
       // Add metadata
       const metadata = JSON.stringify({
         name: "data.json",
         keyvalues: {
           uploadedAt: new Date().toISOString(),
           dataType: "json",
-        }
+        },
       });
       formData.append("pinataMetadata", metadata);
 
@@ -130,8 +133,8 @@ export const useIpfs = () => {
         "https://api.pinata.cloud/pinning/pinFileToIPFS",
         {
           method: "POST",
-          headers: { 
-            "Authorization": `Bearer ${PINATA_JWT}`
+          headers: {
+            Authorization: `Bearer ${PINATA_JWT}`,
           },
           body: formData,
         }
@@ -157,7 +160,7 @@ export const useIpfs = () => {
   const retrieveFile = async (cid: string): Promise<string | null> => {
     try {
       const gatewayEnv = process.env.NEXT_PUBLIC_IPFS_GATEWAY;
-      const fallback = "https://cloudflare-ipfs.com/ipfs";
+      const fallback = "https://ipfs.io/ipfs";
       let base = (gatewayEnv?.trim() || fallback).replace(/\/$/, "");
       if (!/\/ipfs$/.test(base)) base = `${base}/ipfs`;
       const res = await fetch(`${base}/${cid}`);

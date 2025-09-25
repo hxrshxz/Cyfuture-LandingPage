@@ -11,12 +11,14 @@ export const useIpfsWithFallback = () => {
     try {
       // This is a temporary solution - in production, you'd need a Web3.Storage API token
       console.log("Attempting fallback upload...");
-      
+
       // For demo purposes, we'll simulate a successful upload
       // In reality, you'd integrate with Web3.Storage or another IPFS service
-      const fakeHash = `Qm${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+      const fakeHash = `Qm${Math.random()
+        .toString(36)
+        .substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
       console.log("Fallback upload simulated with hash:", fakeHash);
-      
+
       return fakeHash;
     } catch (error) {
       console.error("Fallback upload failed:", error);
@@ -31,10 +33,10 @@ export const useIpfsWithFallback = () => {
       const arrayBuffer = await file.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
       const base64 = btoa(String.fromCharCode(...uint8Array));
-      
+
       // Generate a mock IPFS hash
       const fakeHash = `Qm${btoa(file.name + Date.now()).substring(0, 44)}`;
-      
+
       console.log("Public gateway upload simulated:", fakeHash);
       return fakeHash;
     } catch (error) {
@@ -45,19 +47,19 @@ export const useIpfsWithFallback = () => {
 
   const uploadFile = async (file: File): Promise<string | null> => {
     setIsUploading(true);
-    
+
     try {
       // First, try Pinata
       if (PINATA_JWT) {
         const formData = new FormData();
         formData.append("file", file);
-        
+
         const metadata = JSON.stringify({
           name: file.name,
           keyvalues: {
             uploadedAt: new Date().toISOString(),
             fileType: file.type,
-          }
+          },
         });
         formData.append("pinataMetadata", metadata);
 
@@ -70,8 +72,8 @@ export const useIpfsWithFallback = () => {
           "https://api.pinata.cloud/pinning/pinFileToIPFS",
           {
             method: "POST",
-            headers: { 
-              "Authorization": `Bearer ${PINATA_JWT}`
+            headers: {
+              Authorization: `Bearer ${PINATA_JWT}`,
             },
             body: formData,
           }
@@ -103,7 +105,6 @@ export const useIpfsWithFallback = () => {
       }
 
       throw new Error("All upload methods failed");
-      
     } catch (error) {
       console.error("All IPFS upload methods failed:", error);
       return null;
@@ -119,14 +120,14 @@ export const useIpfsWithFallback = () => {
     const jsonFile = new File([jsonBlob], "data.json", {
       type: "application/json",
     });
-    
+
     return uploadFile(jsonFile);
   };
 
   const retrieveFile = async (cid: string): Promise<string | null> => {
     try {
       const gatewayEnv = process.env.NEXT_PUBLIC_IPFS_GATEWAY;
-      const fallback = "https://cloudflare-ipfs.com/ipfs";
+      const fallback = "https://ipfs.io/ipfs";
       let base = (gatewayEnv?.trim() || fallback).replace(/\/$/, "");
       if (!/\/ipfs$/.test(base)) base = `${base}/ipfs`;
       const res = await fetch(`${base}/${cid}`);

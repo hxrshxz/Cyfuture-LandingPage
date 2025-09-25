@@ -2,6 +2,7 @@
 
 import { ProtectedRoute } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
+import AppSection from "@/components/AppSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -78,26 +79,20 @@ export default function SettingsPage() {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-white">Settings</h1>
-              <p className="text-slate-400 mt-2">
-                Manage your account and application preferences
-              </p>
-            </div>
-          </div>
-
+        <AppSection
+          title="Settings"
+          subtitle="Manage your account and application preferences"
+        >
           {/* Settings Categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {settingsCategories.map((category) => (
               <Card
                 key={category.id}
-                className="bg-slate-800/50 border-slate-700 hover:border-slate-600 transition-colors cursor-pointer group"
+                className="bg-black/40 border-gray-800/60 hover:border-gray-700 transition-colors cursor-pointer group"
               >
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="w-10 h-10 bg-gradient-to-r from-gray-600 to-gray-400 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <category.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
@@ -108,7 +103,7 @@ export default function SettingsPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-gray-400 text-sm">
                     {category.description}
                   </p>
                 </CardContent>
@@ -117,7 +112,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Profile Settings */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <User className="w-5 h-5" />
@@ -127,56 +122,53 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-slate-300">
+                  <Label htmlFor="firstName" className="text-gray-300">
                     First Name
                   </Label>
                   <Input
                     id="firstName"
                     defaultValue="John"
-                    className="bg-slate-900/50 border-slate-600 text-white placeholder-slate-400"
+                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-slate-300">
+                  <Label htmlFor="lastName" className="text-gray-300">
                     Last Name
                   </Label>
                   <Input
                     id="lastName"
                     defaultValue="Doe"
-                    className="bg-slate-900/50 border-slate-600 text-white placeholder-slate-400"
+                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-slate-300">
+                  <Label htmlFor="email" className="text-gray-300">
                     Email Address
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     defaultValue="john.doe@example.com"
-                    className="bg-slate-900/50 border-slate-600 text-white placeholder-slate-400"
+                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-slate-300">
+                  <Label htmlFor="phone" className="text-gray-300">
                     Phone Number
                   </Label>
                   <Input
                     id="phone"
                     defaultValue="+91 98765 43210"
-                    className="bg-slate-900/50 border-slate-600 text-white placeholder-slate-400"
+                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400"
                   />
                 </div>
               </div>
               <div className="flex gap-3">
-                <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                <Button className="btn-metallic">
                   <Save className="w-4 h-4 mr-2" />
                   Save Changes
                 </Button>
-                <Button
-                  variant="outline"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                >
+                <Button variant="outline" className="btn-outline-metallic">
                   Cancel
                 </Button>
               </div>
@@ -184,7 +176,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Security Settings */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Shield className="w-5 h-5" />
@@ -194,7 +186,7 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="currentPassword" className="text-slate-300">
+                  <Label htmlFor="currentPassword" className="text-gray-300">
                     Current Password
                   </Label>
                   <div className="relative">
@@ -202,12 +194,12 @@ export default function SettingsPage() {
                       id="currentPassword"
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter current password"
-                      className="bg-slate-900/50 border-slate-600 text-white placeholder-slate-400 pr-10"
+                      className="bg-black/40 border-gray-700 text-white placeholder-gray-400 pr-10"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
                     >
                       {showPassword ? (
                         <EyeOff className="w-4 h-4" />
@@ -218,25 +210,25 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="newPassword" className="text-slate-300">
+                  <Label htmlFor="newPassword" className="text-gray-300">
                     New Password
                   </Label>
                   <Input
                     id="newPassword"
                     type="password"
                     placeholder="Enter new password"
-                    className="bg-slate-900/50 border-slate-600 text-white placeholder-slate-400"
+                    className="bg-black/40 border-gray-700 text-white placeholder-gray-400"
                   />
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+              <div className="p-4 bg-black/40 rounded-lg border border-gray-800/60">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold text-white">
                       Two-Factor Authentication
                     </h4>
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-gray-400 text-sm">
                       Add an extra layer of security to your account
                     </p>
                   </div>
@@ -250,7 +242,7 @@ export default function SettingsPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                      className="btn-outline-metallic"
                     >
                       <Smartphone className="w-4 h-4 mr-2" />
                       Manage
@@ -259,7 +251,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+              <Button className="btn-metallic">
                 <Save className="w-4 h-4 mr-2" />
                 Update Security Settings
               </Button>
@@ -267,7 +259,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Notification Preferences */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Bell className="w-5 h-5" />
@@ -282,7 +274,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white">Email Notifications</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-gray-400 text-sm">
                           Receive updates via email
                         </p>
                       </div>
@@ -301,7 +293,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white">Push Notifications</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-gray-400 text-sm">
                           Browser and mobile alerts
                         </p>
                       </div>
@@ -320,7 +312,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white">SMS Notifications</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-gray-400 text-sm">
                           Text message alerts
                         </p>
                       </div>
@@ -345,7 +337,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white">Weekly Reports</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-gray-400 text-sm">
                           Financial summary emails
                         </p>
                       </div>
@@ -364,7 +356,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white">Goal Reminders</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-gray-400 text-sm">
                           Progress and deadline alerts
                         </p>
                       </div>
@@ -383,7 +375,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white">Price Alerts</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="text-gray-400 text-sm">
                           Crypto and stock price changes
                         </p>
                       </div>
@@ -406,7 +398,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Connected Accounts */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Link className="w-5 h-5" />
@@ -415,16 +407,16 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                <div className="flex items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800/60">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-gray-600 to-gray-400 rounded-lg flex items-center justify-center">
                       <span className="text-white font-bold text-sm">B</span>
                     </div>
                     <div>
                       <p className="text-white font-semibold">
                         Bank Account (HDFC)
                       </p>
-                      <p className="text-slate-400 text-sm">••••••••••••3456</p>
+                      <p className="text-gray-400 text-sm">••••••••••••3456</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -437,21 +429,21 @@ export default function SettingsPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                      className="btn-outline-metallic"
                     >
                       Manage
                     </Button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                <div className="flex items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800/60">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-gray-600 to-gray-400 rounded-lg flex items-center justify-center">
                       <span className="text-white font-bold text-sm">W</span>
                     </div>
                     <div>
                       <p className="text-white font-semibold">Solana Wallet</p>
-                      <p className="text-slate-400 text-sm">7xKs...9mR2</p>
+                      <p className="text-gray-400 text-sm">7xKs...9mR2</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -464,7 +456,7 @@ export default function SettingsPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                      className="btn-outline-metallic"
                     >
                       Manage
                     </Button>
@@ -472,7 +464,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
+              <Button className="w-full btn-metallic">
                 <Link className="w-4 h-4 mr-2" />
                 Connect New Account
               </Button>
@@ -480,7 +472,7 @@ export default function SettingsPage() {
           </Card>
 
           {/* Data Export & Privacy */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-black/40 border-gray-800/60 mt-6">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Database className="w-5 h-5" />
@@ -489,24 +481,18 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button
-                  variant="outline"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                >
+                <Button variant="outline" className="btn-outline-metallic">
                   <Database className="w-4 h-4 mr-2" />
                   Export My Data
                 </Button>
-                <Button
-                  variant="outline"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                >
+                <Button variant="outline" className="btn-outline-metallic">
                   <Globe className="w-4 h-4 mr-2" />
                   Privacy Settings
                 </Button>
               </div>
               <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
                 <h4 className="font-semibold text-red-300 mb-2">Danger Zone</h4>
-                <p className="text-slate-300 text-sm mb-3">
+                <p className="text-gray-300 text-sm mb-3">
                   Permanently delete your account and all associated data. This
                   action cannot be undone.
                 </p>
@@ -520,7 +506,7 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </AppSection>
       </AppLayout>
     </ProtectedRoute>
   );

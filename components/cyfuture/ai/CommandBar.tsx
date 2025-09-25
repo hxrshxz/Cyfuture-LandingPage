@@ -73,7 +73,7 @@ const INGRESCommandBar = ({
   return (
     <motion.div className="w-full max-w-3xl mx-auto">
       <div className="relative">
-        <div className="absolute -inset-1 bg-gradient-to-r from-purple-400 to-sky-400 rounded-3xl blur-lg opacity-30"></div>
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-sky-400 rounded-3xl blur-lg opacity-30"></div>
         <div className="relative bg-white/70 backdrop-blur-xl  border border-white/40 rounded-2xl shadow-lg p-4 space-y-4">
           <div className="flex items-center space-x-4">
             <div className="relative w-full flex items-center">
@@ -129,7 +129,7 @@ const INGRESCommandBar = ({
             <Button
               variant="outline"
               size="sm"
-              className="bg-white/50 hover:bg-white text-purple-700 border-purple-200"
+              className="bg-white/50 hover:bg-white text-blue-700 border-blue-200"
               onClick={() => {
                 const query = "Compare Q1 and Q2";
                 onInputChange({ target: { value: query } } as any);

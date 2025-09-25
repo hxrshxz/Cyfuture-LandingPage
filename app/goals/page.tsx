@@ -118,11 +118,13 @@ export default function GoalsPage() {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <div className="p-6 space-y-6">
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">Financial Goals</h1>
-              <p className="text-slate-400 mt-2">
+              <h1 className="display-3 mt-0 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 blue-glow-text font-geist">
+                Financial Goals
+              </h1>
+              <p className="text-gray-400 text-lg md:text-xl mt-2 font-geist">
                 Track and achieve your financial objectives
               </p>
             </div>
@@ -134,7 +136,7 @@ export default function GoalsPage() {
 
           {/* Goals Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Total Goals
@@ -151,7 +153,7 @@ export default function GoalsPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Target Amount
@@ -166,7 +168,7 @@ export default function GoalsPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Amount Saved
@@ -184,7 +186,7 @@ export default function GoalsPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Completion Rate
@@ -208,7 +210,7 @@ export default function GoalsPage() {
           {/* Goals List */}
           <div className="space-y-6">
             {goals.map((goal) => (
-              <Card key={goal.id} className="bg-slate-800/50 border-slate-700">
+              <Card key={goal.id} className="card-glow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -301,7 +303,7 @@ export default function GoalsPage() {
           </div>
 
           {/* Add Goal Section */}
-          <Card className="bg-slate-800/50 border-slate-700 border-dashed">
+          <Card className="card-glow border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Target className="w-12 h-12 text-slate-400 mb-4" />
               <h3 className="text-lg font-semibold text-white mb-2">

@@ -69,7 +69,7 @@ const GeminiShimmerEffect = () => {
         <div className="flex items-center gap-2 pt-1">
           <div className="flex space-x-1">
             <motion.div
-              className="w-1.5 h-1.5 bg-purple-400/60 rounded-full"
+              className="w-1.5 h-1.5 bg-blue-400/60 rounded-full"
               animate={{ y: [0, -2, 0] }}
               transition={{
                 duration: 1.2,
@@ -78,7 +78,7 @@ const GeminiShimmerEffect = () => {
               }}
             />
             <motion.div
-              className="w-1.5 h-1.5 bg-purple-400/60 rounded-full"
+              className="w-1.5 h-1.5 bg-blue-400/60 rounded-full"
               animate={{ y: [0, -2, 0] }}
               transition={{
                 duration: 1.2,
@@ -88,7 +88,7 @@ const GeminiShimmerEffect = () => {
               }}
             />
             <motion.div
-              className="w-1.5 h-1.5 bg-purple-400/60 rounded-full"
+              className="w-1.5 h-1.5 bg-blue-400/60 rounded-full"
               animate={{ y: [0, -2, 0] }}
               transition={{
                 duration: 1.2,

@@ -151,8 +151,8 @@ const FinancialAnalysisChart = () => {
           onClick={() => setActiveSeries("profitMargin")}
           className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
             activeSeries === "profitMargin"
-              ? "bg-purple-500 text-white shadow"
-              : "text-purple-700 hover:bg-purple-100"
+              ? "bg-blue-500 text-white shadow"
+              : "text-blue-700 hover:bg-blue-100"
           }`}
         >
           Profit Margin

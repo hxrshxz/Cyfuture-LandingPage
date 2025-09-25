@@ -101,11 +101,13 @@ export default function TransactionsPage() {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <div className="p-6 space-y-6">
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">Transactions</h1>
-              <p className="text-slate-400 mt-2">
+              <h1 className="display-3 mt-0 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 blue-glow-text font-geist">
+                Transactions
+              </h1>
+              <p className="text-gray-400 text-lg md:text-xl mt-2 font-geist">
                 View and manage your trading history
               </p>
             </div>
@@ -116,9 +118,9 @@ export default function TransactionsPage() {
 
           {/* Transaction Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow hover:shadow-blue-500/20 transition-all duration-300 rounded-2xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-300">
+                <CardTitle className="text-sm font-medium text-gray-300">
                   Total Transactions
                 </CardTitle>
                 <Badge
@@ -130,11 +132,11 @@ export default function TransactionsPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">1,247</div>
-                <p className="text-slate-400 text-sm">+23 this month</p>
+                <p className="text-blue-400 text-sm">+23 this month</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow hover:shadow-blue-500/20 transition-all duration-300 rounded-2xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Total Volume
@@ -147,7 +149,7 @@ export default function TransactionsPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Average Trade Size
@@ -165,7 +167,7 @@ export default function TransactionsPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800/50 border-slate-700">
+            <Card className="card-glow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">
                   Total Fees Paid
@@ -180,7 +182,7 @@ export default function TransactionsPage() {
           </div>
 
           {/* Filters and Search */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="card-glow">
             <CardHeader>
               <CardTitle className="text-white">Filter Transactions</CardTitle>
             </CardHeader>
@@ -216,7 +218,7 @@ export default function TransactionsPage() {
           </Card>
 
           {/* Transactions List */}
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="card-glow">
             <CardHeader>
               <CardTitle className="text-white">Recent Transactions</CardTitle>
             </CardHeader>

@@ -1,68 +1,59 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react"
-import { motion, AnimatePresence, useMotionValue } from "framer-motion"
-import { cn } from "@/lib/utils"
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence, useMotionValue } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export const FollowerPointerCard = ({
   children,
   className,
   title,
 }: {
-  children: React.ReactNode
-  className?: string
-  title?: string | React.ReactNode
+  children: React.ReactNode;
+  className?: string;
+  title?: string | React.ReactNode;
 }) => {
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const ref = React.useRef<HTMLDivElement>(null)
-  const [rect, setRect] = useState<DOMRect | null>(null)
-  const [isInside, setIsInside] = useState<boolean>(false)
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const [isInside, setIsInside] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log("[v0] FollowerPointerCard mounted")
-    return () => {
-      console.log("[v0] FollowerPointerCard unmounted")
-    }
-  }, [])
-
-  useEffect(() => {
-    console.log("[v0] isInside changed:", isInside)
-  }, [isInside])
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const updateRect = () => {
       if (ref.current) {
-        setRect(ref.current.getBoundingClientRect())
+        setRect(ref.current.getBoundingClientRect());
       }
-    }
+    };
 
-    updateRect()
+    updateRect();
 
-    const handleResize = () => updateRect()
-    const handleScroll = () => updateRect()
+    const handleResize = () => updateRect();
+    const handleScroll = () => updateRect();
 
-    window.addEventListener("resize", handleResize)
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener("resize", handleResize)
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    x.set(e.clientX)
-    y.set(e.clientY)
-  }
+    x.set(e.clientX);
+    y.set(e.clientY);
+  };
 
   const handleMouseLeave = () => {
-    setIsInside(false)
-  }
+    setIsInside(false);
+  };
 
   const handleMouseEnter = () => {
-    setIsInside(true)
-  }
+    setIsInside(true);
+  };
 
   return (
     <div
@@ -75,20 +66,22 @@ export const FollowerPointerCard = ({
       ref={ref}
       className={cn("relative", className)}
     >
-      <AnimatePresence>{isInside && <FollowPointer x={x} y={y} title={title} />}</AnimatePresence>
+      <AnimatePresence>
+        {isInside && <FollowPointer x={x} y={y} title={title} />}
+      </AnimatePresence>
       {children}
     </div>
-  )
-}
+  );
+};
 
 export const FollowPointer = ({
   x,
   y,
   title,
 }: {
-  x: any
-  y: any
-  title?: string | React.ReactNode
+  x: any;
+  y: any;
+  title?: string | React.ReactNode;
 }) => {
   return (
     <motion.div
@@ -124,7 +117,7 @@ export const FollowPointer = ({
           fill="currentColor"
           strokeWidth="1"
           viewBox="0 0 16 16"
-          className="h-6 w-6 -rotate-[70deg] transform stroke-orange-400 text-orange-500 drop-shadow-lg pointer-events-none"
+          className="h-6 w-6 -rotate-[70deg] transform stroke-[color:var(--brand-blue)] text-[color:var(--brand-blue)] drop-shadow-lg pointer-events-none"
           height="1em"
           width="1em"
           xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +126,7 @@ export const FollowPointer = ({
         </svg>
         <motion.div
           style={{
-            backgroundColor: "#e78a53", // Fixed orange color
+            backgroundColor: "var(--brand-blue)",
           }}
           initial={{
             scale: 0.5,
@@ -153,5 +146,5 @@ export const FollowPointer = ({
         </motion.div>
       </div>
     </motion.div>
-  )
-}
+  );
+};

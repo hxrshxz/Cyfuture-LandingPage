@@ -29,7 +29,7 @@ class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-slate-800/50 backdrop-blur-sm border border-red-500/20 rounded-xl p-8 text-center">
             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="h-8 w-8 text-red-400" />
@@ -46,7 +46,7 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="space-y-3">
               <button
                 onClick={() => window.location.reload()}
-                className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <RefreshCw className="h-4 w-4" />
                 Refresh Page
@@ -54,7 +54,7 @@ class ErrorBoundary extends Component<Props, State> {
 
               <button
                 onClick={() => this.setState({ hasError: false })}
-                className="w-full border border-purple-500/50 text-purple-300 hover:bg-purple-500/10 px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                className="w-full border border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-4 py-2 rounded-lg font-medium transition-all duration-200"
               >
                 Try Again
               </button>

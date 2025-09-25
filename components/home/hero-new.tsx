@@ -61,7 +61,7 @@ export default function Hero() {
               ease: "easeInOut",
               delay: 5,
             }}
-            className="absolute top-1/3 right-1/4 w-64 h-64 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-full blur-3xl"
+            className="absolute top-1/3 right-1/4 w-64 h-64 bg-gradient-to-r from-blue-500/15 to-cyan-500/15 rounded-full blur-3xl"
           />
           <motion.div
             animate={{
@@ -139,7 +139,7 @@ export default function Hero() {
                   initial={{ opacity: 0, x: 100 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 1, delay: 0.7 }}
-                  className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
+                  className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-600 bg-clip-text text-transparent"
                 >
                   Financial Future
                 </motion.div>
@@ -182,8 +182,8 @@ export default function Hero() {
               {/* Spectacular CTA Button */}
               <div className="relative group">
                 {/* Multiple Glowing Layers */}
-                <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition duration-1000"></div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-blue-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-400 to-blue-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition duration-1000"></div>
 
                 <button
                   onClick={handleGetStarted}
@@ -280,7 +280,7 @@ export default function Hero() {
                 </div>
 
                 <div className="text-center p-8 bg-gradient-to-b from-slate-800/50 to-slate-900/50 rounded-3xl border border-slate-700/50 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
-                  <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center">
                     <svg
                       className="w-8 h-8 text-white"
                       fill="none"
@@ -359,7 +359,7 @@ export default function Hero() {
                   </span>
                 </div>
                 <div className="flex items-center space-x-4 hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center">
                     <svg
                       className="w-6 h-6 text-white"
                       fill="currentColor"
