@@ -432,12 +432,22 @@ export default function Features() {
                   </div>
                 </div>
                 <div className="flex grow items-center justify-center select-none relative min-h-[300px] p-4">
-                  <div className="relative w-full max-w-sm">
-                    <img
-                      src="/modern-grid-layout.png"
-                      alt="Dynamic Layout Example"
-                      className="w-full h-auto rounded-lg shadow-lg"
-                    />
+                  <div className="relative w-full max-w-lg">
+                    <div className="relative w-full overflow-hidden rounded-xl border border-gray-800/60 bg-black/30">
+                <div className="aspect-video">
+                  <iframe
+                    src="https://my.spline.design/perisoft3dphonesoftwaredevelopment-zfPSkBHUsRUsnn33qBYfOW1W/"
+                    frameBorder="0"
+                    width="100%"
+                    height="100%"
+                    className="h-full w-full"
+                    title="ITC Fraud Visualization"
+                    allow="xr-spatial-tracking; accelerometer; magnetometer; gyroscope;"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
                   </div>
                 </div>
