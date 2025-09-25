@@ -162,7 +162,7 @@ export default function Features() {
                       <div className="flex items-center gap-8">
                         {/* Left Column */}
                         <div className="flex flex-col gap-3">
-                          {["Feature-1", "Feature-1", "Feature-1"].map((item, index) => (
+                          {["ITC CLAIMS ", "FETCH GSTR-2B", "CLUSTERING"].map((item, index) => (
                             <motion.div
                               key={`left-${index}`}
                               className="bg-white rounded px-3 py-2 flex items-center gap-2 text-black text-sm font-medium shadow-sm"
@@ -201,7 +201,7 @@ export default function Features() {
 
                         {/* Right Column */}
                         <div className="flex flex-col gap-3">
-                          {["Feature-1", "Feature-1", "Feature-1"].map((item, index) => (
+                          {["AI ASSISTANT", "CRYPTOGRAPHIC", "RECONCILITION"].map((item, index) => (
                             <motion.div
                               key={`right-${index}`}
                               className="bg-white rounded px-3 py-2 flex items-center gap-2 text-black text-sm font-medium shadow-sm"
@@ -284,7 +284,7 @@ export default function Features() {
                   <h1 className="mt-8 text-center text-5xl leading-[100%] font-semibold sm:leading-normal lg:mt-12 lg:text-6xl">
                     <span className='bg-background relative mt-3 inline-block w-fit rounded-md border px-1.5 py-0.5 before:absolute before:top-0 before:left-0 before:z-10 before:h-full before:w-full before:bg-[url("/noise.gif")] before:opacity-[0.09] before:content-[""]'>
                       <ScrambleHover
-                        text="feature-2"
+                        text="Global"
                         scrambleSpeed={70}
                         maxIterations={20}
                         useOriginalCharsOnly={false}
