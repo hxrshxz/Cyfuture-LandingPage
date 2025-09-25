@@ -68,17 +68,17 @@ export default function Home() {
           className={`z-50 flex items-center justify-center gap-2 transition-all duration-300 ${
             isScrolled ? "ml-4" : ""
           }`}
-          href="https://v0.app"
+          // href="https://v0.app"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <svg
+          {/* <svg
             fill="currentColor"
             viewBox="0 0 147 70"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
             className="text-foreground rounded-full size-8 w-8"
-          ></svg>
+          ></svg> */}
         </a>
 
         <div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center md:flex">
