@@ -194,7 +194,11 @@ export default function Home() {
                 <Link
                   href="/login"
                   className="px-4 py-3 text-lg font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-background/50 cursor-pointer"
-                  onClick={() => console.log('Mobile login button clicked - navigating to /login')}
+                  onClick={() =>
+                    console.log(
+                      "Mobile login button clicked - navigating to /login"
+                    )
+                  }
                 >
                   Log In
                 </Link>

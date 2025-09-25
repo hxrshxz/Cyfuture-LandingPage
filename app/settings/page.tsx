@@ -80,8 +80,12 @@ export default function SettingsPage() {
       <AppNavigation currentPage="/settings">
         <div className="pt-24 px-4 md:px-8 max-w-screen-xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
-            <p className="text-muted-foreground">Manage your account and application preferences</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Settings
+            </h1>
+            <p className="text-muted-foreground">
+              Manage your account and application preferences
+            </p>
           </div>
           {/* Settings Categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

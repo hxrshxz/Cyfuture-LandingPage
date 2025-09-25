@@ -36,7 +36,7 @@ const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
   const endpoint = useMemo(() => {
     const custom = process.env.NEXT_PUBLIC_SOLANA_RPC?.trim();
     if (custom && custom.length > 0) return custom;
-    
+
     // Use more reliable RPC endpoints
     switch (network) {
       case WalletAdapterNetwork.Mainnet:
@@ -61,12 +61,14 @@ const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
   );
 
   return (
-    <ConnectionProvider 
+    <ConnectionProvider
       endpoint={endpoint}
       config={{
-        commitment: 'confirmed',
+        commitment: "confirmed",
         confirmTransactionInitialTimeout: 60000,
-        wsEndpoint: endpoint.replace('https://', 'wss://').replace('http://', 'ws://'),
+        wsEndpoint: endpoint
+          .replace("https://", "wss://")
+          .replace("http://", "ws://"),
       }}
     >
       <WalletProvider wallets={wallets} autoConnect={true}>

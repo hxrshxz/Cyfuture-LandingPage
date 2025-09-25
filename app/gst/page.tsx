@@ -86,8 +86,12 @@ export default function GSTReconciliationPage() {
         <div className="pt-24 px-4 md:px-8 max-w-screen-xl mx-auto">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">GST Reconciliation Center</h1>
-              <p className="text-muted-foreground">Three-step process for monthly GST compliance</p>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                GST Reconciliation Center
+              </h1>
+              <p className="text-muted-foreground">
+                Three-step process for monthly GST compliance
+              </p>
             </div>
             <Button className="btn-metallic">
               <Download className="w-4 h-4 mr-2" />

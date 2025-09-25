@@ -62,9 +62,9 @@ export function PricingSection() {
   const [isAnnual, setIsAnnual] = useState(false);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       maximumFractionDigits: 0,
     }).format(price);
   };
@@ -81,10 +81,16 @@ export function PricingSection() {
           Start free and scale as you grow. All plans include our core AI
           features and blockchain security.
         </p>
-        
+
         {/* Billing Toggle */}
         <div className="flex items-center justify-center space-x-4 mt-8">
-          <span className={`text-sm font-medium ${!isAnnual ? 'text-blue-600 dark:text-blue-300' : 'text-gray-500 dark:text-gray-400'}`}>
+          <span
+            className={`text-sm font-medium ${
+              !isAnnual
+                ? "text-blue-600 dark:text-blue-300"
+                : "text-gray-500 dark:text-gray-400"
+            }`}
+          >
             Monthly
           </span>
           <button
@@ -93,11 +99,17 @@ export function PricingSection() {
           >
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                isAnnual ? 'translate-x-6' : 'translate-x-1'
+                isAnnual ? "translate-x-6" : "translate-x-1"
               }`}
             />
           </button>
-          <span className={`text-sm font-medium ${isAnnual ? 'text-blue-600 dark:text-blue-300' : 'text-gray-500 dark:text-gray-400'}`}>
+          <span
+            className={`text-sm font-medium ${
+              isAnnual
+                ? "text-blue-600 dark:text-blue-300"
+                : "text-gray-500 dark:text-gray-400"
+            }`}
+          >
             Annual
           </span>
           {isAnnual && (
@@ -150,16 +162,19 @@ export function PricingSection() {
               <div className="flex items-end justify-center space-x-1">
                 <span className="text-4xl font-geist font-bold">
                   <GradientText variant="primary">
-                    {formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice)}
+                    {formatPrice(
+                      isAnnual ? plan.annualPrice : plan.monthlyPrice
+                    )}
                   </GradientText>
                 </span>
                 <span className="text-gray-500 dark:text-gray-400 mb-1">
-                  /{isAnnual ? 'year' : 'month'}
+                  /{isAnnual ? "year" : "month"}
                 </span>
               </div>
               {isAnnual && (
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {formatPrice(Math.round(plan.annualPrice / 12))}/month when paid annually
+                  {formatPrice(Math.round(plan.annualPrice / 12))}/month when
+                  paid annually
                 </div>
               )}
             </div>

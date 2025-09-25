@@ -28,10 +28,10 @@ export default function AppNavigation({ currentPage, children }: AppNavProps) {
   const { connected, publicKey, wallet } = useWallet();
 
   // Debug wallet connection state
-  console.log("Wallet connection state:", { 
-    connected, 
-    publicKey: publicKey?.toBase58(), 
-    walletName: wallet?.adapter?.name 
+  console.log("Wallet connection state:", {
+    connected,
+    publicKey: publicKey?.toBase58(),
+    walletName: wallet?.adapter?.name,
   });
 
   useEffect(() => {
@@ -92,10 +92,7 @@ export default function AppNavigation({ currentPage, children }: AppNavProps) {
         </Link>
 
         <div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center md:flex">
-          <TubeNav
-            fixed={false}
-            items={appNavItems}
-          />
+          <TubeNav fixed={false} items={appNavItems} />
         </div>
 
         <div className="flex items-center gap-4">
