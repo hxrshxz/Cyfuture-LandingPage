@@ -30,11 +30,11 @@ const ProactiveInsightCard = () => {
               <AlertTriangle className="h-4 w-4" /> {criticalShifts}
             </p>
           </div>
-          <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+          <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
             <p className="text-xs font-semibold text-slate-500">
               Highest Stage
             </p>
-            <p className="text-lg font-bold text-purple-800">
+            <p className="text-lg font-bold text-blue-800">
               {highestExtractionStage}
             </p>
           </div>
