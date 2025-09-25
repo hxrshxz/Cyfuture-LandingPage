@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { Transaction, LAMPORTS_PER_SOL, Commitment } from "@solana/web3.js";
 import { createMemoInstruction } from "@solana/spl-memo";
 
 // Define the structure for the hook's return value
@@ -55,19 +55,25 @@ export const useSolanaAction = (): SolanaAction => {
         // Add a memo instruction using the SPL Memo program
         transaction.add(createMemoInstruction(memo));
 
-        // Get recent blockhash
-        const { blockhash } = await connection.getLatestBlockhash();
+        // Get recent blockhash and last valid block height
+        const { blockhash, lastValidBlockHeight } =
+          await connection.getLatestBlockhash({
+            commitment: "finalized" as Commitment,
+          });
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = publicKey;
 
         // Send the transaction
         console.log("Sending memo transaction with text:", memo);
-        const signature = await walletSendTransaction(transaction, connection);
+        const signature = await walletSendTransaction(transaction, connection, {
+          preflightCommitment: "confirmed",
+          skipPreflight: false,
+        });
         console.log("Transaction sent with signature:", signature);
 
-        // Wait for confirmation
+        // Wait for confirmation using blockhash + lastValidBlockHeight
         const confirmation = await connection.confirmTransaction(
-          signature,
+          { signature, blockhash, lastValidBlockHeight },
           "confirmed"
         );
         console.log("Transaction confirmed:", confirmation);
@@ -94,7 +100,9 @@ export const useSolanaAction = (): SolanaAction => {
           errorMessage = "Network connection issue. Please try again.";
         }
 
-        const enhancedError = new Error(errorMessage);
+        const enhancedError = new Error(
+          `${errorMessage}: ${(err as Error).message}`
+        );
         return { signature: null, error: enhancedError };
       } finally {
         setIsSending(false);
@@ -116,13 +124,13 @@ export const useSolanaAction = (): SolanaAction => {
 
     try {
       console.log("Requesting airdrop for wallet:", publicKey.toBase58());
-      
+
       // Request 1 SOL airdrop
       const signature = await connection.requestAirdrop(
         publicKey,
         LAMPORTS_PER_SOL
       );
-      
+
       console.log("Airdrop requested with signature:", signature);
 
       // Wait for confirmation

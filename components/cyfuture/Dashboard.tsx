@@ -29,8 +29,8 @@ import {
 import { Badge } from "./landing/components/ui/badge";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useSolanaAction } from "../hooks/useSolanaAction";
-import { useIpfs } from "../hooks/useIpfs";
+import { useSolanaAction } from "../../hooks/useSolanaAction";
+import { useIpfsWithFallback as useIpfs } from "../../hooks/useIpfsFallback";
 import AIAccountant from "../AIAccountant";
 
 interface InvoiceData {
@@ -374,12 +374,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() =>
+                          onClick={() => {
+                            const gw =
+                              process.env.NEXT_PUBLIC_IPFS_GATEWAY ||
+                              "https://cloudflare-ipfs.com/ipfs";
+                            const base = gw.replace(/\/$/, "");
                             window.open(
-                              `https://gateway.pinata.cloud/ipfs/${invoice.ipfsHash}`,
+                              `${base}/${invoice.ipfsHash}`,
                               "_blank"
-                            )
-                          }
+                            );
+                          }}
                         >
                           <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -534,12 +538,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() =>
-                          window.open(
-                            `https://gateway.pinata.cloud/ipfs/${invoice.ipfsHash}`,
-                            "_blank"
-                          )
-                        }
+                        onClick={() => {
+                          const gw = process.env.NEXT_PUBLIC_IPFS_GATEWAY;
+                          const fallback = "https://cloudflare-ipfs.com/ipfs";
+                          let base = (gw?.trim() || fallback).replace(
+                            /\/$/,
+                            ""
+                          );
+                          if (!/\/ipfs$/.test(base)) base = `${base}/ipfs`;
+                          window.open(`${base}/${invoice.ipfsHash}`, "_blank");
+                        }}
                       >
                         <Database className="h-4 w-4 mr-1" />
                         IPFS
@@ -549,12 +557,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() =>
-                          window.open(
-                            `https://explorer.solana.com/tx/${invoice.solanaSignature}?cluster=devnet`,
-                            "_blank"
-                          )
-                        }
+                        onClick={() => {
+                          const cluster =
+                            process.env.NEXT_PUBLIC_SOLANA_CLUSTER || "devnet";
+                          const base = "https://explorer.solana.com/tx";
+                          const url =
+                            cluster === "mainnet" || cluster === "mainnet-beta"
+                              ? `${base}/${invoice.solanaSignature}`
+                              : `${base}/${invoice.solanaSignature}?cluster=${cluster}`;
+                          window.open(url, "_blank");
+                        }}
                       >
                         <ShieldCheck className="h-4 w-4 mr-1" />
                         Blockchain

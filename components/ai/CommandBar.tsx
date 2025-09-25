@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Search, Mic, Camera, Languages, Volume2, VolumeX } from "lucide-react";
-import { Button } from "../landing/components/ui/button";
-import { Input } from "../landing/components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { AnimatePresence } from "framer-motion";
 
 const INGRESCommandBar = ({

@@ -15,7 +15,11 @@ interface AuthModalProps {
   initialMode?: "login" | "signup";
 }
 
-export default function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalProps) {
+export default function AuthModal({
+  isOpen,
+  onClose,
+  initialMode = "login",
+}: AuthModalProps) {
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -25,26 +29,26 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
   // Demo values for quick testing
   const demoLoginData = {
     email: "john@example.com",
-    password: "password123"
+    password: "password123",
   };
 
   const demoSignupData = {
     name: "John Doe",
     email: "john@example.com",
     password: "password123",
-    confirmPassword: "password123"
+    confirmPassword: "password123",
   };
 
   const [loginData, setLoginData] = useState({
     email: demoLoginData.email,
-    password: demoLoginData.password
+    password: demoLoginData.password,
   });
 
   const [signupData, setSignupData] = useState({
     name: demoSignupData.name,
     email: demoSignupData.email,
     password: demoSignupData.password,
-    confirmPassword: demoSignupData.confirmPassword
+    confirmPassword: demoSignupData.confirmPassword,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +60,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
         const success = await login(loginData.email, loginData.password);
         if (success) {
           onClose();
-          router.push('/dashboard');
+          router.push("/dashboard");
         } else {
           setError("Invalid credentials. Try the demo values!");
         }
@@ -70,10 +74,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
           return;
         }
 
-        const success = await signup(signupData.name, signupData.email, signupData.password);
+        const success = await signup(
+          signupData.name,
+          signupData.email,
+          signupData.password
+        );
         if (success) {
           onClose();
-          router.push('/dashboard');
+          router.push("/dashboard");
         } else {
           setError("Email already exists. Try a different email.");
         }
@@ -127,7 +135,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
               {mode === "login" ? "Welcome back!" : "Create account"}
             </h2>
             <p className="text-zinc-400">
-              {mode === "login" ? "Sign in to continue" : "Get started with CyFuture AI"}
+              {mode === "login"
+                ? "Sign in to continue"
+                : "Get started with CyFuture AI"}
             </p>
           </div>
 
@@ -161,7 +171,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
                   type="text"
                   placeholder="Enter your name"
                   value={signupData.name}
-                  onChange={(e) => setSignupData(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setSignupData((prev) => ({ ...prev, name: e.target.value }))
+                  }
                   className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
                   required
                 />
@@ -179,9 +191,15 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
                 value={mode === "login" ? loginData.email : signupData.email}
                 onChange={(e) => {
                   if (mode === "login") {
-                    setLoginData(prev => ({ ...prev, email: e.target.value }));
+                    setLoginData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }));
                   } else {
-                    setSignupData(prev => ({ ...prev, email: e.target.value }));
+                    setSignupData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }));
                   }
                 }}
                 className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
@@ -198,12 +216,20 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  value={mode === "login" ? loginData.password : signupData.password}
+                  value={
+                    mode === "login" ? loginData.password : signupData.password
+                  }
                   onChange={(e) => {
                     if (mode === "login") {
-                      setLoginData(prev => ({ ...prev, password: e.target.value }));
+                      setLoginData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }));
                     } else {
-                      setSignupData(prev => ({ ...prev, password: e.target.value }));
+                      setSignupData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }));
                     }
                   }}
                   className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20 pr-10"
@@ -214,7 +240,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -229,7 +259,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
                   type="password"
                   placeholder="Confirm your password"
                   value={signupData.confirmPassword}
-                  onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                  onChange={(e) =>
+                    setSignupData((prev) => ({
+                      ...prev,
+                      confirmPassword: e.target.value,
+                    }))
+                  }
                   className="mt-1 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-orange-500 focus:ring-orange-500/20"
                   required
                 />
@@ -241,14 +276,20 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
               disabled={isLoading}
               className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium py-3 rounded-xl transition-colors"
             >
-              {isLoading ? "Please wait..." : (mode === "login" ? "Sign In" : "Create Account")}
+              {isLoading
+                ? "Please wait..."
+                : mode === "login"
+                ? "Sign In"
+                : "Create Account"}
             </Button>
           </form>
 
           {/* Switch Mode */}
           <div className="mt-6 text-center">
             <p className="text-zinc-400 text-sm">
-              {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+              {mode === "login"
+                ? "Don't have an account? "
+                : "Already have an account? "}
               <button
                 onClick={() => {
                   setMode(mode === "login" ? "signup" : "login");
@@ -264,7 +305,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
           {/* Demo Info */}
           <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
             <p className="text-blue-400 text-xs text-center">
-              💡 <strong>Demo Credentials:</strong> john@example.com / password123
+              💡 <strong>Demo Credentials:</strong> john@example.com /
+              password123
             </p>
           </div>
         </div>

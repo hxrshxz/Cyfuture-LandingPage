@@ -5,9 +5,8 @@ import ScrambleHover from "./ui/scramble"
 import { FollowerPointerCard } from "./ui/following-pointer"
 import { motion, useInView } from "framer-motion"
 import { Suspense, useEffect, useRef, useState } from "react"
-import { geist } from "../../../lib/fonts"
-import { cn } from "../../../lib/utils"
-
+import { geist } from "@/lib/fonts"
+import { cn } from "@/lib/utils"
 export default function Features() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })

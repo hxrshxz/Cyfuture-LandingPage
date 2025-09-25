@@ -24,15 +24,19 @@ interface NavigationProps {
 export default function Navigation({ currentPage }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<"login" | "signup">("login");
+  const [authModalMode, setAuthModalMode] = useState<"login" | "signup">(
+    "login"
+  );
   const { user, logout, isAuthenticated } = useAuth();
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
-    ...(isAuthenticated ? [
-      { href: "/dashboard", label: "Dashboard", icon: Layout },
-      { href: "/ai", label: "AI Assistant", icon: Bot },
-    ] : []),
+    ...(isAuthenticated
+      ? [
+          { href: "/dashboard", label: "Dashboard", icon: Layout },
+          { href: "/ai", label: "AI Assistant", icon: Bot },
+        ]
+      : []),
   ];
 
   return (
@@ -52,7 +56,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPage === item.href;
-              
+
               return (
                 <Link
                   key={item.href}
@@ -80,7 +84,9 @@ export default function Navigation({ currentPage }: NavigationProps) {
                   </div>
                   <div className="text-sm">
                     <p className="text-white font-medium">{user?.name}</p>
-                    <p className="text-gray-400 capitalize">{user?.plan} Plan</p>
+                    <p className="text-gray-400 capitalize">
+                      {user?.plan} Plan
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -95,24 +101,24 @@ export default function Navigation({ currentPage }: NavigationProps) {
               </>
             ) : (
               <>
-                <Button 
+                <Button
                   onClick={() => {
                     setAuthModalMode("login");
                     setIsAuthModalOpen(true);
                   }}
-                  variant="ghost" 
-                  size="sm" 
+                  variant="ghost"
+                  size="sm"
                   className="text-gray-300 hover:text-white"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
                   Login
                 </Button>
-                <Button 
+                <Button
                   onClick={() => {
                     setAuthModalMode("signup");
                     setIsAuthModalOpen(true);
                   }}
-                  size="sm" 
+                  size="sm"
                   className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
                 >
                   <UserPlus className="w-4 h-4 mr-2" />
@@ -146,7 +152,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPage === item.href;
-                
+
                 return (
                   <Link
                     key={item.href}
@@ -163,7 +169,7 @@ export default function Navigation({ currentPage }: NavigationProps) {
                   </Link>
                 );
               })}
-              
+
               <div className="pt-4 border-t border-gray-800 space-y-2">
                 {isAuthenticated ? (
                   <>
@@ -173,7 +179,9 @@ export default function Navigation({ currentPage }: NavigationProps) {
                       </div>
                       <div className="text-sm">
                         <p className="text-white font-medium">{user?.name}</p>
-                        <p className="text-gray-400 capitalize">{user?.plan} Plan</p>
+                        <p className="text-gray-400 capitalize">
+                          {user?.plan} Plan
+                        </p>
                       </div>
                     </div>
                     <Button
@@ -191,26 +199,26 @@ export default function Navigation({ currentPage }: NavigationProps) {
                   </>
                 ) : (
                   <>
-                    <Button 
+                    <Button
                       onClick={() => {
                         setAuthModalMode("login");
                         setIsAuthModalOpen(true);
                         setIsMobileMenuOpen(false);
                       }}
-                      variant="ghost" 
-                      size="sm" 
+                      variant="ghost"
+                      size="sm"
                       className="w-full justify-start text-gray-300 hover:text-white"
                     >
                       <LogIn className="w-4 h-4 mr-2" />
                       Login
                     </Button>
-                    <Button 
+                    <Button
                       onClick={() => {
                         setAuthModalMode("signup");
                         setIsAuthModalOpen(true);
                         setIsMobileMenuOpen(false);
                       }}
-                      size="sm" 
+                      size="sm"
                       className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
                     >
                       <UserPlus className="w-4 h-4 mr-2" />
@@ -223,8 +231,8 @@ export default function Navigation({ currentPage }: NavigationProps) {
           </div>
         )}
       </div>
-      
-      <AuthModal 
+
+      <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         initialMode={authModalMode}

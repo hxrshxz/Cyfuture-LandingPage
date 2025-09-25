@@ -4,16 +4,16 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1.0 0 0);
+  --background: oklch(1 0 0);
   --foreground: #121113; /* Updated foreground color to specified dark color */
-  --card: oklch(1.0 0 0);
+  --card: oklch(1 0 0);
   --card-foreground: #121113; /* Updated card foreground to match */
-  --popover: oklch(1.0 0 0);
+  --popover: oklch(1 0 0);
   --popover-foreground: #121113; /* Updated popover foreground to match */
   --primary: oklch(0.6716 0.1368 48.513);
-  --primary-foreground: oklch(1.0 0 0);
+  --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.536 0.0398 196.028);
-  --secondary-foreground: oklch(1.0 0 0);
+  --secondary-foreground: oklch(1 0 0);
   --muted: oklch(0.967 0.0029 264.5419);
   --muted-foreground: oklch(0.551 0.0234 264.3637);
   --accent: oklch(0.9491 0 0);
@@ -31,8 +31,8 @@
   --sidebar: oklch(0.967 0.0029 264.5419);
   --sidebar-foreground: #121113; /* Updated sidebar foreground to match */
   --sidebar-primary: oklch(0.6716 0.1368 48.513);
-  --sidebar-primary-foreground: oklch(1.0 0 0);
-  --sidebar-accent: oklch(1.0 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(1 0 0);
   --sidebar-accent-foreground: #121113; /* Updated sidebar accent foreground to match */
   --sidebar-border: oklch(0.9276 0.0058 264.5313);
   --sidebar-ring: oklch(0.6716 0.1368 48.513);
@@ -42,11 +42,16 @@
   --radius: 0.75rem;
   --shadow-2xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
-  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
-  --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
-  --shadow-md: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.05);
-  --shadow-lg: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 4px 6px -1px hsl(0 0% 0% / 0.05);
-  --shadow-xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 8px 10px -1px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+  --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+  --shadow-md: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 2px 4px -1px hsl(0 0% 0% / 0.05);
+  --shadow-lg: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 4px 6px -1px hsl(0 0% 0% / 0.05);
+  --shadow-xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 8px 10px -1px hsl(0 0% 0% / 0.05);
   --shadow-2xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.13);
   --tracking-normal: 0rem;
   --spacing: 0.25rem;
@@ -55,6 +60,7 @@
 }
 
 .dark {
+  /* Existing dark theme (landing + legacy) */
   --background: oklch(0.1797 0.0043 308.1928);
   --foreground: oklch(0.8109 0 0);
   --card: oklch(0.1822 0 0);
@@ -93,12 +99,206 @@
   --radius: 0.75rem;
   --shadow-2xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
   --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.03);
-  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
-  --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
-  --shadow-md: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.05);
-  --shadow-lg: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 4px 6px -1px hsl(0 0% 0% / 0.05);
-  --shadow-xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 8px 10px -1px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+  --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+  --shadow-md: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 2px 4px -1px hsl(0 0% 0% / 0.05);
+  --shadow-lg: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 4px 6px -1px hsl(0 0% 0% / 0.05);
+  --shadow-xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.05),
+    0px 8px 10px -1px hsl(0 0% 0% / 0.05);
   --shadow-2xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.13);
+}
+
+/* Monochrome application theme (black & white minimal) */
+.mono-dark {
+  /* Base monochrome palette */
+  --background: #0b0b0b; /* near black */
+  --foreground: #f5f5f5; /* near white */
+  --card: #0e0e10;
+  --card-foreground: #f5f5f5;
+  --popover: #0e0e10;
+  --popover-foreground: #f5f5f5;
+  --primary: #ffffff; /* accents are white with metallic sheen */
+  --primary-foreground: #0b0b0b;
+  --secondary: #111113;
+  --secondary-foreground: #eaeaea;
+  --muted: #141416;
+  --muted-foreground: #b8b8b8;
+  --accent: #101012;
+  --accent-foreground: #efefef;
+  --destructive: #242426;
+  --destructive-foreground: #ffffff;
+  --border: #2a2a2e;
+  --input: #2a2a2e;
+  --ring: #e6e6e6;
+  --sidebar: #0d0d0f;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #0b0b0b;
+  --sidebar-accent: #121214;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2a2a2e;
+  --sidebar-ring: #e6e6e6;
+  /* Charts in neutral grays */
+  --chart-1: #ededed;
+  --chart-2: #cfcfcf;
+  --chart-3: #a9a9a9;
+  --chart-4: #7d7d7d;
+  --chart-5: #595959;
+  /* Curvy + spacious feel */
+  --radius: 1.25rem;
+}
+
+/* Monochrome gradient backgrounds and metallic accents */
+.mono-dark body {
+  background: radial-gradient(1200px 800px at 20% -10%, #1a1a1a 0%, #0b0b0b 60%),
+    radial-gradient(1000px 600px at 120% 120%, #1a1a1a 0%, #0b0b0b 60%),
+    linear-gradient(180deg, #0b0b0b 0%, #0b0b0b 100%);
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+}
+
+/* Subtle noise for premium texture */
+.mono-dark body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0 0 0 0.03 0.06 0.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  z-index: 0;
+}
+
+/* Glass/metal card effect */
+.mono-dark [data-slot="card"],
+.mono-dark .glass-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
+}
+
+/* Metallic button styles */
+.mono-dark [data-slot="button"].bg-primary,
+.mono-dark .btn-metallic {
+  background-image: linear-gradient(180deg, #ffffff, #dcdcdc);
+  color: #0b0b0b;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
+    0 10px 20px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.25);
+  border-radius: 9999px;
+}
+
+.mono-dark [data-slot="button"].bg-primary:hover,
+.mono-dark .btn-metallic:hover {
+  background-image: linear-gradient(180deg, #ffffff, #cfcfcf);
+}
+
+/* Outline buttons subtle gradient */
+.mono-dark [data-slot="button"].border,
+.mono-dark .btn-outline-metallic {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-color: rgba(255,255,255,0.12);
+  border-radius: 9999px;
+}
+
+/* Inputs */
+.mono-dark [data-slot="input"],
+.mono-dark input,
+.mono-dark textarea,
+.mono-dark select {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-color: rgba(255,255,255,0.12);
+  border-radius: 9999px;
+  min-height: 42px;
+  padding-inline: 1rem;
+}
+
+.mono-dark [data-slot="input"]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.08), 0 0 0 1px #e6e6e6 inset;
+}
+
+/* Gradient borders utility */
+.mono-dark .gradient-border {
+  position: relative;
+}
+.mono-dark .gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.05));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  pointer-events: none;
+}
+
+/* Shine effect utility */
+.mono-dark .shine {
+  position: relative;
+  overflow: hidden;
+}
+.mono-dark .shine::after {
+  content: "";
+  position: absolute;
+  inset: -100%;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.15) 20%, transparent 40%);
+  transform: translateX(-50%);
+  transition: transform 600ms ease;
+}
+.mono-dark .shine:hover::after {
+  transform: translateX(100%);
+}
+
+/* Subtle separators */
+.mono-dark .divider {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  height: 1px;
+}
+
+/* Spacious nav items */
+.mono-dark .nav-item {
+  border-radius: 16px;
+  padding-block: 14px;
+}
+
+/* Curvy, big type scale */
+.mono-dark h1 {
+  font-size: clamp(2rem, 3vw + 1rem, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.mono-dark h2 {
+  font-size: clamp(1.5rem, 2.2vw + 0.6rem, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.mono-dark h3 {
+  font-size: clamp(1.25rem, 1.4vw + 0.5rem, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Display helpers for very large headlines */
+.display-1 { font-size: clamp(3rem, 6vw + 1rem, 4.5rem); font-weight: 900; letter-spacing: -0.03em; }
+.display-2 { font-size: clamp(2.5rem, 5vw + 1rem, 3.75rem); font-weight: 900; letter-spacing: -0.03em; }
+.display-3 { font-size: clamp(2rem, 4vw + 1rem, 3rem); font-weight: 800; letter-spacing: -0.02em; }
+
+/* Table and surface tweaks */
+.mono-dark table {
+  border-color: rgba(255,255,255,0.08);
+}
+.mono-dark tr {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.mono-dark thead th {
+  color: #d9d9d9;
 }
 
 @theme inline {

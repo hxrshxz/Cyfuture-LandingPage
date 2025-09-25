@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useRouter, usePathname } from "next/navigation"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Home,
   BarChart3,
@@ -19,19 +19,19 @@ import {
   Menu,
   X,
   LogOut,
-  User
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/contexts/AuthContext"
+  User,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavItem {
-  id: string
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-  href: string
-  description: string
-  badge?: string
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+  description: string;
+  badge?: string;
 }
 
 const navigationItems: NavItem[] = [
@@ -40,94 +40,111 @@ const navigationItems: NavItem[] = [
     label: "Dashboard",
     icon: Home,
     href: "/dashboard",
-    description: "Overview and quick actions"
+    description: "Invoice processing overview",
   },
   {
     id: "ai-assistant",
     label: "AI Assistant",
     icon: Bot,
     href: "/ai",
-    description: "Smart financial assistant",
-    badge: "AI"
+    description: "Smart invoice processing",
+    badge: "AI",
   },
   {
-    id: "analytics",
-    label: "Analytics",
+    id: "processing",
+    label: "Processing Queue",
     icon: BarChart3,
-    href: "/analytics",
-    description: "Financial insights and reports"
+    href: "/processing",
+    description: "Invoice processing status",
   },
   {
-    id: "portfolio",
-    label: "Portfolio",
+    id: "gst-reconciliation",
+    label: "GST Reconciliation",
     icon: PieChart,
-    href: "/portfolio",
-    description: "Investment tracking"
+    href: "/gst",
+    description: "GST compliance and matching",
   },
   {
-    id: "transactions",
-    label: "Transactions",
+    id: "blockchain-records",
+    label: "Blockchain Records",
     icon: CreditCard,
-    href: "/transactions",
-    description: "Transaction history"
-  },
-  {
-    id: "goals",
-    label: "Goals",
-    icon: Target,
-    href: "/goals",
-    description: "Financial goals tracking"
+    href: "/records",
+    description: "Secured invoice records",
   },
   {
     id: "reports",
     label: "Reports",
-    icon: FileText,
+    icon: Target,
     href: "/reports",
-    description: "Financial reports"
-  }
-]
+    description: "GST and compliance reports",
+  },
+  {
+    id: "ai-command",
+    label: "AI Command Center",
+    icon: FileText,
+    href: "/ai-command",
+    description: "Chat with your invoice data",
+  },
+];
 
 export default function AppNavigation() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const router = useRouter()
-  const pathname = usePathname()
-  const { user, logout } = useAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   const handleNavigation = (href: string) => {
-    router.push(href)
-    setIsMobileMenuOpen(false)
-  }
+    router.push(href);
+    setIsMobileMenuOpen(false);
+  };
 
   const handleLogout = () => {
-    logout()
-    router.push("/")
-  }
+    logout();
+    router.push("/");
+  };
 
-  const filteredItems = navigationItems.filter(item =>
-    item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredItems = navigationItems.filter(
+    (item) =>
+      item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:w-80 lg:flex-col lg:fixed lg:inset-y-0 bg-slate-900/95 backdrop-blur-sm border-r border-slate-800">
+      <aside
+        className="hidden lg:flex lg:w-80 lg:flex-col lg:fixed lg:inset-y-0 border-r gradient-border backdrop-blur-md"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
+          borderColor: "rgba(255,255,255,0.08)",
+        }}
+      >
         <div className="flex flex-col flex-1 min-h-0">
           {/* Header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-slate-800">
+          <div
+            className="flex items-center justify-between h-16 px-6 border-b"
+            style={{ borderColor: "rgba(255,255,255,0.08)" }}
+          >
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center btn-metallic shine">
+                <svg
+                  className="w-4 h-4 text-black"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
               </div>
-              <h1 className="text-lg font-semibold text-white">CyFuture AI</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                CyFuture AI
+              </h1>
             </div>
             <Button
               variant="ghost"
               size="sm"
-              className="text-slate-400 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               <Bell className="w-4 h-4" />
             </Button>
@@ -136,13 +153,19 @@ export default function AppNavigation() {
           {/* Search */}
           <div className="p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search sections..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 rounded-lg text-foreground placeholder-muted-foreground outline-none focus:ring-2"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+                }}
               />
             </div>
           </div>
@@ -150,48 +173,58 @@ export default function AppNavigation() {
           {/* Navigation Items */}
           <nav className="flex-1 px-4 pb-4 space-y-2">
             {filteredItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
-              
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}
-                  className={`w-full flex items-center justify-between px-4 py-3 text-left rounded-lg transition-all duration-200 group ${
+                  className={`nav-item w-full flex items-center justify-between px-4 py-3 text-left rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
-                      : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      ? "bg-white/5 text-foreground border border-white/15"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Icon className={`w-5 h-5 ${isActive ? "text-cyan-400" : "text-slate-400 group-hover:text-white"}`} />
+                    <Icon
+                      className={`w-5 h-5 ${
+                        isActive
+                          ? "text-foreground"
+                          : "text-muted-foreground group-hover:text-foreground"
+                      }`}
+                    />
                     <div>
                       <div className="font-medium">{item.label}</div>
-                      <div className="text-xs text-slate-400 group-hover:text-slate-300">
+                      <div className="text-xs text-muted-foreground group-hover:text-foreground/80">
                         {item.description}
                       </div>
                     </div>
                   </div>
                   {item.badge && (
-                    <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
+                    <Badge variant="secondary" className="bg-white/10 text-foreground border-white/15">
                       {item.badge}
                     </Badge>
                   )}
                 </button>
-              )
+              );
             })}
           </nav>
 
           {/* User Profile */}
-          <div className="p-4 border-t border-slate-800">
+          <div className="p-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center btn-metallic">
+                  <User className="w-4 h-4 text-black" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-white">{user?.name}</div>
-                  <div className="text-xs text-slate-400">{user?.email}</div>
+                  <div className="text-sm font-medium text-foreground">
+                    {user?.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {user?.email}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -199,7 +232,7 @@ export default function AppNavigation() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleNavigation("/settings")}
-                  className="text-slate-400 hover:text-white"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
@@ -207,7 +240,7 @@ export default function AppNavigation() {
                   variant="ghost"
                   size="sm"
                   onClick={handleLogout}
-                  className="text-slate-400 hover:text-red-400"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <LogOut className="w-4 h-4" />
                 </Button>
@@ -220,21 +253,30 @@ export default function AppNavigation() {
       {/* Mobile Navigation */}
       <div className="lg:hidden">
         {/* Mobile Header */}
-        <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-3">
+        <header
+          className="backdrop-blur-md border-b px-4 py-3 gradient-border"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
+            borderColor: "rgba(255,255,255,0.08)",
+          }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center btn-metallic">
+                <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                 </svg>
               </div>
-              <h1 className="text-lg font-semibold text-white">CyFuture AI</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                CyFuture AI
+              </h1>
             </div>
             <div className="flex items-center space-x-2">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-slate-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <Bell className="w-4 h-4" />
               </Button>
@@ -242,7 +284,7 @@ export default function AppNavigation() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-slate-400 hover:text-white"
+                className="text-muted-foreground hover:text-foreground"
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
@@ -257,59 +299,57 @@ export default function AppNavigation() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-slate-900/95 backdrop-blur-sm border-b border-slate-800"
+              className="lg:hidden backdrop-blur-md border-b gradient-border"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
+                borderColor: "rgba(255,255,255,0.08)",
+              }}
             >
               <div className="px-4 py-4 space-y-2 max-h-[70vh] overflow-y-auto">
                 {filteredItems.map((item) => {
-                  const Icon = item.icon
-                  const isActive = pathname === item.href
-                  
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleNavigation(item.href)}
-                      className={`w-full flex items-center justify-between px-4 py-3 text-left rounded-lg transition-all duration-200 ${
+                      className={`nav-item w-full flex items-center justify-between px-4 py-3 text-left rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                          ? "bg-white/5 text-foreground border border-white/15"
+                          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                       }`}
                     >
                       <div className="flex items-center space-x-3">
-                        <Icon className={`w-5 h-5 ${isActive ? "text-cyan-400" : "text-slate-400"}`} />
+                        <Icon className={`w-5 h-5 ${isActive ? "text-foreground" : "text-muted-foreground"}`} />
                         <div>
                           <div className="font-medium">{item.label}</div>
-                          <div className="text-xs text-slate-400">
-                            {item.description}
-                          </div>
+                          <div className="text-xs text-muted-foreground">{item.description}</div>
                         </div>
                       </div>
                       {item.badge && (
-                        <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
+                        <Badge variant="secondary" className="bg-white/10 text-foreground border-white/15">
                           {item.badge}
                         </Badge>
                       )}
                     </button>
-                  )
+                  );
                 })}
-                
+
                 {/* Mobile User Section */}
-                <div className="pt-4 mt-4 border-t border-slate-800">
+                <div className="pt-4 mt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                   <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-white" />
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center btn-metallic">
+                        <User className="w-4 h-4 text-black" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-white">{user?.name}</div>
-                        <div className="text-xs text-slate-400">{user?.email}</div>
+                        <div className="text-sm font-medium text-foreground">{user?.name}</div>
+                        <div className="text-xs text-muted-foreground">{user?.email}</div>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="text-slate-400 hover:text-red-400"
-                    >
+                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
                       <LogOut className="w-4 h-4" />
                     </Button>
                   </div>
@@ -320,5 +360,5 @@ export default function AppNavigation() {
         </AnimatePresence>
       </div>
     </>
-  )
+  );
 }

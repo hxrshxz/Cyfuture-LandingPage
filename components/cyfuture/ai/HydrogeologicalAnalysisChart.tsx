@@ -51,19 +51,19 @@ const FinancialAnalysisChart = () => {
     },
     {
       month: "Sep",
-      income: 178000,
-      expenses: 98000,
-      profitMargin: 44.9,
-      growthRate: 17.1,
+      extraction: 3900,
+      recharge: 6500,
+      waterQuality: 88,
+      declineRate: 0.22,
     },
-  ].map((d) => ({ ...d, netProfit: d.income - d.expenses }));
+  ].map((d) => ({ ...d, netBalance: d.recharge - d.extraction }));
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="p-3 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg w-64 font-sans">
           <p className="font-bold text-slate-800 text-lg mb-2">
-            {label} 2025 Financial Summary
+            {label} 2025 Summary
           </p>
           <div className="space-y-2">
             {payload.map((pld: any) => (
@@ -78,12 +78,9 @@ const FinancialAnalysisChart = () => {
                   ></div>
                   <span className="text-slate-600">{pld.name}:</span>
                 </div>
-                <span className="font-semibold text-slate-800">
-                  {pld.dataKey === "profitMargin" ||
-                  pld.dataKey === "growthRate"
-                    ? `${pld.value}%`
-                    : `₹${pld.value.toLocaleString()}`}
-                </span>
+                <span className="font-semibold text-slate-800">{`${pld.value.toLocaleString()}${
+                  pld.unit || ""
+                }`}</span>
               </div>
             ))}
           </div>
@@ -93,19 +90,25 @@ const FinancialAnalysisChart = () => {
     return null;
   };
 
+  // --- Replace the entire return statement of your HydrogeologicalAnalysisChart with this new version ---
+  // --- Replace the entire return statement of your HydrogeologicalAnalysisChart with this new version ---
   return (
+    // --- CHANGE 1: Added `relative` and `overflow-hidden` to the main container ---
     <div className="relative overflow-hidden w-full bg-white/80 p-6 rounded-2xl border my-4 backdrop-blur-md shadow-xl font-sans">
-      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 to-emerald-800"></div>
+      {/* --- CHANGE 2: Added the absolutely positioned top border --- */}
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-purple-500 to-purple-800"></div>
 
+      {/* Title and Subtitle Section (no changes here) */}
       <div>
         <h3 className="font-bold text-xl text-slate-800 mb-1 ml-2">
           Interactive Financial Analysis
         </h3>
         <p className="text-sm text-slate-500 mb-4 ml-2">
-          Six Month Business Summary (2025)
+          Six Month Summary (2025)
         </p>
       </div>
 
+      {/* Interactive Filter Buttons (no changes here) */}
       <div className="flex items-center justify-center gap-2 mb-4 p-1 bg-slate-100 rounded-full">
         <button
           onClick={() => setActiveSeries("all")}
@@ -118,39 +121,39 @@ const FinancialAnalysisChart = () => {
           All
         </button>
         <button
-          onClick={() => setActiveSeries("income")}
+          onClick={() => setActiveSeries("extraction")}
           className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
-            activeSeries === "income"
-              ? "bg-green-500 text-white shadow"
-              : "text-green-700 hover:bg-green-100"
-          }`}
-        >
-          Income
-        </button>
-        <button
-          onClick={() => setActiveSeries("expenses")}
-          className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
-            activeSeries === "expenses"
+            activeSeries === "extraction"
               ? "bg-red-500 text-white shadow"
               : "text-red-700 hover:bg-red-100"
           }`}
         >
-          Expenses
+          Extraction
         </button>
         <button
-          onClick={() => setActiveSeries("netProfit")}
+          onClick={() => setActiveSeries("recharge")}
           className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
-            activeSeries === "netProfit"
-              ? "bg-blue-600 text-white shadow"
-              : "text-blue-700 hover:bg-blue-100"
+            activeSeries === "recharge"
+              ? "bg-green-500 text-white shadow"
+              : "text-green-700 hover:bg-green-100"
           }`}
         >
-          Net Profit
+          Recharge
         </button>
         <button
-          onClick={() => setActiveSeries("profitMargin")}
+          onClick={() => setActiveSeries("netBalance")}
           className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
-            activeSeries === "profitMargin"
+            activeSeries === "netBalance"
+              ? "bg-amber-600 text-white shadow"
+              : "text-amber-700 hover:bg-amber-100"
+          }`}
+        >
+          Net Balance
+        </button>
+        <button
+          onClick={() => setActiveSeries("waterQuality")}
+          className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-colors duration-200 ${
+            activeSeries === "waterQuality"
               ? "bg-purple-500 text-white shadow"
               : "text-purple-700 hover:bg-purple-100"
           }`}
@@ -159,6 +162,7 @@ const FinancialAnalysisChart = () => {
         </button>
       </div>
 
+      {/* The Chart Itself (no changes here) */}
       <div className="w-full h-[500px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
@@ -166,20 +170,20 @@ const FinancialAnalysisChart = () => {
             margin={{ top: 5, right: 20, left: -10, bottom: 10 }}
           >
             <defs>
-              <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="colorExtraction" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
                 <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
               </linearGradient>
-              <linearGradient id="colorNetProfit" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              <linearGradient id="colorRecharge" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorNetBalance" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#d97706" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#d97706" stopOpacity={0} />
               </linearGradient>
               <linearGradient
-                id="colorProfitMargin"
+                id="colorWaterQuality"
                 x1="0"
                 y1="0"
                 x2="0"
@@ -203,14 +207,14 @@ const FinancialAnalysisChart = () => {
             />
             <YAxis
               yAxisId="left"
-              unit=" ₹"
+              unit=" m³"
               width={80}
               fontSize={12}
               tickLine={false}
               axisLine={false}
               tick={{ fill: "#64748b" }}
               tickFormatter={(value) =>
-                new Intl.NumberFormat("en-IN", {
+                new Intl.NumberFormat("en-US", {
                   notation: "compact",
                   compactDisplay: "short",
                 }).format(value)
@@ -220,7 +224,7 @@ const FinancialAnalysisChart = () => {
               yAxisId="right"
               orientation="right"
               unit="%"
-              domain={[0, 50]}
+              domain={[80, 100]}
               width={50}
               tickLine={false}
               axisLine={false}
@@ -231,45 +235,49 @@ const FinancialAnalysisChart = () => {
               cursor={{ fill: "rgba(241, 245, 249, 0.7)" }}
             />
 
-            {(activeSeries === "all" || activeSeries === "income") && (
+            {(activeSeries === "all" || activeSeries === "extraction") && (
               <Area
                 yAxisId="left"
                 type="monotone"
-                dataKey="income"
-                name="Income"
-                fill="url(#colorIncome)"
-                stroke="#22c55e"
-                strokeWidth={3}
-              />
-            )}
-            {(activeSeries === "all" || activeSeries === "expenses") && (
-              <Area
-                yAxisId="left"
-                type="monotone"
-                dataKey="expenses"
-                name="Expenses"
-                fill="url(#colorExpenses)"
+                dataKey="extraction"
+                name="Extraction"
+                unit=" m³"
+                fill="url(#colorExtraction)"
                 stroke="#ef4444"
                 strokeWidth={3}
               />
             )}
-            {(activeSeries === "all" || activeSeries === "netProfit") && (
+            {(activeSeries === "all" || activeSeries === "recharge") && (
               <Area
                 yAxisId="left"
                 type="monotone"
-                dataKey="netProfit"
-                name="Net Profit"
-                fill="url(#colorNetProfit)"
-                stroke="#3b82f6"
+                dataKey="recharge"
+                name="Recharge"
+                unit=" m³"
+                fill="url(#colorRecharge)"
+                stroke="#22c55e"
                 strokeWidth={3}
               />
             )}
-            {(activeSeries === "all" || activeSeries === "profitMargin") && (
+            {(activeSeries === "all" || activeSeries === "netBalance") && (
+              <Area
+                yAxisId="left"
+                type="monotone"
+                dataKey="netBalance"
+                name="Net Balance"
+                unit=" m³"
+                fill="url(#colorNetBalance)"
+                stroke="#d97706"
+                strokeWidth={3}
+              />
+            )}
+            {(activeSeries === "all" || activeSeries === "waterQuality") && (
               <Line
                 yAxisId="right"
                 type="monotone"
-                dataKey="profitMargin"
+                dataKey="waterQuality"
                 name="Profit Margin"
+                unit="%"
                 stroke="#8b5cf6"
                 strokeWidth={2}
                 strokeDasharray="5 5"
@@ -283,4 +291,4 @@ const FinancialAnalysisChart = () => {
   );
 };
 
-export default FinancialAnalysisChart;
+export default HydrogeologicalAnalysisChart;

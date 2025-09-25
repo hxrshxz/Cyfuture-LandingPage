@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, CardContent } from "../landing/components/ui/card";
-import { Badge } from "../landing/components/ui/badge";
+import { Card, CardContent } from "../ui/card";
+import { Badge } from "../ui/badge";
 import { useInView, useSpring } from "framer-motion";
 import { useEffect, useRef } from "react";
 

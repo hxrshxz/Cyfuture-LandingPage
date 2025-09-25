@@ -14,7 +14,6 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 
-// Import the wallet adapter styles
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 interface SolanaWalletProviderProps {
@@ -22,11 +21,22 @@ interface SolanaWalletProviderProps {
 }
 
 const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
-  // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = WalletAdapterNetwork.Devnet;
+  // Resolve network from env: 'devnet' | 'testnet' | 'mainnet' | 'mainnet-beta'
+  const clusterStr = (
+    process.env.NEXT_PUBLIC_SOLANA_CLUSTER || "devnet"
+  ).toLowerCase();
+  const network: WalletAdapterNetwork =
+    clusterStr === "mainnet" || clusterStr === "mainnet-beta"
+      ? WalletAdapterNetwork.Mainnet
+      : clusterStr === "testnet"
+      ? WalletAdapterNetwork.Testnet
+      : WalletAdapterNetwork.Devnet;
 
-  // Memoize the endpoint to avoid recalculating it on every render
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // Endpoint can be overridden by NEXT_PUBLIC_SOLANA_RPC, else use clusterApiUrl
+  const endpoint = useMemo(() => {
+    const custom = process.env.NEXT_PUBLIC_SOLANA_RPC?.trim();
+    return custom && custom.length > 0 ? custom : clusterApiUrl(network);
+  }, [network]);
 
   // Memoize the wallets array to avoid re-instantiating wallet adapters on every render
   // Prioritize Phantom wallet to avoid MetaMask Solana snap crashes

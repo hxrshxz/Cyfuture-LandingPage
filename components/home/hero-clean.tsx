@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useState, useEffect } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Sparkles } from "lucide-react"
-import AuthModal from "@/components/AuthModal"
-import { useAuth } from "@/contexts/AuthContext"
-import { useRouter } from "next/navigation"
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles } from "lucide-react";
+import AuthModal from "@/components/AuthModal";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
-  const [mounted, setMounted] = useState(false)
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-  const { isAuthenticated } = useAuth()
-  const router = useRouter()
+  const [mounted, setMounted] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
-      router.push('/dashboard')
+      router.push("/dashboard");
     } else {
-      setIsAuthModalOpen(true)
+      setIsAuthModalOpen(true);
     }
-  }
+  };
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
-    return null
+    return null;
   }
 
   return (
@@ -42,7 +42,10 @@ export default function Hero() {
               transition={{ duration: 0.5 }}
               className="mb-8"
             >
-              <Badge variant="secondary" className="inline-flex items-center gap-2 px-4 py-2 text-sm">
+              <Badge
+                variant="secondary"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm"
+              >
                 <Sparkles className="h-4 w-4" />
                 AI Financial Assistant
               </Badge>
@@ -55,9 +58,13 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="mb-8"
             >
-              <h1 id="main-title" className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+              <h1
+                id="main-title"
+                className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl"
+              >
                 Reach <strong>developers</strong> <span>&</span> <br />
-                <strong>creators</strong> <em className="italic">effortlessly</em>
+                <strong>creators</strong>{" "}
+                <em className="italic">effortlessly</em>
               </h1>
             </motion.div>
 
@@ -68,8 +75,9 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground"
             >
-              Beautiful, accessible components built with Tailwind CSS and Framer Motion. Copy, paste, and customize to
-              build your next project faster.
+              Beautiful, accessible components built with Tailwind CSS and
+              Framer Motion. Copy, paste, and customize to build your next
+              project faster.
             </motion.p>
 
             <motion.div
@@ -134,7 +142,9 @@ export default function Hero() {
             className="mt-auto pb-8"
           >
             <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-6">Trusted by developers at</p>
+              <p className="text-sm text-muted-foreground mb-6">
+                Trusted by developers at
+              </p>
               <div className="flex items-center justify-center gap-8">
                 {/* Logo placeholders */}
                 <div className="opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300">
@@ -151,12 +161,12 @@ export default function Hero() {
           </motion.div>
         </div>
       </section>
-      
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-        initialMode="login" 
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="login"
       />
     </>
-  )
+  );
 }
