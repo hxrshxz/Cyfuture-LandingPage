@@ -81,7 +81,7 @@ export default function Features() {
                 style={{ transition: "all 0s ease-in-out" }}
               >
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-2xl leading-none font-semibold tracking-tight">CLI & Manual Support</h3>
+                  <h3 className="text-2xl leading-none font-semibold tracking-tight">BLOCKCHAIN-SECURED INVOICE TRAILS FOR FRAUD-FREE ITC CLAIMS.</h3>
                   <div className="text-md text-muted-foreground flex flex-col gap-2 text-sm">
                     <p className="max-w-[460px]">
                       Integrate your landing page directly in the product while using your favorite tools.

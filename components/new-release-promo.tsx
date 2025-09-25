@@ -23,7 +23,7 @@ export function NewReleasePromo() {
 
           <div className="relative z-10">
             <div className="mt-8 text-center">
-              <h2 className="text-4xl font-bold text-white mb-6">Build. Customize. Deploy Quickly.</h2>
+              <h2 className="text-4xl font-bold text-white mb-6">Trust Every Invoice — Verified, Immutable, and Fraud-Proof.</h2>
               <p className="text-white/60 mb-8">Built to keep you hooked.</p>
               <svg
                 width="100"
