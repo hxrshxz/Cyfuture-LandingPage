@@ -303,8 +303,11 @@ User's question: "${text}"`;
           const result = await model.generateContent(prompt);
           const response = await result.response;
           const aiResponseText = response.text();
-          console.log("Gemini response received:", aiResponseText.substring(0, 100) + "...");
-          
+          console.log(
+            "Gemini response received:",
+            aiResponseText.substring(0, 100) + "..."
+          );
+
           const aiResponse = {
             id: Date.now() + 1,
             type: "ai",
