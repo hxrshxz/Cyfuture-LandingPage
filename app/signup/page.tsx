@@ -66,10 +66,10 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 app-ambient">
       <Link
         href="/"
-        className="absolute top-6 left-6 z-20 text-zinc-400 hover:text-[#e78a53] transition-colors duration-200 flex items-center space-x-2"
+        className="absolute top-6 left-6 z-20 text-zinc-400 hover:text-[color:var(--brand-blue)] transition-colors duration-200 flex items-center space-x-2"
       >
         <svg
           className="w-5 h-5"
@@ -87,12 +87,7 @@ export default function SignupPage() {
         <span>Back to Home</span>
       </Link>
 
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
-
-      {/* Decorative elements */}
-      <div className="absolute top-20 right-20 w-72 h-72 bg-[#e78a53]/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#e78a53]/5 rounded-full blur-3xl" />
+      {/* Ambient glow provided globally; remove page-specific gradients */}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -109,15 +104,17 @@ export default function SignupPage() {
                 viewBox="0 0 147 70"
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
-                className="text-[#e78a53] rounded-full size-8 w-8"
+                className="text-[color:var(--brand-blue)] rounded-full size-8 w-8"
               >
                 <path d="M56 50.2031V14H70V60.1562C70 65.5928 65.5928 70 60.1562 70C57.5605 70 54.9982 68.9992 53.1562 67.1573L0 14H19.7969L56 50.2031Z"></path>
                 <path d="M147 56H133V23.9531L100.953 56H133V70H96.6875C85.8144 70 77 61.1856 77 50.3125V14H91V46.1562L123.156 14H91V0H127.312C138.186 0 147 8.81439 147 19.6875V56Z"></path>
               </svg>
             </div>
           </Link>
-          <h1 className="text-3xl font-bold text-white mb-2">Create account</h1>
-          <p className="text-zinc-400">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Create account
+          </h1>
+          <p className="text-muted-foreground">
             Join thousands of developers building with v0
           </p>
         </div>
@@ -127,7 +124,7 @@ export default function SignupPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 rounded-2xl p-8"
+          className="glow-blue rounded-2xl p-8"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
@@ -137,7 +134,7 @@ export default function SignupPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-white">
+              <Label htmlFor="name" className="text-foreground">
                 Full Name
               </Label>
               <Input
@@ -147,13 +144,13 @@ export default function SignupPage() {
                 placeholder="Enter your full name"
                 value={formData.name}
                 onChange={handleChange}
-                className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[#e78a53] focus:ring-[#e78a53]/20"
+                className="bg-transparent border-input text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">
+              <Label htmlFor="email" className="text-foreground">
                 Email
               </Label>
               <Input
@@ -163,13 +160,13 @@ export default function SignupPage() {
                 placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
-                className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[#e78a53] focus:ring-[#e78a53]/20"
+                className="bg-transparent border-input text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">
+              <Label htmlFor="password" className="text-foreground">
                 Password
               </Label>
               <Input
@@ -179,13 +176,13 @@ export default function SignupPage() {
                 placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
-                className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[#e78a53] focus:ring-[#e78a53]/20"
+                className="bg-transparent border-input text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-white">
+              <Label htmlFor="confirmPassword" className="text-foreground">
                 Confirm Password
               </Label>
               <Input
@@ -195,7 +192,7 @@ export default function SignupPage() {
                 placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[#e78a53] focus:ring-[#e78a53]/20"
+                className="bg-transparent border-input text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                 required
               />
             </div>
@@ -204,21 +201,21 @@ export default function SignupPage() {
               <input
                 type="checkbox"
                 id="terms"
-                className="mt-1 rounded border-zinc-700 bg-zinc-800 text-[#e78a53] focus:ring-[#e78a53]/20"
+                className="mt-1 rounded border-zinc-700 bg-zinc-800 text-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
                 required
               />
-              <label htmlFor="terms" className="text-sm text-zinc-300">
+              <label htmlFor="terms" className="text-sm text-muted-foreground">
                 I agree to the{" "}
                 <Link
                   href="#"
-                  className="text-[#e78a53] hover:text-[#e78a53]/80"
+                  className="text-[color:var(--brand-blue)] hover:opacity-80"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
                   href="#"
-                  className="text-[#e78a53] hover:text-[#e78a53]/80"
+                  className="text-[color:var(--brand-blue)] hover:opacity-80"
                 >
                   Privacy Policy
                 </Link>
@@ -228,18 +225,18 @@ export default function SignupPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#e78a53] hover:bg-[#e78a53]/90 text-white font-medium py-3 rounded-xl transition-colors"
+              className="w-full bg-transparent text-foreground font-medium py-3 rounded-xl transition-colors border border-[color:var(--brand-blue)]/40 hover:bg-[color:var(--brand-blue)]/10"
             >
               {isLoading ? "Creating account..." : "Create account"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-zinc-400">
+            <p className="text-muted-foreground">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-[#e78a53] hover:text-[#e78a53]/80 font-medium"
+                className="text-[color:var(--brand-blue)] hover:opacity-80 font-medium"
               >
                 Sign in
               </Link>
@@ -268,10 +265,10 @@ export default function SignupPage() {
           <div className="mt-6 grid grid-cols-2 gap-3">
             <Button
               variant="outline"
-              className="bg-zinc-900/50 border-zinc-800 text-zinc-300 hover:bg-white hover:text-black hover:border-white transition-all duration-200 group"
+              className="glow-blue text-foreground hover:bg-white hover:text-black hover:border-white transition-all duration-200 group"
             >
               <svg
-                className="w-5 h-5 mr-2 text-zinc-300 group-hover:text-black transition-colors duration-200"
+                className="w-5 h-5 mr-2 text-muted-foreground group-hover:text-black transition-colors duration-200"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -295,7 +292,7 @@ export default function SignupPage() {
             </Button>
             <Button
               variant="outline"
-              className="bg-zinc-900/50 border-zinc-800 text-zinc-300 hover:bg-white hover:text-black hover:border-white transition-all duration-200 group"
+              className="glow-blue text-foreground hover:bg-white hover:text-black hover:border-white transition-all duration-200 group"
             >
               <svg
                 className="w-5 h-5 mr-2 text-zinc-300 group-hover:text-black transition-colors duration-200"
