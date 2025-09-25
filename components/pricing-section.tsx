@@ -8,39 +8,40 @@ const pricingPlans = [
   {
     name: "Starter",
     price: "Free",
-    description: "Perfect for getting started with v0",
-    features: ["5 components per month", "Basic templates", "Community support", "Standard components"],
+    description: "Perfect for a solo developer or a small business",
+    features: ["100 invoices/month", "Basic reconciliation", "Community support", "Manual hash generation"],
     popular: false,
     cta: "Get Started",
   },
   {
     name: "Pro",
-    monthlyPrice: 29,
-    annualPrice: 24,
-    description: "For professionals building serious projects",
+    monthlyPrice: 2499,
+    annualPrice: 2083,
+    description: "For growing businesses and advanced projects",
     features: [
-      "Unlimited components",
-      "Premium templates",
+      "10,000 invoices/month",
+      "Automated reconciliation",
+      "AI-powered accountant",
+      "Two-sided acknowledgment",
+      "Off-chain data storage (IPFS)",
       "Priority support",
-      "Advanced animations",
-      "Custom themes",
-      "Export to GitHub",
     ],
     popular: true,
     cta: "Start Free Trial",
   },
   {
-    name: "Team",
-    monthlyPrice: 99,
-    annualPrice: 79,
-    description: "For teams collaborating on projects",
+    name: "Enterprise",
+    monthlyPrice: 16500,
+    annualPrice: 13750,
+    description: "For large enterprises and high-volume operations",
     features: [
       "Everything in Pro",
-      "Team collaboration",
-      "Shared component library",
-      "Advanced analytics",
-      "Custom integrations",
-      "Dedicated support",
+      "Unlimited invoices",
+      "Kubernetes multi-clustering",
+      "Dedicated off-chain storage",
+      "Customizable smart contracts",
+      "Smart contract GSTR-1 reminders",
+      "Dedicated support & SLAs",
     ],
     popular: false,
     cta: "Contact Sales",
@@ -77,7 +78,7 @@ export function PricingSection() {
           </h2>
 
           <p className="text-lg text-white/60 max-w-2xl mx-auto mb-8">
-            Start building beautiful components today. Upgrade anytime as your needs grow.
+            Start building a trusted financial workflow today. Upgrade anytime as your needs grow.
           </p>
 
           {/* Monthly/Annual Toggle */}
@@ -104,7 +105,7 @@ export function PricingSection() {
             >
               Annual
               <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-                Save 20%
+                Save 17%
               </span>
             </button>
           </motion.div>
@@ -142,7 +143,7 @@ export function PricingSection() {
                   ) : (
                     <>
                       <span className="text-4xl font-bold text-white">
-                        ${isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                        ₹{isAnnual ? plan.annualPrice : plan.monthlyPrice}
                       </span>
                       <span className="text-white/60 text-lg">{isAnnual ? "/year" : "/month"}</span>
                     </>
