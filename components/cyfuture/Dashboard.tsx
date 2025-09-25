@@ -107,7 +107,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
       title: "IPFS Stored",
       value: invoices.filter((inv) => inv.ipfsHash).length.toString(),
       icon: Database,
-      color: "text-purple-500",
+      color: "text-blue-500",
       change: "+100%",
     },
   ];
@@ -290,7 +290,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
           onClick={onNavigateToAI}
         >
           <CardContent className="p-6 text-center">
-            <Bot className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+            <Bot className="h-12 w-12 text-blue-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">AI Assistant</h3>
             <p className="text-gray-600">Chat with your AI accountant</p>
           </CardContent>
@@ -377,7 +377,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
                           onClick={() => {
                             const gw =
                               process.env.NEXT_PUBLIC_IPFS_GATEWAY ||
-                              "https://cloudflare-ipfs.com/ipfs";
+                              "https://ipfs.io/ipfs";
                             const base = gw.replace(/\/$/, "");
                             window.open(
                               `${base}/${invoice.ipfsHash}`,
@@ -453,7 +453,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
           <p className="text-sm text-gray-600">Extract data automatically</p>
         </div>
         <div className="space-y-2">
-          <Database className="h-8 w-8 text-purple-500 mx-auto" />
+          <Database className="h-8 w-8 text-blue-500 mx-auto" />
           <h3 className="font-semibold">IPFS Storage</h3>
           <p className="text-sm text-gray-600">Decentralized file storage</p>
         </div>
@@ -540,7 +540,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAI }) => {
                         size="sm"
                         onClick={() => {
                           const gw = process.env.NEXT_PUBLIC_IPFS_GATEWAY;
-                          const fallback = "https://cloudflare-ipfs.com/ipfs";
+                          const fallback = "https://ipfs.io/ipfs";
                           let base = (gw?.trim() || fallback).replace(
                             /\/$/,
                             ""
