@@ -94,37 +94,35 @@ export default function SignupPage() {
         transition={{ duration: 0.5 }}
         className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl"
       >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-block mb-6">
-              <div className="flex items-center justify-center space-x-2">
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 147 70"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  className="text-[color:var(--brand-blue)] rounded-full size-8 w-8"
-                >
-                  <path d="M56 50.2031V14H70V60.1562C70 65.5928 65.5928 70 60.1562 70C57.5605 70 54.9982 68.9992 53.1562 67.1573L0 14H19.7969L56 50.2031Z"></path>
-                  <path d="M147 56H133V23.9531L100.953 56H133V70H96.6875C85.8144 70 77 61.1856 77 50.3125V14H91V46.1562L123.156 14H91V0H127.312C138.186 0 147 8.81439 147 19.6875V56Z"></path>
-                </svg>
-              </div>
-            </Link>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Create account
-            </h1>
-            <p className="text-muted-foreground">
-              Join thousands of developers 
-            </p>
-          </div>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-block mb-6">
+            <div className="flex items-center justify-center space-x-2">
+              <svg
+                fill="currentColor"
+                viewBox="0 0 147 70"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                className="text-[color:var(--brand-blue)] rounded-full size-8 w-8"
+              >
+                <path d="M56 50.2031V14H70V60.1562C70 65.5928 65.5928 70 60.1562 70C57.5605 70 54.9982 68.9992 53.1562 67.1573L0 14H19.7969L56 50.2031Z"></path>
+                <path d="M147 56H133V23.9531L100.953 56H133V70H96.6875C85.8144 70 77 61.1856 77 50.3125V14H91V46.1562L123.156 14H91V0H127.312C138.186 0 147 8.81439 147 19.6875V56Z"></path>
+              </svg>
+            </div>
+          </Link>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Create account
+          </h1>
+          <p className="text-muted-foreground">Join thousands of developers</p>
+        </div>
 
-          {/* Signup Form */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-6"
-          >
+        {/* Signup Form */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="space-y-6"
+        >
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
@@ -132,102 +130,102 @@ export default function SignupPage() {
               </div>
             )}
 
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-foreground">
-                  Full Name
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-foreground">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-foreground">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
-                  required
-                />
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-foreground">
+                Full Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={handleChange}
+                className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
+                required
+              />
             </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-foreground">
-                  Confirm Password
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-foreground">
+                Email
+              </Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
+                required
+              />
+            </div>
 
-              <div className="flex items-start space-x-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="mt-1 rounded border-white/20 bg-white/5 text-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
-                  required
-                />
-                <label htmlFor="terms" className="text-sm text-muted-foreground">
-                  I agree to the{" "}
-                  <Link
-                    href="#"
-                    className="text-[color:var(--brand-blue)] hover:opacity-80"
-                  >
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    href="#"
-                    className="text-[color:var(--brand-blue)] hover:opacity-80"
-                  >
-                    Privacy Policy
-                  </Link>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-foreground">
+                Password
+              </Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleChange}
+                className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-foreground">
+                Confirm Password
+              </Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="bg-white/5 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20 rounded-xl h-12"
+                required
+              />
+            </div>
+
+            <div className="flex items-start space-x-2">
+              <input
+                type="checkbox"
+                id="terms"
+                className="mt-1 rounded border-white/20 bg-white/5 text-[color:var(--brand-blue)] focus:ring-[color:var(--brand-blue)]/20"
+                required
+              />
+              <label htmlFor="terms" className="text-sm text-muted-foreground">
+                I agree to the{" "}
+                <Link
+                  href="#"
+                  className="text-[color:var(--brand-blue)] hover:opacity-80"
+                >
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="#"
+                  className="text-[color:var(--brand-blue)] hover:opacity-80"
+                >
+                  Privacy Policy
+                </Link>
               </label>
             </div>
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[color:var(--brand-blue)] to-blue-600 text-white font-medium py-3 h-12 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-[color:var(--brand-blue)]/25 disabled:opacity-50"
-              >
-                {isLoading ? "Creating account..." : "Create account"}
-              </Button>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-[color:var(--brand-blue)] to-blue-600 text-white font-medium py-3 h-12 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-[color:var(--brand-blue)]/25 disabled:opacity-50"
+            >
+              {isLoading ? "Creating account..." : "Create account"}
+            </Button>
           </form>
 
           <div className="mt-6 text-center">
@@ -266,10 +264,7 @@ export default function SignupPage() {
               variant="outline"
               className="bg-white/5 border-white/20 text-foreground hover:bg-white/10 hover:border-white/30 transition-all duration-200 rounded-xl"
             >
-              <svg
-                className="w-5 h-5 mr-2"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

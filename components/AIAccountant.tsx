@@ -265,41 +265,76 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
 
   // --- 🔧 THIS ENTIRE FUNCTION IS CORRECTED ---
   const handleChatSubmit = async (text: string) => {
-    if (!text.trim()) return;
+    console.log("handleChatSubmit called with text:", text);
+    if (!text.trim()) {
+      console.log("Text is empty, returning");
+      return;
+    }
     setView("chat");
     setChatHistory((prev) => [...prev, { id: Date.now(), type: "user", text }]);
     setInputValue("");
     setIsThinking(true);
+    console.log("Chat history updated, thinking started", chatHistory);
 
     try {
-      const API_KEY = process.env.VITE_GEMINI_API_KEY;
+      const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+      console.log("API_KEY available:", !!API_KEY);
       if (API_KEY) {
         try {
+          console.log("Initializing Gemini AI...");
           const genAI = new GoogleGenerativeAI(API_KEY);
           const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-          const prompt = `You are an AI assistant for CyFuture AI, a financial analysis tool. Your knowledge base is general financial data. Based on this data, answer the user's question. Be concise and helpful. Use Markdown for formatting (e.g., **bold** for emphasis, lists). User's question: "${text}"`;
+          const prompt = `You are an AI Data Analyst for CyFuture AI, a comprehensive financial analysis and data management platform. You help users with:
 
+- Financial data analysis and insights
+- Transaction analysis and categorization  
+- Budget planning and expense tracking
+- Investment portfolio analysis
+- Risk assessment and financial forecasting
+- Data visualization and reporting
+- GST calculations and compliance
+- Business intelligence and KPI analysis
+
+Respond in a helpful, professional manner with actionable insights. Use Markdown formatting for better readability. If asked about specific data, provide realistic examples and analysis.
+
+User's question: "${text}"`;
+
+          console.log("Sending request to Gemini...");
           const result = await model.generateContent(prompt);
           const response = await result.response;
           const aiResponseText = response.text();
+          console.log("Gemini response received:", aiResponseText.substring(0, 100) + "...");
+          
           const aiResponse = {
             id: Date.now() + 1,
             type: "ai",
             text: aiResponseText,
           };
 
-          // FIX: Update history and stop thinking in the same step
-          setChatHistory((prev) => [...prev, aiResponse]);
+          setChatHistory((prev) => {
+            console.log("Adding AI response to chat history");
+            return [...prev, aiResponse];
+          });
           setIsThinking(false);
+
+          // Add voice response if Co-Pilot mode is enabled
+          if (isCoPilotMode) {
+            speakText(aiResponseText, () => {
+              if (hasRecognitionSupport) {
+                setIsListeningForFollowUp(true);
+                setShowListeningIndicator(true);
+                startListening();
+              }
+            });
+          }
         } catch (error) {
           console.error("Error calling Gemini API:", error);
           const aiResponse = {
             id: Date.now() + 1,
             type: "ai",
-            text: "Sorry, I encountered an error while connecting to the AI service. The model may be overloaded. Please try again later.",
+            text: "I apologize, but I'm experiencing technical difficulties connecting to the AI service. This could be due to network issues or API rate limits. Please try again in a moment.",
           };
 
-          // FIX: Update history and stop thinking in the same step
           setChatHistory((prev) => [...prev, aiResponse]);
           setIsThinking(false);
         }
@@ -308,10 +343,9 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
         const aiResponse = {
           id: Date.now() + 1,
           type: "ai",
-          text: "I can provide detailed data for financial analysis. (Note: Gemini API key not configured. Please set up your VITE_GEMINI_API_KEY in the .env.local file).",
+          text: "I'm ready to help with your financial analysis! However, the AI service is not fully configured. Please contact your administrator to set up the Gemini API integration for full functionality.",
         };
 
-        // FIX: Update history and stop thinking in the same step
         setChatHistory((prev) => [...prev, aiResponse]);
         setIsThinking(false);
       }
@@ -442,11 +476,9 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
           className={`font-bold text-slate-800 ${
             embedded ? "text-3xl" : "text-5xl md:text-7xl"
           }`}
-        >
-          CyFuture AI Assistant
-        </h1>
+        ></h1>
         <p className="text-xl text-slate-600 max-w-2xl mt-4 mx-auto">
-          Your intelligent command center for India's financial data.
+          Your intelligent command center for your financial data.
         </p>
       </div>
       <div className="mt-12">
@@ -455,7 +487,7 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
           onFileSelect={handleFakeMapAnalysis}
         />
       </div>
-      
+
       {/* Quick Start Chat Button */}
       <div className="mt-8 text-center">
         <Button
@@ -465,7 +497,7 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
           Start Chat Session
         </Button>
       </div>
-      
+
       <motion.div
         initial="hidden"
         animate="visible"
