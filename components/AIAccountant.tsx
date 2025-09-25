@@ -497,7 +497,7 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
           }`}
         >
           <div className="flex items-center gap-3">
-            <Bot className="h-6 w-6 text-purple-600" />
+            <Bot className="h-6 w-6 text-blue-600" />
             <CardTitle className="text-xl">AI Data Analyst</CardTitle>
           </div>
           <div className="flex items-center gap-2">
@@ -571,14 +571,14 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
                   } w-full`}
                 >
                   {msg.type !== "user" && (
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-sky-100 to-purple-100 flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-sky-600" />
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-white" />
                     </div>
                   )}
 
                   <div className={isGraphMessage ? "w-full" : "max-w-2xl"}>
                     {msg.type === "user" ? (
-                      <div className="bg-purple-500 text-white p-3 rounded-2xl rounded-br-lg shadow-sm">
+                      <div className="bg-blue-500 text-white p-3 rounded-2xl rounded-br-lg shadow-sm">
                         <p className="text-base">{msg.text}</p>
                       </div>
                     ) : msg.component ? (
@@ -631,7 +631,7 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
     >
       {!embedded && (
         <div className="absolute inset-0 -z-10 h-full w-full overflow-hidden">
-          <div className="absolute -top-1/4 left-0 h-[800px] w-[800px] bg-purple-200/30 rounded-full blur-3xl filter animate-blob"></div>
+          <div className="absolute -top-1/4 left-0 h-[800px] w-[800px] bg-blue-200/30 rounded-full blur-3xl filter animate-blob"></div>
           <div className="absolute -top-1/3 right-0 h-[800px] w-[800px] bg-sky-200/30 rounded-full filter animate-blob animation-delay-2000"></div>
         </div>
       )}
