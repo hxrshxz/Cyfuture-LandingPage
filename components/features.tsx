@@ -276,7 +276,7 @@ export default function Features() {
                   <h3 className="text-2xl leading-none font-semibold tracking-tight">SCALABLIITY</h3>
                   <div className="text-md text-muted-foreground flex flex-col gap-2 text-sm">
                     <p className="max-w-[460px]">
-                    INSTANTLY SPIN UP MULTIPLE CONTAINER INSTANCES TO HANDLE SPIKES IN INVOICE PROCESSING VOLUME WITHOUT DOWNTIME.
+                      Instantly spin up multiple container instances to handle spikes in invoice processing volume without downtime.
                     </p>
                   </div>
                 </div>
@@ -425,11 +425,10 @@ export default function Features() {
                 style={{ transition: "all 0s ease-in-out" }}
               >
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-2xl leading-none font-semibold tracking-tight">DYNAMIC LAYOUTS</h3>
+                  <h3 className="text-2xl leading-none font-semibold tracking-tight">EARLY MISMATCH ALERTS</h3>
                   <div className="text-md text-muted-foreground flex flex-col gap-2 text-sm">
                     <p className="max-w-[460px]">
-                      Responsive layouts that transform and adapt seamlessly across all device sizes.
-                    </p>
+                    prevents itc blockage and cash flow disruption.                    </p>
                   </div>
                 </div>
                 <div className="flex grow items-center justify-center select-none relative min-h-[300px] p-4">
