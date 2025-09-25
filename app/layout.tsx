@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { appFontsClass } from "@/lib/fonts";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SolanaWalletProvider from "@/components/WalletProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -22,17 +23,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`dark ${appFontsClass} ${GeistSans.variable} ${GeistMono.variable}`}
+    >
       <head>
-        <style>{`
-html {
-  font-family: ${GeistSans.style.fontFamily};
-  --font-sans: ${GeistSans.variable};
-  --font-mono: ${GeistMono.variable};
-}
-        `}</style>
+        {/* External variable fonts for app pages (landing keeps Geist) */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link
+          href="https://cdn.jsdelivr.net/npm/@fontsource-variable/satoshi@5.1.0/index.css"
+          rel="stylesheet"
+        />
+        <link
+          href="https://cdn.jsdelivr.net/npm/@fontsource-variable/general-sans@5.1.0/index.css"
+          rel="stylesheet"
+        />
+        <link
+          href="https://cdn.jsdelivr.net/npm/@fontsource-variable/supreme@5.1.0/index.css"
+          rel="stylesheet"
+        />
       </head>
-      <body>
+      <body className=" w-full max-w-full overflow-x-hidden">
         <ClientRouteClass>
           <ServiceWorkerGuard />
           <ErrorBoundary>
