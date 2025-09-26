@@ -279,11 +279,12 @@ const AIAccountant = ({ embedded = false }: { embedded?: boolean }) => {
     try {
       const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
       console.log("API_KEY available:", !!API_KEY);
+      
       if (API_KEY) {
         try {
           console.log("Initializing Gemini AI...");
           const genAI = new GoogleGenerativeAI(API_KEY);
-          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+          const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
           const prompt = `You are an AI Data Analyst for CyFuture AI, a comprehensive financial analysis and data management platform. You help users with:
 
 - Financial data analysis and insights
@@ -330,23 +331,59 @@ User's question: "${text}"`;
               }
             });
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error("Error calling Gemini API:", error);
+          
+          let errorMessage = "I apologize, but I'm experiencing technical difficulties. ";
+          
+          // Handle specific quota exceeded error
+          if (error?.message?.includes("429") || error?.message?.includes("quota")) {
+            errorMessage = "🚨 **API Quota Exceeded**\n\nI've reached the daily limit for the Gemini AI service. This is a temporary limitation of the free tier.\n\n**In the meantime, I can still help you with:**\n- General financial advice and best practices\n- Explaining financial concepts\n- Providing sample analyses and reports\n- Guidance on data organization\n\n**Fallback Response for your query:**\n\n";
+            
+            // Provide intelligent fallback responses based on keywords
+            const lowerText = text.toLowerCase();
+            if (lowerText.includes("revenue") || lowerText.includes("income")) {
+              errorMessage += "📊 **Revenue Analysis**\n\nBased on your query about revenue, here are key insights to consider:\n\n- **Trend Analysis**: Look for seasonal patterns in your revenue data\n- **Growth Rate**: Calculate month-over-month and year-over-year growth\n- **Revenue Sources**: Identify your top revenue streams and their contribution percentages\n- **Forecasting**: Use historical data to project future revenue trends\n\nFor detailed analysis, please try again later when the API quota resets.";
+            } else if (lowerText.includes("expense") || lowerText.includes("cost")) {
+              errorMessage += "💰 **Expense Analysis**\n\nFor expense-related queries, consider these approaches:\n\n- **Categorization**: Group expenses into fixed vs. variable costs\n- **Budget Variance**: Compare actual vs. budgeted expenses\n- **Cost Optimization**: Identify areas where costs can be reduced\n- **ROI Analysis**: Evaluate which expenses generate the best returns\n\nI can provide more specific guidance once the API service is available again.";
+            } else if (lowerText.includes("forecast") || lowerText.includes("predict")) {
+              errorMessage += "🔮 **Financial Forecasting**\n\nFor forecasting and predictions:\n\n- **Historical Trends**: Analyze past 12-24 months of data\n- **Seasonal Adjustments**: Account for recurring seasonal patterns\n- **Market Conditions**: Consider external economic factors\n- **Multiple Scenarios**: Create best-case, worst-case, and realistic projections\n\nOnce the AI service is restored, I can provide detailed predictive models.";
+            } else {
+              errorMessage += "🤖 **General Financial Guidance**\n\nWhile I wait for the AI service to restore, here are some general best practices:\n\n- **Data Quality**: Ensure your financial data is accurate and up-to-date\n- **Regular Reviews**: Conduct monthly financial reviews\n- **Key Metrics**: Monitor cash flow, profit margins, and growth rates\n- **Documentation**: Maintain detailed records for all transactions\n\nPlease try your question again in about an hour when the quota resets.";
+            }
+          } else if (error?.message?.includes("network") || error?.message?.includes("fetch")) {
+            errorMessage = "🌐 **Network Connection Issue**\n\nI'm having trouble connecting to the AI service. This could be due to:\n- Network connectivity issues\n- Temporary server maintenance\n- Firewall restrictions\n\nPlease check your internet connection and try again in a few moments.";
+          } else {
+            errorMessage = "⚠️ **Technical Difficulty**\n\nI encountered an unexpected error while processing your request. This could be due to:\n- API service maintenance\n- Rate limiting\n- Configuration issues\n\nPlease try rephrasing your question or contact support if the issue persists.";
+          }
+
           const aiResponse = {
             id: Date.now() + 1,
             type: "ai",
-            text: "I apologize, but I'm experiencing technical difficulties connecting to the AI service. This could be due to network issues or API rate limits. Please try again in a moment.",
+            text: errorMessage,
           };
 
           setChatHistory((prev) => [...prev, aiResponse]);
           setIsThinking(false);
+          
+          // Show a toast notification for the error
+          setToast({
+            message: "AI service temporarily unavailable. Using fallback response.",
+            type: "warning",
+            visible: true
+          });
+          
+          // Auto-dismiss toast after 5 seconds
+          setTimeout(() => {
+            setToast(prev => ({ ...prev, visible: false }));
+          }, 5000);
         }
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1500));
         const aiResponse = {
           id: Date.now() + 1,
           type: "ai",
-          text: "I'm ready to help with your financial analysis! However, the AI service is not fully configured. Please contact your administrator to set up the Gemini API integration for full functionality.",
+          text: "🔧 **Setup Required**\n\nI'm ready to help with your financial analysis! However, the AI service is not fully configured.\n\n**To enable full AI functionality:**\n1. Set up a Gemini API key in your environment variables\n2. Add `NEXT_PUBLIC_GEMINI_API_KEY` to your `.env.local` file\n3. Restart your development server\n\n**In the meantime, I can provide:**\n- General financial guidance\n- Best practices for data analysis\n- Sample reports and templates\n- Financial planning frameworks\n\nContact your administrator for API setup assistance.",
         };
 
         setChatHistory((prev) => [...prev, aiResponse]);
@@ -357,24 +394,21 @@ User's question: "${text}"`;
       const errorResponse = {
         id: Date.now() + 1,
         type: "ai",
-        component: (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-red-700">
-                Sorry, I encountered an error
-              </h3>
-            </div>
-            <p className="text-red-600">
-              I was unable to process your request. Please try again later or
-              rephrase your question.
-            </p>
-          </div>
-        ),
+        text: "❌ **Unexpected Error**\n\nI encountered an unexpected error while processing your request. This is likely a temporary issue.\n\n**Please try:**\n- Refreshing the page\n- Rephrasing your question\n- Checking your internet connection\n\nIf the problem persists, please contact technical support with the error details.",
       };
 
-      // FIX: Update history and stop thinking in the same step
       setChatHistory((prev) => [...prev, errorResponse]);
       setIsThinking(false);
+      
+      setToast({
+        message: "An unexpected error occurred. Please try again.",
+        type: "error",
+        visible: true
+      });
+      
+      setTimeout(() => {
+        setToast(prev => ({ ...prev, visible: false }));
+      }, 5000);
     }
   };
 
