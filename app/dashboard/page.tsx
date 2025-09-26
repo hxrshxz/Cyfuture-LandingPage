@@ -45,6 +45,10 @@ import { useStorage } from "@/contexts/StorageContext";
 import { IPFSLinks } from "@/components/IPFSLinks";
 import { FileUpload } from "@/components/ui/file-upload";
 import AppNavigation from "@/components/AppNavigation";
+import OCRUpload from "@/components/OCRUpload";
+import ExtractedDataDisplay from "@/components/ExtractedDataDisplay";
+import ConfigurationValidator from "@/components/ConfigurationValidator";
+import { ExtractedInvoiceData } from "@/lib/ocr-service";
 
 interface InvoiceData {
   id: string;
@@ -267,31 +271,56 @@ function DashboardContent() {
     setInvoices((prev) => [...prev, newInvoice]);
 
     try {
-      // Simulate AI processing
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // Import and use the OCR service
+      const { invoiceOCRService } = await import("@/lib/ocr-service");
+      
+      if (!invoiceOCRService.isAvailable()) {
+        throw new Error("OCR service is not available. Please check your Gemini API key configuration.");
+      }
 
-      // Mock extracted data
-      const mockExtractedData = {
-        invoice_number: `INV-${Math.floor(Math.random() * 10000)}`,
-        vendor_name: "Sample Vendor Ltd.",
-        total_amount: Math.floor(Math.random() * 50000) + 1000,
-        date: new Date().toISOString().split("T")[0],
-      };
+      // Process invoice with OCR
+      const ocrResult = await invoiceOCRService.extractInvoiceData(file);
+      
+      if (!ocrResult.success || !ocrResult.data) {
+        throw new Error(ocrResult.error || "Failed to extract invoice data");
+      }
 
-      // Prepare review step
-      setPendingExtracted(mockExtractedData);
+      // Validate extracted data
+      const validation = invoiceOCRService.validateExtractedData(ocrResult.data);
+      
+      // Use the complete OCR data
+      const extractedData = ocrResult.data;
+
+      console.log("OCR extraction completed:", {
+        processingTime: ocrResult.processingTime,
+        confidence: ocrResult.data.confidence_score,
+        validation: validation,
+      });
+
+      // Prepare review step with validation info
+      setPendingExtracted(extractedData);
       setPendingInvoiceId(newInvoice.id);
       setSelectedFile(file);
+      
+      // Store validation results for the review step
+      if (validation.warnings.length > 0 || validation.suggestions.length > 0) {
+        console.warn("Validation issues found:", validation);
+      }
+      
       setStoreOnIpfs(false);
       setStoreOnChain(false);
       setCurrentView("review");
     } catch (error) {
-      console.error("Processing error:", error);
+      console.error("OCR processing error:", error);
       setInvoices((prev) =>
         prev.map((inv) =>
           inv.id === newInvoice.id ? { ...inv, status: "error" as const } : inv
         )
       );
+      
+      // Show error message to user
+      alert(`Failed to process invoice: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
+      setCurrentView("upload");
     } finally {
       setIsProcessing(false);
     }
@@ -313,9 +342,45 @@ function DashboardContent() {
     }
   };
 
+  // Handle proceed from enhanced OCR review
+  const handleProceedFromReview = async (updatedData?: ExtractedInvoiceData) => {
+    console.log("🔄 HandleProceedFromReview called with data:", updatedData);
+    
+    if (!selectedFile || !pendingExtracted || !pendingInvoiceId) {
+      console.error("❌ Missing required data:", { selectedFile, pendingExtracted, pendingInvoiceId });
+      return;
+    }
+
+    // If updated data is provided, use it instead of pendingExtracted
+    if (updatedData) {
+      console.log("📝 Using updated data from review");
+      setPendingExtracted(updatedData);
+    }
+
+    // Auto-enable both storage options for OCR workflow
+    setStoreOnIpfs(true);
+    setStoreOnChain(true);
+
+    console.log("🚀 Proceeding to store data");
+    // Proceed to store the data
+    await handleStoreSelected();
+  };
+
   // Store selections after review
   const handleStoreSelected = async () => {
-    if (!selectedFile || !pendingExtracted || !pendingInvoiceId) return;
+    console.log("🏪 HandleStoreSelected called");
+    console.log("📁 Selected file:", selectedFile);
+    console.log("📋 Pending extracted:", pendingExtracted);
+    console.log("🆔 Pending invoice ID:", pendingInvoiceId);
+    console.log("💾 Store on IPFS:", storeOnIpfs);
+    console.log("⛓️ Store on chain:", storeOnChain);
+    console.log("🔗 Connected:", connected);
+    console.log("🔑 Public key:", publicKey);
+
+    if (!selectedFile || !pendingExtracted || !pendingInvoiceId) {
+      console.error("❌ Missing required data for storage");
+      return;
+    }
 
     // Check wallet connection if user wants to store on chain
     if (storeOnChain && (!connected || !publicKey)) {
@@ -338,20 +403,46 @@ function DashboardContent() {
       }
 
       if (storeOnChain && connected && publicKey) {
-        // Double-check wallet connection before transaction
-        if (!connected || !publicKey) {
+        // Thorough wallet validation before transaction
+        console.log("Wallet validation:", {
+          connected,
+          publicKey: publicKey?.toBase58(),
+          walletName: wallet?.adapter?.name,
+        });
+
+        if (!connected || !publicKey || !wallet?.adapter) {
           throw new Error(
-            "Wallet disconnected. Please reconnect your wallet and try again."
+            "Wallet not properly connected. Please disconnect and reconnect your wallet."
           );
         }
 
-        const payload = JSON.stringify({
-          type: "INVOICE_PROCESSED",
-          fileName: selectedFile.name,
-          ipfsHash,
-          extractedData: pendingExtracted,
-          timestamp: new Date().toISOString(),
-        });
+        // Check balance before transaction
+        console.log("💰 Checking wallet balance...");
+        const currentBalance = await getBalance();
+        console.log("💰 Current balance:", currentBalance, "SOL");
+        
+        if (currentBalance < 0.001) {
+          throw new Error(`Insufficient SOL balance (${currentBalance.toFixed(6)} SOL). Please request an airdrop or add funds to your wallet.`);
+        }
+
+        // Wait a moment to ensure wallet state is stable
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Create a compact memo (Solana memos have 80-byte limit)
+        // Use only the last 12 characters of IPFS hash to save space
+        const shortHash = ipfsHash?.slice(-12) || 'unknown';
+        const shortInvoiceId = pendingInvoiceId.slice(-8); // Last 8 chars of invoice ID
+        const timestamp = Date.now().toString(36); // Base-36 timestamp (shorter)
+        
+        const payload = `INV:${shortInvoiceId}:${shortHash}:${timestamp}`;
+        console.log("📦 Compact payload for blockchain:", payload);
+        console.log("📏 Payload length:", payload.length, "bytes (limit: 80)");
+        console.log("🔗 Full IPFS hash stored separately:", ipfsHash);
+        
+        if (payload.length > 80) {
+          console.error("❌ Payload too large for Solana memo:", payload.length, "bytes");
+          throw new Error(`Transaction payload too large (${payload.length} bytes). Solana memos are limited to 80 bytes.`);
+        }
 
         console.log(
           "Starting Solana transaction with connected wallet:",
@@ -364,13 +455,14 @@ function DashboardContent() {
 
         while (retries < maxRetries) {
           try {
-            // Re-check wallet connection before each attempt
-            if (!connected || !publicKey) {
+            // Re-validate wallet connection before each attempt
+            if (!connected || !publicKey || !wallet?.adapter) {
               throw new Error(
-                "Wallet disconnected during transaction. Please reconnect and try again."
+                "Wallet connection lost during transaction. Please refresh and reconnect."
               );
             }
 
+            console.log(`Transaction attempt ${retries + 1}/${maxRetries}`);
             const { signature, error } = await sendTransaction(payload);
 
             if (error) {
@@ -382,9 +474,10 @@ function DashboardContent() {
               // Don't retry wallet connection errors
               if (
                 error.message.includes("Wallet not connected") ||
-                error.message.includes("WalletNotConnectedError")
+                error.message.includes("WalletNotConnectedError") ||
+                error.message.includes("WalletNotReadyError")
               ) {
-                throw error;
+                throw new Error("Wallet connection issue detected. Please disconnect and reconnect your wallet, then try again.");
               }
 
               retries++;
@@ -410,12 +503,14 @@ function DashboardContent() {
               errorMessage
             );
 
-            // Don't retry wallet connection errors
+            // Handle specific wallet errors that shouldn't be retried
             if (
               errorMessage.includes("Wallet not connected") ||
-              errorMessage.includes("WalletNotConnectedError")
+              errorMessage.includes("WalletNotConnectedError") ||
+              errorMessage.includes("WalletNotReadyError") ||
+              (txError as any)?.constructor?.name === "WalletNotConnectedError"
             ) {
-              throw txError;
+              throw new Error("Wallet connection issue. Please disconnect your wallet, refresh the page, and reconnect before trying again.");
             }
 
             retries++;
@@ -466,6 +561,35 @@ function DashboardContent() {
       setStoreOnChain(false);
     } catch (e) {
       console.error("Storage selection error:", e);
+      const errorMessage = (e as Error).message;
+      
+      let userMessage = "Storage failed. ";
+      if (errorMessage.includes("Wallet connection")) {
+        userMessage += "Please disconnect your wallet, refresh the page, and reconnect before trying again.";
+      } else if (errorMessage.includes("Transaction failed")) {
+        userMessage += "The blockchain transaction failed. Your data was " + (ipfsHash ? "stored on IPFS" : "not stored") + ". Please try the blockchain storage again.";
+      } else {
+        userMessage += errorMessage;
+      }
+
+      alert(userMessage);
+
+      // If IPFS succeeded but blockchain failed, still update the invoice record
+      if (ipfsHash && pendingInvoiceId) {
+        setInvoices((prev) =>
+          prev.map((inv) =>
+            inv.id === pendingInvoiceId
+              ? {
+                  ...inv,
+                  status: "completed" as const,
+                  extractedData: pendingExtracted,
+                  ipfsHash,
+                  solanaSignature: undefined,
+                }
+              : inv
+          )
+        );
+      }
     } finally {
       setIsStoring(false);
     }
@@ -1177,7 +1301,7 @@ function DashboardContent() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-2xl border border-gray-800/50 bg-black/30 p-2">
-                    <FileUpload onChange={handleFilesFromUpload} />
+                    <OCRUpload onFileSelect={processInvoice} isProcessing={isProcessing} />
                   </div>
 
                   <Link href="/ai">
@@ -1324,97 +1448,61 @@ function DashboardContent() {
         {/* Hidden file input removed; FileUpload component handles selection */}
 
         {currentView === "review" && pendingExtracted && selectedFile && (
-          <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <Card className="w-full max-w-2xl bg-zinc-900/90 border-zinc-800">
-              <CardHeader>
-                <CardTitle className="text-white">
-                  Review extracted data
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-zinc-400">File</p>
-                    <p className="text-white font-medium">
-                      {selectedFile.name}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-zinc-400">Invoice #</p>
-                    <p className="text-white font-medium">
-                      {pendingExtracted.invoice_number}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-zinc-400">Vendor</p>
-                    <p className="text-white font-medium">
-                      {pendingExtracted.vendor_name}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-zinc-400">Amount</p>
-                    <p className="text-white font-medium">
-                      ₹{pendingExtracted.total_amount.toLocaleString("en-IN")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-zinc-400">Date</p>
-                    <p className="text-white font-medium">
-                      {pendingExtracted.date}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border-t border-zinc-800 pt-4 space-y-3">
-                  <label className="flex items-center gap-3 text-white">
-                    <input
-                      type="checkbox"
-                      className="accent-white"
-                      checked={storeOnIpfs}
-                      onChange={(e) => setStoreOnIpfs(e.target.checked)}
-                    />
-                    Store on IPFS (public URL)
-                  </label>
-                  <label className="flex items-center gap-3 text-white">
-                    <input
-                      type="checkbox"
-                      className="accent-white"
-                      checked={storeOnChain}
-                      onChange={(e) => setStoreOnChain(e.target.checked)}
-                    />
-                    Store on Solana (transaction record)
-                  </label>
-                  <p className="text-xs text-zinc-400">
-                    You can choose one or both options. Links will be shown
-                    after storage.
-                  </p>
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                  <Button
-                    onClick={handleStoreSelected}
-                    disabled={isStoring || (!storeOnIpfs && !storeOnChain)}
-                    className="flex-1 bg-white text-black hover:bg-zinc-200"
-                  >
-                    {isStoring ? "Storing..." : "Store Selected"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex-1 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
-                    onClick={() => {
-                      setCurrentView("dashboard");
-                      setSelectedFile(null);
-                      setPendingExtracted(null);
-                      setPendingInvoiceId(null);
-                      setStoreOnIpfs(false);
-                      setStoreOnChain(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm overflow-y-auto">
+            <div className="min-h-screen p-4 flex items-start justify-center">
+              <div className="w-full max-w-4xl my-8">
+                <ExtractedDataDisplay
+                  data={pendingExtracted}
+                  onDataChange={(updatedData) => setPendingExtracted(updatedData)}
+                  onSave={(updatedData) => {
+                    console.log("💾 Save button clicked with data:", updatedData);
+                    handleProceedFromReview(updatedData);
+                  }}
+                  onCancel={() => {
+                    setCurrentView("dashboard");
+                    setPendingExtracted(null);
+                    setPendingInvoiceId(null);
+                    setSelectedFile(null);
+                  }}
+                  isEditable={true}
+                  isSaving={isStoring}
+                  className="bg-black/90 backdrop-blur-xl rounded-2xl border border-gray-800/50 p-6"
+                />
+                
+                {/* Storage Options */}
+                <Card className="mt-4 bg-black/40 border-gray-800/60">
+                  <CardContent className="p-4">
+                    <h4 className="text-white font-medium mb-3">Storage Options</h4>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-3 text-white">
+                        <input
+                          type="checkbox"
+                          className="accent-cyan-500"
+                          checked={storeOnIpfs}
+                          onChange={(e) => setStoreOnIpfs(e.target.checked)}
+                        />
+                        <div>
+                          <p className="font-medium">Store file on IPFS</p>
+                          <p className="text-sm text-gray-400">Decentralized storage for invoice file</p>
+                        </div>
+                      </label>
+                      <label className="flex items-center gap-3 text-white">
+                        <input
+                          type="checkbox"
+                          className="accent-cyan-500"
+                          checked={storeOnChain}
+                          onChange={(e) => setStoreOnChain(e.target.checked)}
+                        />
+                        <div>
+                          <p className="font-medium">Store on Solana blockchain</p>
+                          <p className="text-sm text-gray-400">Immutable record of extracted data</p>
+                        </div>
+                      </label>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1433,6 +1521,9 @@ function DashboardContent() {
             onClose={() => setShowTransactionResult(false)}
           />
         )}
+        
+        {/* Configuration Validator */}
+        <ConfigurationValidator />
       </div>
     </AppNavigation>
   );

@@ -155,6 +155,10 @@ export const useSolanaAction = (): SolanaAction => {
           errorMessage = "Transaction timed out. Please try again.";
         } else if (errorStr.includes("blockhash")) {
           errorMessage = "Transaction expired. Please try again.";
+        } else if (errorStr.includes("reverted") || errorStr.includes("simulation")) {
+          errorMessage = "Transaction simulation failed. This usually means the memo data is too large (80 byte limit) or contains invalid characters.";
+        } else if (errorStr.includes("InvalidInstruction") || errorStr.includes("invalid")) {
+          errorMessage = "Invalid transaction instruction. Check that memo data is properly formatted and under 80 bytes.";
         }
 
         const enhancedError = new Error(
