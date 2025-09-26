@@ -129,7 +129,7 @@ const INGRESCommandBar = ({
             <Button
               variant="outline"
               size="sm"
-              className="bg-white/50 hover:bg-white text-blue-700 border-blue-200"
+              className="bg-white/50 hover:bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-300"
               onClick={() => {
                 const query = "Compare Q1 and Q2";
                 onInputChange({ target: { value: query } } as any);
@@ -141,7 +141,7 @@ const INGRESCommandBar = ({
             <Button
               variant="outline"
               size="sm"
-              className="bg-white/50 hover:bg-white text-blue-700 border-blue-200"
+              className="bg-white/50 hover:bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-300"
               onClick={() => {
                 const query = "What can we do to reduce expenses in marketing?";
                 onInputChange({ target: { value: query } } as any);
@@ -153,7 +153,7 @@ const INGRESCommandBar = ({
             <Button
               variant="outline"
               size="sm"
-              className="bg-white/50 hover:bg-white text-emerald-700 border-emerald-200"
+              className="bg-white/50 hover:bg-emerald-50 text-emerald-700 border-emerald-200 hover:border-emerald-300"
               onClick={() => {
                 const query = "Show budget impact on revenue";
                 onInputChange({ target: { value: query } } as any);
@@ -165,7 +165,7 @@ const INGRESCommandBar = ({
             <Button
               variant="outline"
               size="sm"
-              className="bg-white/50 hover:bg-white text-amber-700 border-amber-200"
+              className="bg-white/50 hover:bg-amber-50 text-amber-700 border-amber-200 hover:border-amber-300"
               onClick={() => {
                 const query = "What policy changes can improve profit?";
                 onInputChange({ target: { value: query } } as any);
