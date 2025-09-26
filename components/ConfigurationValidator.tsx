@@ -96,6 +96,8 @@ export default function ConfigurationValidator() {
 NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
 NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
 
+# Add this to your .env file (not .env.local)
+
 # Get Gemini API Key from: https://makersuite.google.com/app/apikey
 # Get Pinata JWT from: https://app.pinata.cloud/keys`;
 

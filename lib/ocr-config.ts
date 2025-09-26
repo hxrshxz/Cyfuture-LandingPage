@@ -36,7 +36,7 @@ export function validateOCRConfiguration(): ConfigValidation {
 export function getSetupInstructions(): string[] {
   return [
     "1. Get a Gemini API key from Google AI Studio (https://makersuite.google.com/app/apikey)",
-    "2. Add NEXT_PUBLIC_GEMINI_API_KEY to your .env.local file",
+    "2. Add NEXT_PUBLIC_GEMINI_API_KEY to your .env file",
     "3. Restart your development server",
     "4. The OCR functionality will automatically become available",
   ];
