@@ -77,7 +77,7 @@ interface ExtractedInvoiceData {
 
 ### Environment Variables
 
-Add to your `.env.local` file:
+Add to your `.env` file:
 
 ```
 NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
