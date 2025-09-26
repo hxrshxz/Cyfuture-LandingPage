@@ -15,10 +15,12 @@ export function validateOCRConfiguration(): ConfigValidation {
   const warnings: string[] = [];
 
   // Check Gemini API Key
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     if (!geminiKey) {
-      missing.push("NEXT_PUBLIC_GEMINI_API_KEY - Required for OCR functionality");
+      missing.push(
+        "NEXT_PUBLIC_GEMINI_API_KEY - Required for OCR functionality"
+      );
     } else if (geminiKey.length < 10) {
       warnings.push("Gemini API key appears to be too short");
     }

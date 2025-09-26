@@ -40,7 +40,9 @@ class InvoiceOCRService {
     if (apiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
     } else {
-      console.warn("Gemini API key not found. OCR functionality will be limited.");
+      console.warn(
+        "Gemini API key not found. OCR functionality will be limited."
+      );
     }
   }
 
@@ -85,7 +87,8 @@ class InvoiceOCRService {
       if (!validTypes.includes(file.type)) {
         return {
           success: false,
-          error: "Unsupported file type. Please upload a JPG, PNG, or WebP image.",
+          error:
+            "Unsupported file type. Please upload a JPG, PNG, or WebP image.",
         };
       }
 
@@ -147,10 +150,12 @@ Analyze the image carefully and extract all relevant invoice information.`;
 
       // Clean and parse the JSON response
       let cleanedResponse = responseText.trim();
-      
+
       // Remove any markdown formatting
-      cleanedResponse = cleanedResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-      
+      cleanedResponse = cleanedResponse
+        .replace(/```json\n?/g, "")
+        .replace(/```\n?/g, "");
+
       // Parse the JSON
       let extractedData: ExtractedInvoiceData;
       try {
@@ -165,23 +170,34 @@ Analyze the image carefully and extract all relevant invoice information.`;
       }
 
       // Validate required fields
-      if (!extractedData.invoice_number || !extractedData.vendor_name || !extractedData.total_amount) {
+      if (
+        !extractedData.invoice_number ||
+        !extractedData.vendor_name ||
+        !extractedData.total_amount
+      ) {
         return {
           success: false,
-          error: "Could not extract essential invoice information. Please ensure the image is clear and contains a valid invoice.",
+          error:
+            "Could not extract essential invoice information. Please ensure the image is clear and contains a valid invoice.",
           processingTime: Date.now() - startTime,
         };
       }
 
       // Ensure numeric fields are properly typed
       extractedData.total_amount = Number(extractedData.total_amount) || 0;
-      extractedData.tax_amount = extractedData.tax_amount ? Number(extractedData.tax_amount) : undefined;
-      extractedData.net_amount = extractedData.net_amount ? Number(extractedData.net_amount) : undefined;
-      extractedData.confidence_score = extractedData.confidence_score ? Number(extractedData.confidence_score) : 0.8;
+      extractedData.tax_amount = extractedData.tax_amount
+        ? Number(extractedData.tax_amount)
+        : undefined;
+      extractedData.net_amount = extractedData.net_amount
+        ? Number(extractedData.net_amount)
+        : undefined;
+      extractedData.confidence_score = extractedData.confidence_score
+        ? Number(extractedData.confidence_score)
+        : 0.8;
 
       // Process items array if present
       if (extractedData.items && Array.isArray(extractedData.items)) {
-        extractedData.items = extractedData.items.map(item => ({
+        extractedData.items = extractedData.items.map((item) => ({
           ...item,
           quantity: Number(item.quantity) || 0,
           unit_price: Number(item.unit_price) || 0,
@@ -194,12 +210,14 @@ Analyze the image carefully and extract all relevant invoice information.`;
         data: extractedData,
         processingTime: Date.now() - startTime,
       };
-
     } catch (error) {
       console.error("OCR processing error:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "An unexpected error occurred during OCR processing.",
+        error:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred during OCR processing.",
         processingTime: Date.now() - startTime,
       };
     }
@@ -219,7 +237,8 @@ Analyze the image carefully and extract all relevant invoice information.`;
     // Check required fields
     if (!data.invoice_number) warnings.push("Invoice number is missing");
     if (!data.vendor_name) warnings.push("Vendor name is missing");
-    if (!data.total_amount || data.total_amount <= 0) warnings.push("Total amount is invalid");
+    if (!data.total_amount || data.total_amount <= 0)
+      warnings.push("Total amount is invalid");
     if (!data.date) warnings.push("Invoice date is missing");
 
     // Check date format
@@ -229,11 +248,18 @@ Analyze the image carefully and extract all relevant invoice information.`;
 
     // Check confidence score
     if (data.confidence_score && data.confidence_score < 0.7) {
-      suggestions.push("Low confidence score detected. Please verify the extracted data carefully.");
+      suggestions.push(
+        "Low confidence score detected. Please verify the extracted data carefully."
+      );
     }
 
     // Check GST number format (Indian)
-    if (data.vendor_gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(data.vendor_gstin)) {
+    if (
+      data.vendor_gstin &&
+      !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(
+        data.vendor_gstin
+      )
+    ) {
       suggestions.push("Vendor GSTIN format appears incorrect");
     }
 

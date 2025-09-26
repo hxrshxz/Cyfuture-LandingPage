@@ -2,7 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, CheckCircle, Settings, ExternalLink, Copy } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Settings,
+  ExternalLink,
+  Copy,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +49,7 @@ export default function ConfigurationValidator() {
     };
 
     // Check Gemini API Key
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
       if (!geminiKey) {
         status.geminiApiKey = {
@@ -101,7 +107,8 @@ NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
     return null;
   }
 
-  const hasIssues = !configStatus.geminiApiKey.valid || !configStatus.ipfsConfig.valid;
+  const hasIssues =
+    !configStatus.geminiApiKey.valid || !configStatus.ipfsConfig.valid;
 
   if (!hasIssues && !showDetails) {
     return (
@@ -155,14 +162,20 @@ NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
                   <div className="flex items-center gap-2">
                     <span className="text-white font-medium">OCR Service</span>
                     <Badge
-                      variant={configStatus.geminiApiKey.valid ? "default" : "destructive"}
+                      variant={
+                        configStatus.geminiApiKey.valid
+                          ? "default"
+                          : "destructive"
+                      }
                       className={
                         configStatus.geminiApiKey.valid
                           ? "bg-green-600/20 text-green-400"
                           : "bg-red-600/20 text-red-400"
                       }
                     >
-                      {configStatus.geminiApiKey.valid ? "Ready" : "Not Configured"}
+                      {configStatus.geminiApiKey.valid
+                        ? "Ready"
+                        : "Not Configured"}
                     </Badge>
                   </div>
                   <p className="text-sm text-slate-400 mt-1">
@@ -182,14 +195,20 @@ NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
                   <div className="flex items-center gap-2">
                     <span className="text-white font-medium">File Storage</span>
                     <Badge
-                      variant={configStatus.ipfsConfig.valid ? "default" : "destructive"}
+                      variant={
+                        configStatus.ipfsConfig.valid
+                          ? "default"
+                          : "destructive"
+                      }
                       className={
                         configStatus.ipfsConfig.valid
                           ? "bg-green-600/20 text-green-400"
                           : "bg-red-600/20 text-red-400"
                       }
                     >
-                      {configStatus.ipfsConfig.valid ? "Ready" : "Not Configured"}
+                      {configStatus.ipfsConfig.valid
+                        ? "Ready"
+                        : "Not Configured"}
                     </Badge>
                   </div>
                   <p className="text-sm text-slate-400 mt-1">
@@ -200,16 +219,20 @@ NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
 
               {hasIssues && (
                 <div className="border-t border-slate-700 pt-4 space-y-3">
-                  <h4 className="text-white font-medium">Setup Instructions:</h4>
-                  
+                  <h4 className="text-white font-medium">
+                    Setup Instructions:
+                  </h4>
+
                   <div className="space-y-2 text-sm text-slate-300">
                     <div className="flex items-center gap-2">
                       <span>1.</span>
                       <span>Create a </span>
-                      <code className="bg-slate-800 px-1 rounded">.env.local</code>
+                      <code className="bg-slate-800 px-1 rounded">
+                        .env.local
+                      </code>
                       <span>file in your project root</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <span>2.</span>
                       <Button
@@ -227,14 +250,19 @@ NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
                       <span>3.</span>
                       <span>Get API keys from:</span>
                     </div>
-                    
+
                     <div className="ml-4 space-y-1">
                       <div className="flex items-center gap-2">
                         <span>•</span>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => window.open("https://makersuite.google.com/app/apikey", "_blank")}
+                          onClick={() =>
+                            window.open(
+                              "https://makersuite.google.com/app/apikey",
+                              "_blank"
+                            )
+                          }
                           className="text-cyan-400 hover:text-cyan-300 p-0 h-auto font-normal"
                         >
                           Google AI Studio
@@ -247,7 +275,12 @@ NEXT_PUBLIC_PINATA_JWT=your_pinata_jwt_here
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => window.open("https://app.pinata.cloud/keys", "_blank")}
+                          onClick={() =>
+                            window.open(
+                              "https://app.pinata.cloud/keys",
+                              "_blank"
+                            )
+                          }
                           className="text-cyan-400 hover:text-cyan-300 p-0 h-auto font-normal"
                         >
                           Pinata Cloud

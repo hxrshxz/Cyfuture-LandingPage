@@ -137,7 +137,7 @@ export default function OCRUpload({
                   `}
                 >
                   <input {...getInputProps()} />
-                  
+
                   <div className="text-center space-y-4">
                     <div className="relative">
                       <motion.div
@@ -242,7 +242,8 @@ export default function OCRUpload({
                         {selectedFile.name}
                       </h3>
                       <p className="text-sm text-gray-400">
-                        {formatFileSize(selectedFile.size)} • {selectedFile.type.split("/")[1].toUpperCase()}
+                        {formatFileSize(selectedFile.size)} •{" "}
+                        {selectedFile.type.split("/")[1].toUpperCase()}
                       </p>
                     </div>
                   </div>

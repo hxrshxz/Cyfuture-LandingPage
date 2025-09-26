@@ -21,7 +21,8 @@ export default function WalletTroubleshooting({
     {
       step: 1,
       title: "Disconnect Wallet",
-      description: "Click the wallet button in the top right and disconnect your current wallet",
+      description:
+        "Click the wallet button in the top right and disconnect your current wallet",
       icon: Wallet,
     },
     {
@@ -39,7 +40,9 @@ export default function WalletTroubleshooting({
   ];
 
   return (
-    <div className={`fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 ${className}`}>
+    <div
+      className={`fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 ${className}`}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -55,7 +58,8 @@ export default function WalletTroubleshooting({
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-slate-300">
-              There's an issue with your wallet connection. Follow these steps to resolve it:
+              There's an issue with your wallet connection. Follow these steps
+              to resolve it:
             </p>
 
             <div className="space-y-4">
@@ -79,7 +83,10 @@ export default function WalletTroubleshooting({
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
               <h4 className="text-white font-medium mb-2">Additional Tips:</h4>
               <ul className="text-sm text-slate-300 space-y-1">
-                <li>• Make sure you're using a Solana-compatible wallet (Phantom, Solflare, etc.)</li>
+                <li>
+                  • Make sure you're using a Solana-compatible wallet (Phantom,
+                  Solflare, etc.)
+                </li>
                 <li>• Ensure your wallet is set to Solana Devnet</li>
                 <li>• Try clearing your browser cache if the issue persists</li>
               </ul>

@@ -273,21 +273,25 @@ function DashboardContent() {
     try {
       // Import and use the OCR service
       const { invoiceOCRService } = await import("@/lib/ocr-service");
-      
+
       if (!invoiceOCRService.isAvailable()) {
-        throw new Error("OCR service is not available. Please check your Gemini API key configuration.");
+        throw new Error(
+          "OCR service is not available. Please check your Gemini API key configuration."
+        );
       }
 
       // Process invoice with OCR
       const ocrResult = await invoiceOCRService.extractInvoiceData(file);
-      
+
       if (!ocrResult.success || !ocrResult.data) {
         throw new Error(ocrResult.error || "Failed to extract invoice data");
       }
 
       // Validate extracted data
-      const validation = invoiceOCRService.validateExtractedData(ocrResult.data);
-      
+      const validation = invoiceOCRService.validateExtractedData(
+        ocrResult.data
+      );
+
       // Use the complete OCR data
       const extractedData = ocrResult.data;
 
@@ -301,12 +305,12 @@ function DashboardContent() {
       setPendingExtracted(extractedData);
       setPendingInvoiceId(newInvoice.id);
       setSelectedFile(file);
-      
+
       // Store validation results for the review step
       if (validation.warnings.length > 0 || validation.suggestions.length > 0) {
         console.warn("Validation issues found:", validation);
       }
-      
+
       setStoreOnIpfs(false);
       setStoreOnChain(false);
       setCurrentView("review");
@@ -317,9 +321,13 @@ function DashboardContent() {
           inv.id === newInvoice.id ? { ...inv, status: "error" as const } : inv
         )
       );
-      
+
       // Show error message to user
-      alert(`Failed to process invoice: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
+      alert(
+        `Failed to process invoice: ${
+          error instanceof Error ? error.message : "Unknown error occurred"
+        }`
+      );
       setCurrentView("upload");
     } finally {
       setIsProcessing(false);
@@ -343,11 +351,17 @@ function DashboardContent() {
   };
 
   // Handle proceed from enhanced OCR review
-  const handleProceedFromReview = async (updatedData?: ExtractedInvoiceData) => {
+  const handleProceedFromReview = async (
+    updatedData?: ExtractedInvoiceData
+  ) => {
     console.log("🔄 HandleProceedFromReview called with data:", updatedData);
-    
+
     if (!selectedFile || !pendingExtracted || !pendingInvoiceId) {
-      console.error("❌ Missing required data:", { selectedFile, pendingExtracted, pendingInvoiceId });
+      console.error("❌ Missing required data:", {
+        selectedFile,
+        pendingExtracted,
+        pendingInvoiceId,
+      });
       return;
     }
 
@@ -420,28 +434,38 @@ function DashboardContent() {
         console.log("💰 Checking wallet balance...");
         const currentBalance = await getBalance();
         console.log("💰 Current balance:", currentBalance, "SOL");
-        
+
         if (currentBalance < 0.001) {
-          throw new Error(`Insufficient SOL balance (${currentBalance.toFixed(6)} SOL). Please request an airdrop or add funds to your wallet.`);
+          throw new Error(
+            `Insufficient SOL balance (${currentBalance.toFixed(
+              6
+            )} SOL). Please request an airdrop or add funds to your wallet.`
+          );
         }
 
         // Wait a moment to ensure wallet state is stable
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         // Create a compact memo (Solana memos have 80-byte limit)
         // Use only the last 12 characters of IPFS hash to save space
-        const shortHash = ipfsHash?.slice(-12) || 'unknown';
+        const shortHash = ipfsHash?.slice(-12) || "unknown";
         const shortInvoiceId = pendingInvoiceId.slice(-8); // Last 8 chars of invoice ID
         const timestamp = Date.now().toString(36); // Base-36 timestamp (shorter)
-        
+
         const payload = `INV:${shortInvoiceId}:${shortHash}:${timestamp}`;
         console.log("📦 Compact payload for blockchain:", payload);
         console.log("📏 Payload length:", payload.length, "bytes (limit: 80)");
         console.log("🔗 Full IPFS hash stored separately:", ipfsHash);
-        
+
         if (payload.length > 80) {
-          console.error("❌ Payload too large for Solana memo:", payload.length, "bytes");
-          throw new Error(`Transaction payload too large (${payload.length} bytes). Solana memos are limited to 80 bytes.`);
+          console.error(
+            "❌ Payload too large for Solana memo:",
+            payload.length,
+            "bytes"
+          );
+          throw new Error(
+            `Transaction payload too large (${payload.length} bytes). Solana memos are limited to 80 bytes.`
+          );
         }
 
         console.log(
@@ -477,7 +501,9 @@ function DashboardContent() {
                 error.message.includes("WalletNotConnectedError") ||
                 error.message.includes("WalletNotReadyError")
               ) {
-                throw new Error("Wallet connection issue detected. Please disconnect and reconnect your wallet, then try again.");
+                throw new Error(
+                  "Wallet connection issue detected. Please disconnect and reconnect your wallet, then try again."
+                );
               }
 
               retries++;
@@ -510,7 +536,9 @@ function DashboardContent() {
               errorMessage.includes("WalletNotReadyError") ||
               (txError as any)?.constructor?.name === "WalletNotConnectedError"
             ) {
-              throw new Error("Wallet connection issue. Please disconnect your wallet, refresh the page, and reconnect before trying again.");
+              throw new Error(
+                "Wallet connection issue. Please disconnect your wallet, refresh the page, and reconnect before trying again."
+              );
             }
 
             retries++;
@@ -562,12 +590,16 @@ function DashboardContent() {
     } catch (e) {
       console.error("Storage selection error:", e);
       const errorMessage = (e as Error).message;
-      
+
       let userMessage = "Storage failed. ";
       if (errorMessage.includes("Wallet connection")) {
-        userMessage += "Please disconnect your wallet, refresh the page, and reconnect before trying again.";
+        userMessage +=
+          "Please disconnect your wallet, refresh the page, and reconnect before trying again.";
       } else if (errorMessage.includes("Transaction failed")) {
-        userMessage += "The blockchain transaction failed. Your data was " + (ipfsHash ? "stored on IPFS" : "not stored") + ". Please try the blockchain storage again.";
+        userMessage +=
+          "The blockchain transaction failed. Your data was " +
+          (ipfsHash ? "stored on IPFS" : "not stored") +
+          ". Please try the blockchain storage again.";
       } else {
         userMessage += errorMessage;
       }
@@ -1301,7 +1333,10 @@ function DashboardContent() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-2xl border border-gray-800/50 bg-black/30 p-2">
-                    <OCRUpload onFileSelect={processInvoice} isProcessing={isProcessing} />
+                    <OCRUpload
+                      onFileSelect={processInvoice}
+                      isProcessing={isProcessing}
+                    />
                   </div>
 
                   <Link href="/ai">
@@ -1453,9 +1488,14 @@ function DashboardContent() {
               <div className="w-full max-w-4xl my-8">
                 <ExtractedDataDisplay
                   data={pendingExtracted}
-                  onDataChange={(updatedData) => setPendingExtracted(updatedData)}
+                  onDataChange={(updatedData) =>
+                    setPendingExtracted(updatedData)
+                  }
                   onSave={(updatedData) => {
-                    console.log("💾 Save button clicked with data:", updatedData);
+                    console.log(
+                      "💾 Save button clicked with data:",
+                      updatedData
+                    );
                     handleProceedFromReview(updatedData);
                   }}
                   onCancel={() => {
@@ -1468,11 +1508,13 @@ function DashboardContent() {
                   isSaving={isStoring}
                   className="bg-black/90 backdrop-blur-xl rounded-2xl border border-gray-800/50 p-6"
                 />
-                
+
                 {/* Storage Options */}
                 <Card className="mt-4 bg-black/40 border-gray-800/60">
                   <CardContent className="p-4">
-                    <h4 className="text-white font-medium mb-3">Storage Options</h4>
+                    <h4 className="text-white font-medium mb-3">
+                      Storage Options
+                    </h4>
                     <div className="space-y-3">
                       <label className="flex items-center gap-3 text-white">
                         <input
@@ -1483,7 +1525,9 @@ function DashboardContent() {
                         />
                         <div>
                           <p className="font-medium">Store file on IPFS</p>
-                          <p className="text-sm text-gray-400">Decentralized storage for invoice file</p>
+                          <p className="text-sm text-gray-400">
+                            Decentralized storage for invoice file
+                          </p>
                         </div>
                       </label>
                       <label className="flex items-center gap-3 text-white">
@@ -1494,8 +1538,12 @@ function DashboardContent() {
                           onChange={(e) => setStoreOnChain(e.target.checked)}
                         />
                         <div>
-                          <p className="font-medium">Store on Solana blockchain</p>
-                          <p className="text-sm text-gray-400">Immutable record of extracted data</p>
+                          <p className="font-medium">
+                            Store on Solana blockchain
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            Immutable record of extracted data
+                          </p>
                         </div>
                       </label>
                     </div>
@@ -1521,7 +1569,7 @@ function DashboardContent() {
             onClose={() => setShowTransactionResult(false)}
           />
         )}
-        
+
         {/* Configuration Validator */}
         <ConfigurationValidator />
       </div>

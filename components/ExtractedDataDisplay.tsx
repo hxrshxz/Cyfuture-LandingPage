@@ -68,10 +68,10 @@ export default function ExtractedDataDisplay({
 
   const handleItemChange = (index: number, field: string, value: any) => {
     if (!editingData.items) return;
-    
+
     const updatedItems = [...editingData.items];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
-    
+
     const updatedData = { ...editingData, items: updatedItems };
     setEditingData(updatedData);
     onDataChange?.(updatedData);
@@ -84,7 +84,7 @@ export default function ExtractedDataDisplay({
       unit_price: 0,
       total: 0,
     };
-    
+
     const updatedData = {
       ...editingData,
       items: [...(editingData.items || []), newItem],
@@ -95,7 +95,7 @@ export default function ExtractedDataDisplay({
 
   const removeItem = (index: number) => {
     if (!editingData.items) return;
-    
+
     const updatedItems = editingData.items.filter((_, i) => i !== index);
     const updatedData = { ...editingData, items: updatedItems };
     setEditingData(updatedData);
@@ -143,16 +143,20 @@ export default function ExtractedDataDisplay({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Extracted Invoice Data</h2>
+          <h2 className="text-2xl font-bold text-white">
+            Extracted Invoice Data
+          </h2>
           <p className="text-gray-400 mt-1">
             Review and edit the extracted information before saving
           </p>
         </div>
-        
+
         {data.confidence_score && (
           <Badge
             variant="secondary"
-            className={`${getConfidenceColor(data.confidence_score)} border-current`}
+            className={`${getConfidenceColor(
+              data.confidence_score
+            )} border-current`}
           >
             <Info className="w-3 h-3 mr-1" />
             Confidence: {Math.round(data.confidence_score * 100)}%
@@ -162,7 +166,8 @@ export default function ExtractedDataDisplay({
 
       {/* Validation Messages */}
       <AnimatePresence>
-        {(validationWarnings.length > 0 || validationSuggestions.length > 0) && (
+        {(validationWarnings.length > 0 ||
+          validationSuggestions.length > 0) && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
@@ -175,7 +180,9 @@ export default function ExtractedDataDisplay({
                   <div className="flex items-start gap-3">
                     <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-red-400 font-medium mb-2">Validation Warnings</p>
+                      <p className="text-red-400 font-medium mb-2">
+                        Validation Warnings
+                      </p>
                       <ul className="text-sm text-red-300 space-y-1">
                         {validationWarnings.map((warning, index) => (
                           <li key={index}>• {warning}</li>
@@ -193,7 +200,9 @@ export default function ExtractedDataDisplay({
                   <div className="flex items-start gap-3">
                     <Info className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-yellow-400 font-medium mb-2">Suggestions</p>
+                      <p className="text-yellow-400 font-medium mb-2">
+                        Suggestions
+                      </p>
                       <ul className="text-sm text-yellow-300 space-y-1">
                         {validationSuggestions.map((suggestion, index) => (
                           <li key={index}>• {suggestion}</li>
@@ -227,14 +236,18 @@ export default function ExtractedDataDisplay({
               <div className="flex items-center gap-2">
                 <Input
                   value={editingData.invoice_number || ""}
-                  onChange={(e) => handleFieldChange("invoice_number", e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("invoice_number", e.target.value)
+                  }
                   disabled={!isEditable}
                   className="bg-gray-800 border-gray-700 text-white"
                 />
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => copyToClipboard(editingData.invoice_number || "")}
+                  onClick={() =>
+                    copyToClipboard(editingData.invoice_number || "")
+                  }
                   className="text-gray-400 hover:text-white"
                 >
                   <Copy className="w-4 h-4" />
@@ -267,7 +280,9 @@ export default function ExtractedDataDisplay({
                 <Input
                   type="date"
                   value={editingData.due_date || ""}
-                  onChange={(e) => handleFieldChange("due_date", e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("due_date", e.target.value)
+                  }
                   disabled={!isEditable}
                   className="bg-gray-800 border-gray-700 text-white"
                 />
@@ -318,7 +333,9 @@ export default function ExtractedDataDisplay({
               </Label>
               <Textarea
                 value={editingData.vendor_address || ""}
-                onChange={(e) => handleFieldChange("vendor_address", e.target.value)}
+                onChange={(e) =>
+                  handleFieldChange("vendor_address", e.target.value)
+                }
                 disabled={!isEditable}
                 className="bg-gray-800 border-gray-700 text-white"
                 rows={3}
@@ -331,7 +348,9 @@ export default function ExtractedDataDisplay({
               <Label className="text-gray-300">Vendor GSTIN</Label>
               <Input
                 value={editingData.vendor_gstin || ""}
-                onChange={(e) => handleFieldChange("vendor_gstin", e.target.value)}
+                onChange={(e) =>
+                  handleFieldChange("vendor_gstin", e.target.value)
+                }
                 disabled={!isEditable}
                 className="bg-gray-800 border-gray-700 text-white"
                 placeholder="15XXXXX1234X1XX"
@@ -342,7 +361,10 @@ export default function ExtractedDataDisplay({
       </Card>
 
       {/* Buyer Information */}
-      {(editingData.buyer_name || editingData.buyer_address || editingData.buyer_gstin || isEditable) && (
+      {(editingData.buyer_name ||
+        editingData.buyer_address ||
+        editingData.buyer_gstin ||
+        isEditable) && (
         <Card className="bg-black/40 border-gray-800/60">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
@@ -355,7 +377,9 @@ export default function ExtractedDataDisplay({
               <Label className="text-gray-300">Buyer Name</Label>
               <Input
                 value={editingData.buyer_name || ""}
-                onChange={(e) => handleFieldChange("buyer_name", e.target.value)}
+                onChange={(e) =>
+                  handleFieldChange("buyer_name", e.target.value)
+                }
                 disabled={!isEditable}
                 className="bg-gray-800 border-gray-700 text-white"
               />
@@ -369,7 +393,9 @@ export default function ExtractedDataDisplay({
                 </Label>
                 <Textarea
                   value={editingData.buyer_address || ""}
-                  onChange={(e) => handleFieldChange("buyer_address", e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("buyer_address", e.target.value)
+                  }
                   disabled={!isEditable}
                   className="bg-gray-800 border-gray-700 text-white"
                   rows={3}
@@ -382,7 +408,9 @@ export default function ExtractedDataDisplay({
                 <Label className="text-gray-300">Buyer GSTIN</Label>
                 <Input
                   value={editingData.buyer_gstin || ""}
-                  onChange={(e) => handleFieldChange("buyer_gstin", e.target.value)}
+                  onChange={(e) =>
+                    handleFieldChange("buyer_gstin", e.target.value)
+                  }
                   disabled={!isEditable}
                   className="bg-gray-800 border-gray-700 text-white"
                   placeholder="15XXXXX1234X1XX"
@@ -411,7 +439,12 @@ export default function ExtractedDataDisplay({
                   type="number"
                   step="0.01"
                   value={editingData.net_amount || ""}
-                  onChange={(e) => handleFieldChange("net_amount", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleFieldChange(
+                      "net_amount",
+                      parseFloat(e.target.value) || 0
+                    )
+                  }
                   disabled={!isEditable}
                   className="bg-gray-800 border-gray-700 text-white"
                 />
@@ -429,7 +462,12 @@ export default function ExtractedDataDisplay({
                   type="number"
                   step="0.01"
                   value={editingData.tax_amount || ""}
-                  onChange={(e) => handleFieldChange("tax_amount", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleFieldChange(
+                      "tax_amount",
+                      parseFloat(e.target.value) || 0
+                    )
+                  }
                   disabled={!isEditable}
                   className="bg-gray-800 border-gray-700 text-white"
                 />
@@ -438,12 +476,19 @@ export default function ExtractedDataDisplay({
 
             {/* Total Amount */}
             <div className="space-y-2">
-              <Label className="text-gray-300 font-semibold">Total Amount</Label>
+              <Label className="text-gray-300 font-semibold">
+                Total Amount
+              </Label>
               <Input
                 type="number"
                 step="0.01"
                 value={editingData.total_amount || 0}
-                onChange={(e) => handleFieldChange("total_amount", parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "total_amount",
+                    parseFloat(e.target.value) || 0
+                  )
+                }
                 disabled={!isEditable}
                 className="bg-gray-800 border-gray-700 text-white font-semibold"
               />
@@ -463,7 +508,7 @@ export default function ExtractedDataDisplay({
       </Card>
 
       {/* Line Items */}
-      {(editingData.items && editingData.items.length > 0) && (
+      {editingData.items && editingData.items.length > 0 && (
         <Card className="bg-black/40 border-gray-800/60">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
@@ -493,13 +538,17 @@ export default function ExtractedDataDisplay({
                       </Button>
                     )}
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div className="md:col-span-2">
-                      <Label className="text-gray-300 text-sm">Description</Label>
+                      <Label className="text-gray-300 text-sm">
+                        Description
+                      </Label>
                       <Input
                         value={item.description || ""}
-                        onChange={(e) => handleItemChange(index, "description", e.target.value)}
+                        onChange={(e) =>
+                          handleItemChange(index, "description", e.target.value)
+                        }
                         disabled={!isEditable}
                         className="bg-gray-800 border-gray-700 text-white"
                       />
@@ -509,24 +558,38 @@ export default function ExtractedDataDisplay({
                       <Input
                         type="number"
                         value={item.quantity || 0}
-                        onChange={(e) => handleItemChange(index, "quantity", parseFloat(e.target.value) || 0)}
+                        onChange={(e) =>
+                          handleItemChange(
+                            index,
+                            "quantity",
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
                         disabled={!isEditable}
                         className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
                     <div>
-                      <Label className="text-gray-300 text-sm">Unit Price</Label>
+                      <Label className="text-gray-300 text-sm">
+                        Unit Price
+                      </Label>
                       <Input
                         type="number"
                         step="0.01"
                         value={item.unit_price || 0}
-                        onChange={(e) => handleItemChange(index, "unit_price", parseFloat(e.target.value) || 0)}
+                        onChange={(e) =>
+                          handleItemChange(
+                            index,
+                            "unit_price",
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
                         disabled={!isEditable}
                         className="bg-gray-800 border-gray-700 text-white"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="mt-3 flex justify-between items-center">
                     <span className="text-gray-400">Line Total:</span>
                     <span className="text-white font-semibold">
@@ -575,7 +638,7 @@ export default function ExtractedDataDisplay({
             </>
           )}
         </Button>
-        
+
         <Button
           variant="outline"
           onClick={onCancel}
