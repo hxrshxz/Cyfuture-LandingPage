@@ -100,7 +100,7 @@ export function NavigationClean({ currentPage }: NavigationProps) {
                 >
                   Sign In
                 </Link>
-                <AnimatedButton href="/signup">Get Started</AnimatedButton>
+                <AnimatedButton href="/login">Get Started</AnimatedButton>
               </div>
             )}
           </div>
@@ -157,7 +157,7 @@ export function NavigationClean({ currentPage }: NavigationProps) {
                     >
                       Sign In
                     </Link>
-                    <AnimatedButton href="/signup" className="flex-1">
+                    <AnimatedButton href="/login" className="flex-1">
                       Get Started
                     </AnimatedButton>
                   </div>
