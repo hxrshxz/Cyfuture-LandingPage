@@ -195,7 +195,7 @@ export function PricingSection() {
 
             {/* CTA Button */}
             <AnimatedButton
-              href="/signup"
+              href="/login"
               className={`w-full justify-center ${
                 plan.popular ? "scale-105" : ""
               }`}
@@ -211,7 +211,9 @@ export function PricingSection() {
         <p className="text-gray-600 dark:text-gray-300 mb-4">
           Need a custom solution? We'd love to hear from you.
         </p>
-        <AnimatedButton href="/contact">Contact Sales</AnimatedButton>
+        <AnimatedButton href="/login">
+          Contact Sales
+        </AnimatedButton>
       </div>
     </SectionWrapper>
   );
