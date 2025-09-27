@@ -49,6 +49,8 @@ import OCRUpload from "@/components/OCRUpload";
 import ExtractedDataDisplay from "@/components/ExtractedDataDisplay";
 import ConfigurationValidator from "@/components/ConfigurationValidator";
 import { ExtractedInvoiceData } from "@/lib/ocr-service";
+import AirdropStatusModal from "@/components/AirdropStatusModal";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 interface InvoiceData {
   id: string;
@@ -78,6 +80,18 @@ function DashboardContent() {
   // Test transaction state
   const [testTxSignature, setTestTxSignature] = useState<string | null>(null);
   const [testTxError, setTestTxError] = useState<string | null>(null);
+
+  // Airdrop modal state
+  const [airdropModal, setAirdropModal] = useState<{
+    isOpen: boolean;
+    status: "success" | "error" | "rate-limited";
+    signature?: string;
+    amount?: number;
+    errorMessage?: string;
+  }>({
+    isOpen: false,
+    status: "success"
+  });
 
   // Review + storage selections
   const [pendingExtracted, setPendingExtracted] = useState<{
@@ -338,15 +352,100 @@ function DashboardContent() {
     if (!connected) return;
 
     try {
+      console.log("🪂 Starting airdrop request...");
+      
+      // Store the balance before airdrop for comparison
+      const balanceBefore = await getBalance();
+      console.log("💰 Balance before airdrop:", balanceBefore.toFixed(4), "SOL");
+
       const { signature, error } = await requestAirdrop();
-      if (signature) {
-        console.log("Airdrop successful:", signature);
-        await updateBalance();
-      } else if (error) {
-        console.error("Airdrop failed:", error.message);
+      
+      if (error) {
+        console.error("❌ Airdrop failed:", error.message);
+        
+        // Show user-friendly error messages
+        let userMessage = "Airdrop request failed: ";
+        if (error.message.includes("airdrop limit")) {
+          userMessage += "You've reached the airdrop limit. Please try again later (usually after 24 hours).";
+          setAirdropModal({
+            isOpen: true,
+            status: "rate-limited",
+            errorMessage: userMessage,
+          });
+        } else if (error.message.includes("Network")) {
+          userMessage += "Network connection issue. Please check your internet connection and try again.";
+          setAirdropModal({
+            isOpen: true,
+            status: "error",
+            errorMessage: userMessage,
+          });
+        } else {
+          userMessage += error.message;
+          setAirdropModal({
+            isOpen: true,
+            status: "error",
+            errorMessage: userMessage,
+          });
+        }
+        return;
       }
+
+      if (signature) {
+        console.log("✅ Airdrop successful! Signature:", signature);
+        
+        // Wait a bit longer for the network to process the airdrop
+        console.log("⏳ Waiting for network confirmation...");
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+        
+        // Update balance with retry logic
+        let retries = 0;
+        const maxRetries = 5;
+        let newBalance = balanceBefore;
+        
+        while (retries < maxRetries) {
+          newBalance = await getBalance();
+          console.log(`💰 Balance check ${retries + 1}/${maxRetries}:`, newBalance.toFixed(4), "SOL");
+          
+          // Check if balance has increased (allowing for small transaction fees)
+          if (newBalance > balanceBefore + 0.5) { // Expecting ~1 SOL increase
+            console.log("🎉 Balance updated successfully!");
+            setBalance(newBalance);
+            
+            // Show success message to user
+            setAirdropModal({
+              isOpen: true,
+              status: "success",
+              signature,
+              amount: newBalance - balanceBefore,
+            });
+            return;
+          }
+          
+          retries++;
+          if (retries < maxRetries) {
+            console.log("⏳ Balance not updated yet, waiting...");
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3 seconds between retries
+          }
+        }
+        
+        // If we get here, the balance didn't update as expected
+        console.warn("⚠️ Airdrop transaction confirmed but balance may not have updated yet");
+        setBalance(newBalance);
+        setAirdropModal({
+          isOpen: true,
+          status: "success",
+          signature,
+          amount: newBalance - balanceBefore,
+        });
+      }
+      
     } catch (error) {
-      console.error("Airdrop error:", error);
+      console.error("💥 Unexpected airdrop error:", error);
+      setAirdropModal({
+        isOpen: true,
+        status: "error",
+        errorMessage: (error as Error).message,
+      });
     }
   };
 
@@ -973,66 +1072,114 @@ function DashboardContent() {
                 </div>
 
                 <Link href="/ai">
-                  <Button className="btn-metallic shine text-black border-0 shadow-lg h-10">
-                    <Bot className="w-4 h-4 mr-2" />
-                    AI Assistant
-                  </Button>
+                  <HoverBorderGradient
+                    containerClassName="rounded-lg"
+                    className="bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium px-4 py-2 rounded-lg"
+                    duration={1.2}
+                  >
+                    <span className="flex items-center gap-2 bg-transparent border-0 text-white">
+                      <Bot className="w-4 h-4" />
+                      AI Assistant
+                    </span>
+                  </HoverBorderGradient>
                 </Link>
               </div>
             </div>
 
-            {/* Wallet Section */}
-            <Card className="card-glow mb-8 shadow-xl rounded-3xl">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+            {/* Wallet Section - CORE FEATURE BUTTONS */}
+            <Card className="mb-8 border border-white/20 bg-gray-900/80">
+              <CardContent className="p-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-800 to-gray-700 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
                       <Wallet className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-white">
+                      <h3 className="text-2xl font-bold text-white">
                         Solana Wallet
                       </h3>
                       {connected ? (
                         <div className="space-y-1">
-                          <p className="text-sm text-gray-400 font-mono">
+                          <p className="text-white font-mono font-bold text-lg">
                             {publicKey?.toBase58().slice(0, 8)}...
                             {publicKey?.toBase58().slice(-8)}
                           </p>
-                          <p className="text-sm font-medium text-gray-200">
+                          <p className="text-white font-bold text-xl">
                             Balance: {balance.toFixed(4)} SOL
                           </p>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-400">
+                        <p className="text-gray-300 text-lg">
                           Connect your wallet to get started
                         </p>
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    {connected && balance < 0.1 && (
-                      <Button
+
+                  {/* CORE FEATURE BUTTONS - HIGHLY VISIBLE */}
+                  <div className="flex flex-wrap items-center gap-4">
+                    {connected && (
+                      <button
                         onClick={handleAirdrop}
                         disabled={isSending}
-                        variant="outline"
-                        className="h-10 border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-lg border-2 border-blue-400 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]"
+                        style={{ 
+                          zIndex: 9999, 
+                          position: 'relative',
+                          display: 'block !important',
+                          visibility: 'visible !important',
+                          opacity: '1 !important'
+                        }}
                       >
-                        {isSending ? "Requesting..." : "Request Airdrop"}
-                      </Button>
+                        {isSending ? "Requesting..." : "🪂 Request Airdrop"}
+                      </button>
                     )}
+                    
                     {connected && (
-                      <Button
+                      <button
+                        onClick={() => {
+                          const address = publicKey?.toBase58();
+                          if (address) {
+                            navigator.clipboard.writeText(address);
+                            window.open('https://faucet.solana.com', '_blank');
+                            alert(`📋 Address copied: ${address}`);
+                          }
+                        }}
+                        className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-lg rounded-lg border-2 border-cyan-400 shadow-lg hover:shadow-xl transition-all duration-200 min-w-[160px]"
+                        style={{ 
+                          zIndex: 9999, 
+                          position: 'relative',
+                          display: 'block !important',
+                          visibility: 'visible !important',
+                          opacity: '1 !important'
+                        }}
+                        title="Copy wallet address and open web faucet"
+                      >
+                        🌐 Web Faucet
+                      </button>
+                    )}
+                    
+                    {connected && (
+                      <button
                         onClick={handleTestTransaction}
                         disabled={isSending}
-                        variant="outline"
-                        className="h-10 border-gray-700 text-gray-300 hover:bg-gray-800 bg-black/20 backdrop-blur-sm"
-                        title="Send a memo-only transaction to verify setup"
+                        className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-lg border-2 border-green-400 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]"
+                        style={{ 
+                          zIndex: 9999, 
+                          position: 'relative',
+                          display: 'block !important',
+                          visibility: 'visible !important',
+                          opacity: '1 !important'
+                        }}
+                        title="Send test transaction to verify setup"
                       >
-                        {isSending ? "Sending..." : "Test Transaction"}
-                      </Button>
+                        {isSending ? "Sending..." : "⚡ Test Transaction"}
+                      </button>
                     )}
-                    <WalletMultiButton className="!btn-metallic !shine !border-0 !rounded-lg !shadow-lg !text-black !h-10" />
+                    
+                    <div style={{ zIndex: 9999, position: 'relative' }}>
+                      <WalletMultiButton className="!bg-yellow-500 !hover:bg-yellow-600 !text-black !font-bold !text-lg !px-6 !py-3 !rounded-lg !border-2 !border-yellow-400 !shadow-lg !min-w-[160px]" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -1569,6 +1716,18 @@ function DashboardContent() {
             onClose={() => setShowTransactionResult(false)}
           />
         )}
+
+        {/* Airdrop Status Modal */}
+        <AirdropStatusModal
+          isOpen={airdropModal.isOpen}
+          status={airdropModal.status}
+          signature={airdropModal.signature}
+          amount={airdropModal.amount}
+          errorMessage={airdropModal.errorMessage}
+          onClose={() =>
+            setAirdropModal((prev) => ({ ...prev, isOpen: false }))
+          }
+        />
 
         {/* Configuration Validator */}
         <ConfigurationValidator />
