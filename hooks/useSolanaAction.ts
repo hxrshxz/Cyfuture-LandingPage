@@ -194,7 +194,46 @@ export const useSolanaAction = (): SolanaAction => {
     try {
       console.log("Requesting airdrop for wallet:", publicKey.toBase58());
 
-      // Request 1 SOL airdrop
+      // Try multiple airdrop methods
+      const cluster = process.env.NEXT_PUBLIC_SOLANA_CLUSTER || "devnet";
+      
+      if (cluster === "devnet") {
+        console.log("🌐 Trying web-based faucet first...");
+        
+        // Method 1: Try SolFaucet API
+        try {
+          const response = await fetch('https://faucet.solana.com/api/v1/sol', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              pubkey: publicKey.toBase58(),
+              amount: 1000000000, // 1 SOL in lamports
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("✅ Web faucet successful:", data);
+            
+            if (data.txid) {
+              // Wait for confirmation
+              const confirmation = await connection.confirmTransaction(
+                data.txid,
+                "confirmed"
+              );
+              console.log("Airdrop confirmed:", confirmation);
+              return { signature: data.txid, error: null };
+            }
+          }
+        } catch (webFaucetError) {
+          console.log("⚠️ Web faucet failed, trying direct method...");
+        }
+      }
+
+      // Method 2: Direct RPC airdrop (original method)
+      console.log("🔄 Trying direct RPC airdrop...");
       const signature = await connection.requestAirdrop(
         publicKey,
         LAMPORTS_PER_SOL
@@ -216,8 +255,17 @@ export const useSolanaAction = (): SolanaAction => {
       let errorMessage = "Airdrop failed";
       const errorStr = (err as Error).message;
 
-      if (errorStr.includes("airdrop limit")) {
-        errorMessage = "Airdrop limit exceeded. Please try again later.";
+      if (errorStr.includes("airdrop limit") || errorStr.includes("rate limit")) {
+        errorMessage = `Airdrop rate limit exceeded. Try these alternatives:
+        
+🌐 Manual Faucets:
+• https://faucet.solana.com (Official)
+• https://solfaucet.com 
+• https://www.sol-faucet.com
+        
+📋 Copy your wallet address: ${publicKey.toBase58()}
+        
+⏰ Or wait 24 hours and try again.`;
       } else if (errorStr.includes("Network")) {
         errorMessage = "Network connection issue. Please try again.";
       }
