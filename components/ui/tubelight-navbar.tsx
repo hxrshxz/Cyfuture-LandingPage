@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 interface NavItem {
   name: string;
@@ -19,8 +20,20 @@ interface NavBarProps {
 }
 
 export function NavBar({ items, className, fixed = true }: NavBarProps) {
-  const [activeTab, setActiveTab] = useState(items[0].name);
+  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+
+  // Set active tab based on current pathname
+  useEffect(() => {
+    const currentItem = items.find(item => item.url === pathname);
+    if (currentItem) {
+      setActiveTab(currentItem.name);
+    } else {
+      // Default to first item if no match found
+      setActiveTab(items[0]?.name || "");
+    }
+  }, [pathname, items]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,6 +44,10 @@ export function NavBar({ items, className, fixed = true }: NavBarProps) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleTabClick = (itemName: string) => {
+    setActiveTab(itemName);
+  };
 
   return (
     <div
@@ -50,6 +67,7 @@ export function NavBar({ items, className, fixed = true }: NavBarProps) {
             <Link
               key={item.name}
               href={item.url}
+              onClick={() => handleTabClick(item.name)}
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
                 "text-foreground/80 hover:text-primary",
