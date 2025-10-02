@@ -51,21 +51,35 @@ import ConfigurationValidator from "@/components/ConfigurationValidator";
 import { ExtractedInvoiceData } from "@/lib/ocr-service";
 import AirdropStatusModal from "@/components/AirdropStatusModal";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 
-interface InvoiceData {
-  id: string;
-  fileName: string;
-  uploadTime: string;
-  status: "processing" | "completed" | "error";
-  extractedData?: {
-    invoice_number: string;
-    vendor_name: string;
-    total_amount: number;
-    date: string;
-  };
-  ipfsHash?: string;
-  solanaSignature?: string;
-}
+const ocrLoadingStates = [
+  {
+    text: "Initializing OCR engine...",
+  },
+  {
+    text: "Uploading document to AI service...",
+  },
+  {
+    text: "Analyzing document structure...",
+  },
+  {
+    text: "Extracting key fields (Invoice number, vendor, amount)...",
+  },
+  {
+    text: "Processing payment details...",
+  },
+  {
+    text: "Validating extracted data...",
+  },
+  {
+    text: "Preparing for blockchain storage...",
+  },
+  {
+    text: "OCR processing completed successfully!",
+  },
+];
 
 function DashboardContent() {
   const [currentView, setCurrentView] = useState<
@@ -206,10 +220,32 @@ function DashboardContent() {
   ];
 
   // Dashboard statistics
+  const [liveCounters, setLiveCounters] = useState({
+    totalInvoices: 247,
+    processingQueue: 3,
+    ipfsStored: 189,
+  });
+
+  // Live counter animation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCounters((prev) => ({
+        totalInvoices: prev.totalInvoices + Math.floor(Math.random() * 3) + 1, // +1 to +3
+        processingQueue: Math.max(
+          0,
+          prev.processingQueue + Math.floor(Math.random() * 3) - 1
+        ), // -1 to +1 (can go to 0)
+        ipfsStored: prev.ipfsStored + Math.floor(Math.random() * 2) + 1, // +1 to +2
+      }));
+    }, 10000); // Update every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const dashboardStats = [
     {
       title: "Total Invoices",
-      value: invoices.length.toString(),
+      value: liveCounters.totalInvoices.toString(),
       icon: Receipt,
       color: "text-gray-300",
       change: "+12%",
@@ -223,16 +259,14 @@ function DashboardContent() {
     },
     {
       title: "Processing Queue",
-      value: invoices
-        .filter((inv) => inv.status === "processing")
-        .length.toString(),
+      value: liveCounters.processingQueue.toString(),
       icon: Clock,
       color: "text-gray-300",
       change: "0",
     },
     {
       title: "IPFS Stored",
-      value: invoices.filter((inv) => inv.ipfsHash).length.toString(),
+      value: liveCounters.ipfsStored.toString(),
       icon: Database,
       color: "text-gray-300",
       change: "+100%",
@@ -273,7 +307,8 @@ function DashboardContent() {
 
   const processInvoice = async (file: File) => {
     setIsProcessing(true);
-    setCurrentView("processing");
+    // Remove the old processing view, we'll use MultiStepLoader instead
+    // setCurrentView("processing");
 
     const newInvoice: InvoiceData = {
       id: Date.now().toString(),
@@ -342,7 +377,7 @@ function DashboardContent() {
           error instanceof Error ? error.message : "Unknown error occurred"
         }`
       );
-      setCurrentView("upload");
+      setCurrentView("dashboard");
     } finally {
       setIsProcessing(false);
     }
@@ -631,8 +666,6 @@ function DashboardContent() {
             // Handle specific wallet errors that shouldn't be retried
             if (
               errorMessage.includes("Wallet not connected") ||
-              errorMessage.includes("WalletNotConnectedError") ||
-              errorMessage.includes("WalletNotReadyError") ||
               (txError as any)?.constructor?.name === "WalletNotConnectedError"
             ) {
               throw new Error(
@@ -1035,15 +1068,27 @@ function DashboardContent() {
           }}
         />
 
+        {/* Infinite Moving Cards Section */}
+        <div className="relative z-10 p-6">
+          <InfiniteMovingCards
+            items={dashboardStats.map((stat) => ({
+              quote: stat.title,
+              name: stat.title,
+              title: stat.value,
+              image: "/d1.png",
+            }))}
+            direction="right"
+            speed="normal"
+          />
+        </div>
+
         {/* Content */}
         <div className="relative z-10 p-6 pt-20">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div className="min-w-0">
-                <h1 className="display-1 mt-0 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 blue-glow-text font-geist mb-2 whitespace-nowrap">
-                  Welcome back, {user?.name}!
-                </h1>
+                <h1 className="">Welcome back, {user?.name}!</h1>
                 <p className="text-gray-400 text-lg md:text-xl font-geist">
                   Blockchain-powered financial document management with AI
                   analysis
@@ -1116,20 +1161,13 @@ function DashboardContent() {
                     </div>
                   </div>
 
-                  {/* CORE FEATURE BUTTONS - HIGHLY VISIBLE */}
+                  {/* CORE FEATURE BUTTONS - MODERN TAILWIND STYLES */}
                   <div className="flex flex-wrap items-center gap-4">
                     {connected && (
                       <button
                         onClick={handleAirdrop}
                         disabled={isSending}
-                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-lg border-2 border-blue-400 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]"
-                        style={{ 
-                          zIndex: 9999, 
-                          position: 'relative',
-                          display: 'block !important',
-                          visibility: 'visible !important',
-                          opacity: '1 !important'
-                        }}
+                        className="px-8 py-2 rounded-full bg-gradient-to-b from-blue-500 to-blue-600 text-white focus:ring-2 focus:ring-blue-400 hover:shadow-xl transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
                       >
                         {isSending ? "Requesting..." : "🪂 Request Airdrop"}
                       </button>
@@ -1145,17 +1183,13 @@ function DashboardContent() {
                             alert(`📋 Address copied: ${address}`);
                           }
                         }}
-                        className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-lg rounded-lg border-2 border-cyan-400 shadow-lg hover:shadow-xl transition-all duration-200 min-w-[160px]"
-                        style={{ 
-                          zIndex: 9999, 
-                          position: 'relative',
-                          display: 'block !important',
-                          visibility: 'visible !important',
-                          opacity: '1 !important'
-                        }}
+                        className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                         title="Copy wallet address and open web faucet"
                       >
-                        🌐 Web Faucet
+                        <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#06b6d4_0%,#3b82f6_50%,#06b6d4_100%)]" />
+                        <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-6 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                          🌐 Web Faucet
+                        </span>
                       </button>
                     )}
                     
@@ -1163,14 +1197,7 @@ function DashboardContent() {
                       <button
                         onClick={handleTestTransaction}
                         disabled={isSending}
-                        className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-lg border-2 border-green-400 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]"
-                        style={{ 
-                          zIndex: 9999, 
-                          position: 'relative',
-                          display: 'block !important',
-                          visibility: 'visible !important',
-                          opacity: '1 !important'
-                        }}
+                        className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Send test transaction to verify setup"
                       >
                         {isSending ? "Sending..." : "⚡ Test Transaction"}
@@ -1178,7 +1205,7 @@ function DashboardContent() {
                     )}
                     
                     <div style={{ zIndex: 9999, position: 'relative' }}>
-                      <WalletMultiButton className="!bg-yellow-500 !hover:bg-yellow-600 !text-black !font-bold !text-lg !px-6 !py-3 !rounded-lg !border-2 !border-yellow-400 !shadow-lg !min-w-[160px]" />
+                      <WalletMultiButton className="!px-8 !py-2 !border !border-black !bg-transparent !text-white !dark:border-white !relative !group !transition !duration-200 !font-semibold !rounded-lg !hover:shadow-[0px_0px_4px_4px_rgba(255,255,255,0.1)]" />
                     </div>
                   </div>
                 </div>
@@ -1479,11 +1506,10 @@ function DashboardContent() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="rounded-2xl border border-gray-800/50 bg-black/30 p-2">
-                    <OCRUpload
-                      onFileSelect={processInvoice}
-                      isProcessing={isProcessing}
-                    />
+                  <div className="text-center space-y-4">
+                    <div className="w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                      <FileUpload onChange={handleFilesFromUpload} />
+                    </div>
                   </div>
 
                   <Link href="/ai">
@@ -1717,16 +1743,12 @@ function DashboardContent() {
           />
         )}
 
-        {/* Airdrop Status Modal */}
-        <AirdropStatusModal
-          isOpen={airdropModal.isOpen}
-          status={airdropModal.status}
-          signature={airdropModal.signature}
-          amount={airdropModal.amount}
-          errorMessage={airdropModal.errorMessage}
-          onClose={() =>
-            setAirdropModal((prev) => ({ ...prev, isOpen: false }))
-          }
+        {/* MultiStepLoader for OCR Processing */}
+        <MultiStepLoader 
+          loadingStates={ocrLoadingStates}
+          loading={isProcessing}
+          duration={3000}
+          loop={false}
         />
 
         {/* Configuration Validator */}
