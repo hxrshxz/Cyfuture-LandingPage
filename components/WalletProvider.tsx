@@ -12,6 +12,7 @@ import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { BackpackWalletAdapter } from "@solana/wallet-adapter-backpack";
 import { clusterApiUrl } from "@solana/web3.js";
 
 import "@solana/wallet-adapter-react-ui/styles.css";
@@ -55,6 +56,7 @@ const SolanaWalletProvider = ({ children }: SolanaWalletProviderProps) => {
     () => [
       new PhantomWalletAdapter(), // Phantom first - most reliable for Solana
       new SolflareWalletAdapter(), // Solflare as backup
+      new BackpackWalletAdapter(), // Backpack wallet adapter
     ],
     // The dependency array is empty, so this is only created once
     []
