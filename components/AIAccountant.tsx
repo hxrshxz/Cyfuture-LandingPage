@@ -706,13 +706,13 @@ User's question: "${text}"`;
   return (
     <div
       className={`min-h-screen text-slate-900 font-sans isolate ${
-        embedded ? "bg-slate-900" : "bg-slate-100"
+        embedded ? "bg-white" : "bg-gradient-to-br from-slate-50 to-white"
       }`}
     >
       {!embedded && (
         <div className="absolute inset-0 -z-10 h-full w-full overflow-hidden">
-          <div className="absolute -top-1/4 left-0 h-[800px] w-[800px] bg-blue-200/30 rounded-full blur-3xl filter animate-blob"></div>
-          <div className="absolute -top-1/3 right-0 h-[800px] w-[800px] bg-sky-200/30 rounded-full filter animate-blob animation-delay-2000"></div>
+          <div className="absolute -top-1/4 left-0 h-[800px] w-[800px] bg-blue-100/40 rounded-full blur-3xl filter animate-blob"></div>
+          <div className="absolute -top-1/3 right-0 h-[800px] w-[800px] bg-sky-100/40 rounded-full filter animate-blob animation-delay-2000"></div>
         </div>
       )}
       <AnimatePresence>
