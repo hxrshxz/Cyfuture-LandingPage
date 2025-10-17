@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { appFontsClass } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme-provider";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SolanaWalletProvider from "@/components/WalletProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -26,7 +28,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${appFontsClass} ${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${appFontsClass} ${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
     >
       <head>
         {/* External variable fonts for app pages (landing keeps Geist) */}
@@ -44,17 +47,21 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className=" w-full max-w-full overflow-x-hidden">
-        <ClientRouteClass>
-          <ServiceWorkerGuard />
-          <ErrorBoundary>
-            <StorageProvider>
-              <AuthProvider>
-                <SolanaWalletProvider>{children}</SolanaWalletProvider>
-              </AuthProvider>
-            </StorageProvider>
-          </ErrorBoundary>
-        </ClientRouteClass>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", GeistSans.variable)}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <SolanaWalletProvider>
+              <StorageProvider>
+                {children}
+              </StorageProvider>
+            </SolanaWalletProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
