@@ -941,3 +941,67 @@ body {
     color-mix(in oklab, var(--brand-blue) 28%, #eaf1ff)
   );
 }
+
+/* Chart-specific fixes to override global CSS conflicts */
+.recharts-wrapper,
+.recharts-surface {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.recharts-cartesian-grid line,
+.recharts-cartesian-axis-tick text,
+.recharts-cartesian-axis line {
+  stroke: hsl(var(--muted-foreground)) !important;
+  opacity: 0.5 !important;
+}
+
+.recharts-area-curve,
+.recharts-line-curve {
+  stroke-width: 2 !important;
+}
+
+.recharts-tooltip-wrapper {
+  z-index: 9999 !important;
+}
+
+/* Ensure chart container has proper dimensions */
+[data-chart] {
+  min-height: 250px !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+[data-chart] .recharts-responsive-container {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+/* Fix for area chart gradients */
+[data-chart] defs {
+  display: block !important;
+}
+
+[data-chart] linearGradient {
+  display: block !important;
+}
+
+/* Ensure chart colors are properly applied */
+[data-chart] {
+  --color-processed: hsl(var(--primary));
+  --color-pending: hsl(var(--chart-2));
+}
+
+/* Override any global CSS that might hide SVG elements */
+svg {
+  display: block !important;
+  max-width: none !important;
+}
+
+svg * {
+  vector-effect: none !important;
+}
