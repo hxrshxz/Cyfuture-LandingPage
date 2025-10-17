@@ -54,6 +54,33 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 
+// New Modern Dashboard Components
+import { AppSidebar } from "@/components/app-sidebar";
+import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { DataTable } from "@/components/data-table";
+import { SectionCards } from "@/components/section-cards";
+import { SiteHeader } from "@/components/site-header";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+
+// Interface for invoice data
+interface InvoiceData {
+  id: string;
+  fileName: string;
+  uploadTime: string;
+  status: "processing" | "completed" | "error";
+  extractedData?: {
+    invoice_number: string;
+    vendor_name: string;
+    total_amount: number;
+    date: string;
+  };
+  ipfsHash?: string;
+  solanaSignature?: string;
+}
+
 const ocrLoadingStates = [
   {
     text: "Initializing OCR engine...",
@@ -758,6 +785,254 @@ function DashboardContent() {
       setIsStoring(false);
     }
   };
+
+  // Convert existing invoice data to match the DataTable schema
+  const convertInvoicesToTableData = (invoices: InvoiceData[]) => {
+    return invoices.map((invoice, index) => ({
+      id: index + 1,
+      invoice_number: invoice.extractedData?.invoice_number || `INV-${invoice.id}`,
+      vendor_name: invoice.extractedData?.vendor_name || "Unknown Vendor",
+      file_name: invoice.fileName,
+      status: invoice.status === "completed" ? "Completed" : 
+              invoice.status === "processing" ? "Processing" : "Failed",
+      total_amount: invoice.extractedData?.total_amount || 0,
+      upload_date: invoice.uploadTime.split('T')[0],
+      processing_type: "OCR + AI",
+      ipfs_hash: invoice.ipfsHash,
+      blockchain_tx: invoice.solanaSignature,
+    }));
+  };
+
+  if (currentView === "dashboard") {
+    return (
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader />
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                
+                {/* Statistics Cards */}
+                <SectionCards />
+                
+                {/* Wallet Section - Keep existing wallet functionality */}
+                <div className="px-4 lg:px-6">
+                  <Card className="border border-white/20 bg-gray-900/80">
+                    <CardContent className="p-6">
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
+                            <Wallet className="w-6 h-6 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">
+                              Solana Wallet
+                            </h3>
+                            {connected ? (
+                              <div className="space-y-1">
+                                <p className="text-white font-mono text-sm">
+                                  {publicKey?.toBase58().slice(0, 8)}...
+                                  {publicKey?.toBase58().slice(-8)}
+                                </p>
+                                <p className="text-white font-bold">
+                                  Balance: {balance.toFixed(4)} SOL
+                                </p>
+                              </div>
+                            ) : (
+                              <p className="text-gray-300">
+                                Connect your wallet to get started
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3">
+                          {connected && (
+                            <Button
+                              onClick={handleAirdrop}
+                              disabled={isSending}
+                              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg"
+                            >
+                              {isSending ? "Requesting..." : "🪂 Request Airdrop"}
+                            </Button>
+                          )}
+                          
+                          <div style={{ zIndex: 9999, position: 'relative' }}>
+                            <WalletMultiButton className="!px-6 !py-2 !bg-transparent !text-white !border !border-gray-600 !rounded-lg" />
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Interactive Chart */}
+                <div className="px-4 lg:px-6">
+                  <ChartAreaInteractive />
+                </div>
+
+                {/* File Upload Section */}
+                <div className="px-4 lg:px-6">
+                  <Card className="bg-black/40 border border-gray-800/50">
+                    <CardHeader>
+                      <CardTitle className="text-white flex items-center gap-2">
+                        <Upload className="w-5 h-5" />
+                        Upload New Invoice
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="w-full min-h-48 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                        <FileUpload onChange={handleFilesFromUpload} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Invoice Data Table */}
+                <DataTable data={convertInvoicesToTableData(invoices)} />
+              </div>
+            </div>
+          </div>
+        </SidebarInset>
+
+        {/* Keep all existing modals and overlays */}
+        {isSending && (
+          <div className="fixed inset-0 z-[9999] pointer-events-none bg-black/50 backdrop-blur-md">
+            <div className="relative h-full w-full">
+              <GoogleGeminiEffect
+                className="top-24"
+                pathLengths={[v1, v2, v3, v4, v5]}
+                title="Submitting transaction…"
+                description="Securing your data on-chain"
+                palette={[
+                  "#63d2ff",
+                  "#5ef1ff",
+                  "#9ab6ff",
+                  "#5aa8ff",
+                  "#2f6bff",
+                ]}
+                blurStdDev={12}
+                showBadge={false}
+              />
+            </div>
+          </div>
+        )}
+
+        {currentView === "review" && pendingExtracted && selectedFile && (
+          <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm overflow-y-auto">
+            <div className="min-h-screen p-4 flex items-start justify-center">
+              <div className="w-full max-w-4xl my-8">
+                <ExtractedDataDisplay
+                  data={pendingExtracted}
+                  onDataChange={(updatedData) =>
+                    setPendingExtracted(updatedData)
+                  }
+                  onSave={(updatedData) => {
+                    console.log(
+                      "💾 Save button clicked with data:",
+                      updatedData
+                    );
+                    handleProceedFromReview(updatedData);
+                  }}
+                  onCancel={() => {
+                    setCurrentView("dashboard");
+                    setPendingExtracted(null);
+                    setPendingInvoiceId(null);
+                    setSelectedFile(null);
+                  }}
+                  isEditable={true}
+                  isSaving={isStoring}
+                  className="bg-black/90 backdrop-blur-xl rounded-2xl border border-gray-800/50 p-6"
+                />
+
+                <Card className="mt-4 bg-black/40 border-gray-800/60">
+                  <CardContent className="p-4">
+                    <h4 className="text-white font-medium mb-3">
+                      Storage Options
+                    </h4>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-3 text-white">
+                        <input
+                          type="checkbox"
+                          className="accent-cyan-500"
+                          checked={storeOnIpfs}
+                          onChange={(e) => setStoreOnIpfs(e.target.checked)}
+                        />
+                        <div>
+                          <p className="font-medium">Store file on IPFS</p>
+                          <p className="text-sm text-gray-400">
+                            Decentralized storage for invoice file
+                          </p>
+                        </div>
+                      </label>
+                      <label className="flex items-center gap-3 text-white">
+                        <input
+                          type="checkbox"
+                          className="accent-cyan-500"
+                          checked={storeOnChain}
+                          onChange={(e) => setStoreOnChain(e.target.checked)}
+                        />
+                        <div>
+                          <p className="font-medium">
+                            Store on Solana blockchain
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            Immutable record of extracted data
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showTransactionResult && lastProcessedInvoice && (
+          <TransactionResult
+            invoiceData={{
+              fileName: lastProcessedInvoice.fileName,
+              invoice_number:
+                lastProcessedInvoice.extractedData?.invoice_number,
+              vendor_name: lastProcessedInvoice.extractedData?.vendor_name,
+              total_amount: lastProcessedInvoice.extractedData?.total_amount,
+              date: lastProcessedInvoice.extractedData?.date,
+            }}
+            ipfsHash={lastProcessedInvoice.ipfsHash || ""}
+            solanaSignature={lastProcessedInvoice.solanaSignature || ""}
+            onClose={() => setShowTransactionResult(false)}
+          />
+        )}
+
+        <MultiStepLoader 
+          loadingStates={ocrLoadingStates}
+          loading={isProcessing}
+          duration={3000}
+          loop={false}
+        />
+
+        <ConfigurationValidator />
+        
+        <AirdropStatusModal
+          isOpen={airdropModal.isOpen}
+          onClose={() => setAirdropModal(prev => ({ ...prev, isOpen: false }))}
+          status={airdropModal.status}
+          signature={airdropModal.signature}
+          amount={airdropModal.amount}
+          errorMessage={airdropModal.errorMessage}
+        />
+      </SidebarProvider>
+    );
+  }
 
   if (currentView === "processing") {
     return (

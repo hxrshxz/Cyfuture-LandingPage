@@ -1,25 +1,41 @@
 "use client";
 
-import AIAccountant from "@/components/AIAccountant";
 import { ProtectedRoute } from "@/contexts/AuthContext";
-import AppNavigation from "@/components/AppNavigation";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+import AIAccountant from "@/components/AIAccountant";
 
-export default function AIAssistantPage() {
+function AIContent() {
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
+            <AIAccountant embedded={true} />
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
+export default function AIPage() {
   return (
     <ProtectedRoute>
-      <AppNavigation currentPage="/ai">
-        <div className="pt-24 px-4 md:px-8 max-w-screen-xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              AI Accountant
-            </h1>
-            <p className="text-muted-foreground">
-              Ask questions, analyze transactions, and generate insights
-            </p>
-          </div>
-          <AIAccountant embedded={false} />
-        </div>
-      </AppNavigation>
+      <AIContent />
     </ProtectedRoute>
   );
 }
