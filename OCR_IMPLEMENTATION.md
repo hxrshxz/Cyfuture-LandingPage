@@ -149,7 +149,7 @@ The system includes comprehensive error handling:
 - **Supported Formats**: Limited to image formats that work well with OCR
 - **Processing Time**: Typical processing time is 2-5 seconds per invoice
 - **Batch Processing**: Currently single-file processing (can be extended)
-
+ 
 ## Security
 
 - **API Key Protection**: API key is client-side only for OCR processing
@@ -167,7 +167,7 @@ Extracted data is stored on Solana blockchain with the following structure:
   "fileName": "invoice.jpg",
   "ipfsHash": "Qm...",
   "extractedData": {
-    // Complete extracted invoice data
+   
   },
   "timestamp": "2024-01-01T00:00:00.000Z"
 }
