@@ -6,7 +6,7 @@
 [![Solana](https://img.shields.io/badge/Solana-Web3.js-purple)](https://solana.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.9-38B2AC)](https://tailwindcss.com/)
 
-## 🚀 Overview
+##  Overview
 
 CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes accounting and GST reconciliation through the power of blockchain technology and artificial intelligence. The platform combines advanced OCR capabilities, cryptographic verification, and decentralized storage to create an immutable, tamper-proof audit trail for all financial documents.
 
@@ -21,7 +21,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 
 ## ✨ Features
 
-### 🤖 AI-Powered OCR Processing
+###  AI-Powered OCR Processing
 
 - **Intelligent Data Extraction**: Automatically extracts invoice details including:
   - Invoice numbers and dates
@@ -34,7 +34,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 - **Editable Results**: Review and modify extracted data before blockchain submission
 - **Batch Processing Ready**: Architecture supports future multi-document processing
 
-### 🔐 Blockchain Integration
+###  Blockchain Integration
 
 - **Solana Blockchain**: Fast, low-cost transactions with cryptographic security
 - **Immutable Records**: All transactions permanently recorded on-chain
@@ -42,7 +42,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 - **Transaction Tracking**: Real-time transaction status and confirmation
 - **Cryptographic Verification**: Every document hash is cryptographically secured
 
-### 📦 IPFS Storage
+### IPFS Storage
 
 - **Decentralized Storage**: Documents stored on IPFS via Pinata
 - **Permanent Links**: Content-addressed storage ensures data permanence
@@ -50,7 +50,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 - **Fallback Mechanisms**: Automatic failover to alternative IPFS providers
 - **File Integrity**: Content hashing ensures document authenticity
 
-### 📊 Dashboard & Analytics
+### Dashboard & Analytics
 
 - **Real-time Metrics**: Live financial data visualization
 - **Interactive Charts**: Powered by Recharts for dynamic data exploration
@@ -59,7 +59,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 - **Portfolio Overview**: Comprehensive financial health indicators
 - **GST Reports**: Automated GST reconciliation and compliance reports
 
-### 🎨 Modern UI/UX
+###  Modern UI/UX
 
 - **Responsive Design**: Fully optimized for desktop, tablet, and mobile
 - **Dark Mode**: System-aware theme switching
@@ -68,7 +68,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 - **Interactive Components**: Radix UI primitives for robust interactions
 - **Loading States**: Multi-step loaders with progress indicators
 
-### 🔒 Security Features
+###  Security Features
 
 - **Client-side Authentication**: Secure user session management
 - **Wallet-based Auth**: Cryptographic authentication via Solana wallets
@@ -77,7 +77,7 @@ CyFuture AI is a cutting-edge, AI-powered financial platform that revolutionizes
 - **Service Worker Guards**: Enhanced PWA security
 - **Environment Isolation**: Strict environment variable management
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Technology Stack
 
@@ -212,7 +212,7 @@ User Upload → OCR Processing → Data Extraction → User Review
                               Verification & Retrieval
 ```
 
-## 🚦 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -330,7 +330,7 @@ docker run -p 3000:3000 \
 
 If you prefer to use the existing Dockerfile without modifications, ensure your environment variables use the VITE_ prefix during build.
 
-## 🔑 API Keys Setup
+##  API Keys Setup
 
 ### Google Gemini API Key
 
@@ -359,7 +359,7 @@ If you prefer to use the existing Dockerfile without modifications, ensure your 
 
 **Troubleshooting:** See [IPFS_FIX_GUIDE.md](IPFS_FIX_GUIDE.md) for detailed troubleshooting
 
-## 📖 Usage Guide
+##  Usage Guide
 
 ### Invoice Processing Workflow
 
@@ -427,7 +427,7 @@ All components are built with Radix UI and can be customized via:
 - CSS variables in `globals.css`
 - Component props
 
-## 🧪 Testing
+##  Testing
 
 ```bash
 # Run linter
@@ -437,7 +437,7 @@ pnpm lint
 pnpm build
 ```
 
-## 🐳 Deployment
+##  Deployment
 
 ### Vercel (Recommended)
 
@@ -468,7 +468,7 @@ pnpm build
 node .next/standalone/server.js
 ```
 
-## 🔧 Configuration Files
+##  Configuration Files
 
 - **next.config.mjs**: Next.js configuration
 - **tailwind.config.js**: Tailwind CSS customization
@@ -476,12 +476,12 @@ node .next/standalone/server.js
 - **components.json**: shadcn/ui component configuration
 - **postcss.config.mjs**: PostCSS plugins
 
-## 📚 Additional Documentation
+##  Additional Documentation
 
 - [OCR Implementation Guide](OCR_IMPLEMENTATION.md) - Detailed OCR setup and usage
 - [IPFS Troubleshooting](IPFS_FIX_GUIDE.md) - IPFS and Pinata configuration
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these guidelines:
 
@@ -499,18 +499,18 @@ Contributions are welcome! Please follow these guidelines:
 - Add comments for complex logic
 - Update documentation for new features
 
-## 🔐 Security
+## Security
 
 - Never commit `.env.local` or API keys to the repository
 - Use environment variables for all sensitive data
 - Keep dependencies updated
 - Report security vulnerabilities privately
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Solana Foundation**: Blockchain infrastructure
 - **Google Gemini AI**: OCR and AI capabilities
@@ -519,14 +519,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Radix UI**: Accessible component primitives
 - **Tailwind CSS**: Utility-first CSS framework
 
-## 📞 Support
+## Support
 
 For questions, issues, or feature requests:
 
-- 🐛 Issues: [GitHub Issues](https://github.com/hxrshxz/Cyfuture-LandingPage/issues)
+- Issues: [GitHub Issues](https://github.com/hxrshxz/Cyfuture-LandingPage/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/hxrshxz/Cyfuture-LandingPage/discussions)
 
-## 🗺️ Roadmap
+## Roadmap
 
 ### Upcoming Features
 
